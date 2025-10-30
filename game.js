@@ -1,7 +1,7 @@
-game.js const canvas = document.getElementById('gameCanvas');
+const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-let player = { x: 400, y: 300, size: 20, speed: 5 }
+let player = { x: 400, y: 300, size: 20, speed: 5 };
 
 function drawPlayer() {
   ctx.fillStyle = 'green';
