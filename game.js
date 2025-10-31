@@ -2,7 +2,7 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Player setup
-let player = { x: 400, y: 300, size: 20, speed: 5 };
+let player = { x: 400, y: 300, size: 20, speed: 5, health: 100 };
 let keys = {};
 
 // Enemies setup
@@ -12,8 +12,8 @@ let enemies = [
 ];
 
 // Listen for keyboard input
-document.addEventListener('keydown', e => { keys[e.key] = true; });
-document.addEventListener('keyup', e => { keys[e.key] = false; });
+document.addEventListener('keydown', e => keys[e.key] = true);
+document.addEventListener('keyup', e => keys[e.key] = false);
 
 // Draw the player
 function drawPlayer() {
@@ -31,6 +31,16 @@ function drawEnemies() {
     ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
     ctx.fill();
   });
+}
+
+// Draw health bar
+function drawHealthBar() {
+  ctx.fillStyle = 'black';
+  ctx.fillRect(20, 20, 200, 20); // background
+  ctx.fillStyle = 'lime';
+  ctx.fillRect(20, 20, 2 * player.health, 20); // current health
+  ctx.strokeStyle = 'white';
+  ctx.strokeRect(20, 20, 200, 20); // border
 }
 
 // Update player position
@@ -54,6 +64,15 @@ function updateEnemies() {
     // Bounce off canvas edges
     if (enemy.x <= enemy.size || enemy.x >= canvas.width - enemy.size) enemy.dx *= -1;
     if (enemy.y <= enemy.size || enemy.y >= canvas.height - enemy.size) enemy.dy *= -1;
+
+    // Check collision with player
+    let dx = enemy.x - player.x;
+    let dy = enemy.y - player.y;
+    let distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < enemy.size + player.size) {
+      player.health -= 1; // decrease health on collision
+      if (player.health < 0) player.health = 0;
+    }
   });
 }
 
@@ -64,6 +83,7 @@ function update() {
   updateEnemies();
   drawPlayer();
   drawEnemies();
+  drawHealthBar();
 }
 
 // Game loop
