@@ -6,9 +6,9 @@ let player = { x: 400, y: 300, size: 20, speed: 5 };
 // Track pressed keys
 let keys = {};
 
-// Listen to keydown and keyup on the document
-document.addEventListener('keydown', (e) => { keys[e.key] = true; });
-document.addEventListener('keyup', (e) => { keys[e.key] = false; });
+// Listen to keydown and keyup on the window
+window.addEventListener('keydown', (e) => { keys[e.key] = true; });
+window.addEventListener('keyup', (e) => { keys[e.key] = false; });
 
 // Function to draw the player
 function drawPlayer() {
