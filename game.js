@@ -6,45 +6,11 @@ let player = { x: 400, y: 300, size: 20, speed: 5 };
 // Track pressed keys
 let keys = {};
 
-// Focus canvas to receive keyboard events
-canvas.tabIndex = 1000; // allows canvas to receive keyboard input
-canvas.focus();
+// Listen to keydown and keyup on the document
+document.addEventListener('keydown', (e) => { keys[e.key] = true; });
+document.addEventListener('keyup', (e) => { keys[e.key] = false; });
 
-// Listen to keydown and keyup on the canvas
- Allow canvas to receive keyboard events
-canvas.tabIndex = 1000;
-
-// Focus canvas when clicked
-canvas.addEventListener('click', () => {
-  canvas.focus();
-});
-
-// Listen to keydown and keyup events
-canvas.addEventListener('keydown', (e) => { keys[e.key] = true; });
-canvas.addEventListener('keyup', (e) => { keys[e.key] = false; });
-canvas.tabIndex = 1000;
-
-// Focus canvas when clicked
-canvas.addEventListener('click', () => {
-  canvas.focus();
-});
-
-// Listen to keydown and keyup events
-canvas.addEventListener('keydown', (e) => { keys[e.key] = true; });
-canvas.addEventListener('keyup', (e) => { keys[e.key] = false; });
-
-canvas.tabIndex = 1000;
-
-// Focus canvas when clicked
-canvas.addEventListener('click', () => {
-  canvas.focus();
-});
-
-// Listen to keydown and keyup events
-canvas.addEventListener('keydown', (e) => { keys[e.key] = true; });
-canvas.addEventListener('keyup', (e) => { keys[e.key] = false; });
-
-
+// Function to draw the player
 function drawPlayer() {
   ctx.fillStyle = 'green';
   ctx.beginPath();
@@ -52,14 +18,13 @@ function drawPlayer() {
   ctx.fill();
 }
 
+// Update game state
 function update() {
-  // Move player according to pressed keys
   if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
   if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
   if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
   if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
 
-  // Keep player inside canvas
   player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
   player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
 
@@ -67,6 +32,7 @@ function update() {
   drawPlayer();
 }
 
+// Game loop
 function gameLoop() {
   update();
   requestAnimationFrame(gameLoop);
