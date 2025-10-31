@@ -11,8 +11,39 @@ canvas.tabIndex = 1000; // allows canvas to receive keyboard input
 canvas.focus();
 
 // Listen to keydown and keyup on the canvas
+ Allow canvas to receive keyboard events
+canvas.tabIndex = 1000;
+
+// Focus canvas when clicked
+canvas.addEventListener('click', () => {
+  canvas.focus();
+});
+
+// Listen to keydown and keyup events
 canvas.addEventListener('keydown', (e) => { keys[e.key] = true; });
 canvas.addEventListener('keyup', (e) => { keys[e.key] = false; });
+canvas.tabIndex = 1000;
+
+// Focus canvas when clicked
+canvas.addEventListener('click', () => {
+  canvas.focus();
+});
+
+// Listen to keydown and keyup events
+canvas.addEventListener('keydown', (e) => { keys[e.key] = true; });
+canvas.addEventListener('keyup', (e) => { keys[e.key] = false; });
+
+canvas.tabIndex = 1000;
+
+// Focus canvas when clicked
+canvas.addEventListener('click', () => {
+  canvas.focus();
+});
+
+// Listen to keydown and keyup events
+canvas.addEventListener('keydown', (e) => { keys[e.key] = true; });
+canvas.addEventListener('keyup', (e) => { keys[e.key] = false; });
+
 
 function drawPlayer() {
   ctx.fillStyle = 'green';
