@@ -1,6 +1,10 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+// Allow canvas to receive keyboard input
+canvas.tabIndex = 1000;
+canvas.focus();
+
 // Player
 let player = { x: 400, y: 300, size: 20, speed: 5, health: 100 };
 let keys = {};
@@ -8,14 +12,15 @@ let keys = {};
 // Enemies
 let enemies = [
   { x: 100, y: 100, size: 20, speed: 2, dx: 1, dy: 1 },
-  { x: 700, y: 500, size: 20, speed: 3, dx: -1, dy: 1 }
+  { x: 700, y: 500, size: 20, speed: 3, dx: -1, dy: 1 },
+  { x: 400, y: 100, size: 20, speed: 2.5, dx: 1, dy: -1 }
 ];
 
 let gameOver = false;
 
-// Keyboard input
-document.addEventListener('keydown', e => keys[e.key] = true);
-document.addEventListener('keyup', e => keys[e.key] = false);
+// Keyboard input on canvas
+canvas.addEventListener('keydown', e => keys[e.key] = true);
+canvas.addEventListener('keyup', e => keys[e.key] = false);
 
 // Draw player
 function drawPlayer() {
@@ -74,6 +79,7 @@ function updateEnemies() {
       enemy.x += enemy.dx * enemy.speed;
       enemy.y += enemy.dy * enemy.speed;
 
+      // Bounce off canvas edges
       if (enemy.x <= enemy.size || enemy.x >= canvas.width - enemy.size) enemy.dx *= -1;
       if (enemy.y <= enemy.size || enemy.y >= canvas.height - enemy.size) enemy.dy *= -1;
 
