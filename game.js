@@ -17,8 +17,9 @@ let enemies = [
 ];
 
 let gameOver = false;
+let restartTimer = 0;
 
-// Keyboard input on canvas
+// Keyboard input
 canvas.addEventListener('keydown', e => keys[e.key] = true);
 canvas.addEventListener('keyup', e => keys[e.key] = false);
 
@@ -50,12 +51,26 @@ function drawHealthBar() {
   ctx.strokeRect(20, 20, 200, 20);
 }
 
-// Draw Game Over
+// Draw Game Over text
 function drawGameOver() {
   ctx.fillStyle = 'white';
   ctx.font = '50px Arial';
   ctx.textAlign = 'center';
   ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2);
+  ctx.font = '20px Arial';
+  ctx.fillText('Restarting in 3 seconds...', canvas.width / 2, canvas.height / 2 + 40);
+}
+
+// Reset the game
+function resetGame() {
+  player = { x: 400, y: 300, size: 20, speed: 5, health: 100 };
+  enemies = [
+    { x: 100, y: 100, size: 20, speed: 2, dx: 1, dy: 1 },
+    { x: 700, y: 500, size: 20, speed: 3, dx: -1, dy: 1 },
+    { x: 400, y: 100, size: 20, speed: 2.5, dx: 1, dy: -1 }
+  ];
+  gameOver = false;
+  restartTimer = 0;
 }
 
 // Update player
@@ -66,7 +81,6 @@ function updatePlayer() {
     if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
     if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
 
-    // Keep player inside canvas
     player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
     player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
   }
@@ -79,11 +93,9 @@ function updateEnemies() {
       enemy.x += enemy.dx * enemy.speed;
       enemy.y += enemy.dy * enemy.speed;
 
-      // Bounce off canvas edges
       if (enemy.x <= enemy.size || enemy.x >= canvas.width - enemy.size) enemy.dx *= -1;
       if (enemy.y <= enemy.size || enemy.y >= canvas.height - enemy.size) enemy.dy *= -1;
 
-      // Collision with player
       let dx = enemy.x - player.x;
       let dy = enemy.y - player.y;
       let distance = Math.sqrt(dx * dx + dy * dy);
@@ -92,6 +104,7 @@ function updateEnemies() {
         if (player.health <= 0) {
           player.health = 0;
           gameOver = true;
+          restartTimer = Date.now();
         }
       }
     });
@@ -107,7 +120,13 @@ function update() {
   drawEnemies();
   drawHealthBar();
 
-  if (gameOver) drawGameOver();
+  if (gameOver) {
+    drawGameOver();
+    // Restart after 3 seconds
+    if (Date.now() - restartTimer > 3000) {
+      resetGame();
+    }
+  }
 }
 
 // Game loop
