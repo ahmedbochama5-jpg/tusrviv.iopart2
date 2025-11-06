@@ -1,29 +1,30 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Allow canvas to receive keyboard input
 canvas.tabIndex = 1000;
 canvas.focus();
 
-// Player
-let player = { x: 400, y: 300, size: 20, speed: 5, health: 100 };
+let player;
+let enemies;
 let keys = {};
-
-// Enemies
-let enemies = [
-  { x: 100, y: 100, size: 20, speed: 2, dx: 1, dy: 1 },
-  { x: 700, y: 500, size: 20, speed: 3, dx: -1, dy: 1 },
-  { x: 400, y: 100, size: 20, speed: 2.5, dx: 1, dy: -1 }
-];
-
 let gameOver = false;
 let restartTimer = 0;
 
-// Keyboard input
+function resetGame() {
+  player = { x: 400, y: 300, size: 20, speed: 5, health: 100 };
+  enemies = [
+    { x: 100, y: 100, size: 20, speed: 2, dx: 1, dy: 1 },
+    { x: 700, y: 500, size: 20, speed: 3, dx: -1, dy: 1 },
+    { x: 400, y: 100, size: 20, speed: 2.5, dx: 1, dy: -1 }
+  ];
+  gameOver = false;
+}
+
+resetGame();
+
 canvas.addEventListener('keydown', e => keys[e.key] = true);
 canvas.addEventListener('keyup', e => keys[e.key] = false);
 
-// Draw player
 function drawPlayer() {
   ctx.fillStyle = 'green';
   ctx.beginPath();
@@ -31,7 +32,6 @@ function drawPlayer() {
   ctx.fill();
 }
 
-// Draw enemies
 function drawEnemies() {
   ctx.fillStyle = 'red';
   enemies.forEach(enemy => {
@@ -41,7 +41,6 @@ function drawEnemies() {
   });
 }
 
-// Draw health bar
 function drawHealthBar() {
   ctx.fillStyle = 'black';
   ctx.fillRect(20, 20, 200, 20);
@@ -51,7 +50,6 @@ function drawHealthBar() {
   ctx.strokeRect(20, 20, 200, 20);
 }
 
-// Draw Game Over text
 function drawGameOver() {
   ctx.fillStyle = 'white';
   ctx.font = '50px Arial';
@@ -61,19 +59,6 @@ function drawGameOver() {
   ctx.fillText('Restarting in 3 seconds...', canvas.width / 2, canvas.height / 2 + 40);
 }
 
-// Reset the game
-function resetGame() {
-  player = { x: 400, y: 300, size: 20, speed: 5, health: 100 };
-  enemies = [
-    { x: 100, y: 100, size: 20, speed: 2, dx: 1, dy: 1 },
-    { x: 700, y: 500, size: 20, speed: 3, dx: -1, dy: 1 },
-    { x: 400, y: 100, size: 20, speed: 2.5, dx: 1, dy: -1 }
-  ];
-  gameOver = false;
-  restartTimer = 0;
-}
-
-// Update player
 function updatePlayer() {
   if (!gameOver) {
     if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
@@ -86,7 +71,6 @@ function updatePlayer() {
   }
 }
 
-// Update enemies
 function updateEnemies() {
   if (!gameOver) {
     enemies.forEach(enemy => {
@@ -111,7 +95,6 @@ function updateEnemies() {
   }
 }
 
-// Main update
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   updatePlayer();
@@ -122,14 +105,10 @@ function update() {
 
   if (gameOver) {
     drawGameOver();
-    // Restart after 3 seconds
-    if (Date.now() - restartTimer > 3000) {
-      resetGame();
-    }
+    if (Date.now() - restartTimer > 3000) resetGame();
   }
 }
 
-// Game loop
 function gameLoop() {
   update();
   requestAnimationFrame(gameLoop);
