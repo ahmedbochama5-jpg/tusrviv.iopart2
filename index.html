@@ -39,6 +39,7 @@
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
             display: none;
+            background: #1a1a2e;
         }
         
         #startButton {
@@ -77,6 +78,12 @@
             margin-left: auto;
             margin-right: auto;
         }
+        
+        .footer {
+            margin-top: 20px;
+            color: #ccc;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
@@ -91,10 +98,336 @@
 
     <div class="instructions">
         <h3>Controls:</h3>
-        <p>WASD or Arrow Keys - Move | Mouse Click - Shoot | Survive as long as possible!</p>
+        <p><strong>WASD</strong> or <strong>Arrow Keys</strong> - Move Player</p>
+        <p><strong>Mouse</strong> - Aim and Shoot</p>
+        <p><strong>Survive</strong> as long as possible and collect energy!</p>
         <p><em>This is an experimental version. Features may change.</em></p>
     </div>
 
-    <script src="game.js"></script>
+    <div class="footer">
+        Alpha Arena - Developed with HTML5 Canvas & JavaScript
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startButton = document.getElementById('startButton');
+
+        // Background Music
+        const music = new Audio('music.mp3');
+        music.loop = true;
+        music.volume = 0.5;
+
+        // Game Variables
+        let player = { x: 400, y: 300, size: 20, speed: 5, color: '#00ff00' };
+        let keys = {};
+        let score = 0;
+        let energy = 100;
+        let health = 100;
+        let enemies = [];
+        let bullets = [];
+        let resources = [];
+
+        // Keyboard Controls
+        document.addEventListener('keydown', (e) => keys[e.key] = true);
+        document.addEventListener('keyup', (e) => keys[e.key] = false);
+
+        // Mouse Controls
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            // Calculate direction
+            const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+            
+            // Create bullet
+            bullets.push({
+                x: player.x,
+                y: player.y,
+                speed: 10,
+                velocityX: Math.cos(angle) * 10,
+                velocityY: Math.sin(angle) * 10,
+                size: 5,
+                color: '#ffff00'
+            });
+        });
+
+        // Draw Player
+        function drawPlayer() {
+            ctx.fillStyle = player.color;
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Player outline
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        // Draw Enemies
+        function drawEnemies() {
+            enemies.forEach(enemy => {
+                ctx.fillStyle = enemy.color;
+                ctx.beginPath();
+                ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // Draw Bullets
+        function drawBullets() {
+            bullets.forEach(bullet => {
+                ctx.fillStyle = bullet.color;
+                ctx.beginPath();
+                ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // Draw Resources
+        function drawResources() {
+            resources.forEach(resource => {
+                ctx.fillStyle = resource.color;
+                ctx.beginPath();
+                ctx.arc(resource.x, resource.y, resource.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Glow effect
+                ctx.strokeStyle = '#ffff00';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            });
+        }
+
+        // Draw UI
+        function drawUI() {
+            // Player stats background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(10, 10, 200, 110);
+            ctx.strokeStyle = '#ff9800';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(10, 10, 200, 110);
+            
+            // Title
+            ctx.fillStyle = '#ff9800';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText('PLAYER STATS', 20, 30);
+            
+            // Separator line
+            ctx.strokeStyle = '#ff9800';
+            ctx.beginPath();
+            ctx.moveTo(20, 40);
+            ctx.lineTo(190, 40);
+            ctx.stroke();
+            
+            // Statistics
+            ctx.font = '14px Arial';
+            ctx.fillStyle = '#00ff00';
+            ctx.fillText('Score: ' + score, 20, 60);
+            
+            ctx.fillStyle = '#ffff00';
+            ctx.fillText('Energy: ' + energy, 20, 80);
+            
+            ctx.fillStyle = '#ff4444';
+            ctx.fillText('Health: ' + health, 20, 100);
+            
+            // Health bar
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(85, 87, 100, 10);
+            ctx.fillStyle = '#ff4444';
+            ctx.fillRect(85, 87, (health / 100) * 100, 10);
+            
+            // Energy bar
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(85, 67, 100, 8);
+            ctx.fillStyle = '#ffff00';
+            ctx.fillRect(85, 67, (energy / 100) * 100, 8);
+        }
+
+        // Draw Alpha Watermark
+        function drawAlphaWatermark() {
+            ctx.save();
+            
+            // Main watermark
+            ctx.globalAlpha = 0.1;
+            ctx.fillStyle = '#ff9800';
+            ctx.font = 'bold 80px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('ALPHA ARENA', canvas.width / 2, canvas.height / 2);
+            
+            // Version info in corner
+            ctx.globalAlpha = 0.7;
+            ctx.fillStyle = '#ff9800';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText('Alpha v0.1 - Experimental Build', 10, canvas.height - 30);
+            
+            // Development warning
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Under Active Development - Report Bugs!', canvas.width / 2, canvas.height - 10);
+            
+            ctx.restore();
+        }
+
+        // Spawn Enemies
+        function spawnEnemy() {
+            const side = Math.floor(Math.random() * 4);
+            let x, y;
+            
+            switch(side) {
+                case 0: // top
+                    x = Math.random() * canvas.width;
+                    y = -20;
+                    break;
+                case 1: // right
+                    x = canvas.width + 20;
+                    y = Math.random() * canvas.height;
+                    break;
+                case 2: // bottom
+                    x = Math.random() * canvas.width;
+                    y = canvas.height + 20;
+                    break;
+                case 3: // left
+                    x = -20;
+                    y = Math.random() * canvas.height;
+                    break;
+            }
+            
+            enemies.push({
+                x: x,
+                y: y,
+                size: 15,
+                speed: 2,
+                color: '#ff4444'
+            });
+        }
+
+        // Spawn Resources
+        function spawnResource() {
+            resources.push({
+                x: Math.random() * (canvas.width - 40) + 20,
+                y: Math.random() * (canvas.height - 40) + 20,
+                size: 8,
+                color: '#00ffff',
+                value: 10
+            });
+        }
+
+        // Update Game
+        function update() {
+            // Player movement
+            if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
+            if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
+            if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
+            if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
+
+            // Screen boundaries
+            player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
+            player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
+
+            // Update bullets
+            bullets.forEach((bullet, index) => {
+                bullet.x += bullet.velocityX;
+                bullet.y += bullet.velocityY;
+                
+                // Remove bullets out of screen
+                if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) {
+                    bullets.splice(index, 1);
+                }
+            });
+
+            // Update enemies
+            enemies.forEach((enemy, index) => {
+                // Move towards player
+                const dx = player.x - enemy.x;
+                const dy = player.y - enemy.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                enemy.x += (dx / distance) * enemy.speed;
+                enemy.y += (dy / distance) * enemy.speed;
+                
+                // Collision with player
+                if (distance < player.size + enemy.size) {
+                    health -= 5;
+                    enemies.splice(index, 1);
+                }
+            });
+
+            // Update resources
+            resources.forEach((resource, index) => {
+                const dx = player.x - resource.x;
+                const dy = player.y - resource.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < player.size + resource.size) {
+                    energy += resource.value;
+                    resources.splice(index, 1);
+                    score += 10;
+                }
+            });
+
+            // Spawn enemies randomly
+            if (Math.random() < 0.02) {
+                spawnEnemy();
+            }
+
+            // Spawn resources randomly
+            if (Math.random() < 0.01 && resources.length < 5) {
+                spawnResource();
+            }
+
+            // Energy drain
+            energy = Math.max(0, energy - 0.1);
+            
+            // Game over condition
+            if (health <= 0) {
+                health = 0;
+                // Add game over logic here
+            }
+        }
+
+        // Game Loop
+        function gameLoop() {
+            update();
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw game elements
+            drawResources();
+            drawPlayer();
+            drawEnemies();
+            drawBullets();
+            drawUI();
+            drawAlphaWatermark();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start Game
+        startButton.addEventListener('click', () => {
+            startButton.style.display = 'none';
+            canvas.style.display = 'block';
+            music.play().catch(e => console.log('Audio play failed:', e));
+            gameLoop();
+            
+            // Initial spawn
+            for (let i = 0; i < 3; i++) {
+                spawnEnemy();
+            }
+            for (let i = 0; i < 2; i++) {
+                spawnResource();
+            }
+        });
+
+        // Prevent context menu on right-click
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+    </script>
 </body>
 </html>
