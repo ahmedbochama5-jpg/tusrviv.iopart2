@@ -2,12 +2,30 @@ body {
   margin: 0;
   background-color: #2e2e2e;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 canvas {
-  display: block;
-  margin: auto;
   background-color: #3c3c3c;
   border: 2px solid #000;
+  display: none;
 }
 
+#startButton {
+  background-color: #00cc66;
+  color: white;
+  font-size: 20px;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#startButton:hover {
+  background-color: #00994d;
+}
