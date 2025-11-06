@@ -1,14 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Surviv Clone</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Arena - Experimental Version</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            text-align: center;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid #ff9800;
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin: 0;
+            text-shadow: 0 0 10px #ff9800;
+        }
+        
+        .subtitle {
+            color: #ff9800;
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+        
+        #gameCanvas {
+            border: 3px solid #ff9800;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
+            display: none;
+        }
+        
+        #startButton {
+            background: #ff9800;
+            color: black;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        #startButton:hover {
+            background: #ff5722;
+            transform: scale(1.1);
+        }
+        
+        .beta-badge {
+            background: #ff9800;
+            color: black;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .instructions {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
 </head>
 <body>
-  <button id="startButton">▶ Play Music & Start Game</button>
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
-  <script src="game.js"></script>
+    <div class="header">
+        <h1>Alpha Arena</h1>
+        <div class="subtitle">Experimental Battle Arena - Prepare for Challenge!</div>
+        <div class="beta-badge">Alpha Version - Under Development</div>
+    </div>
+    
+    <button id="startButton">Start Battle</button>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <div class="instructions">
+        <h3>Controls:</h3>
+        <p>WASD or Arrow Keys - Move | Mouse Click - Shoot | Survive as long as possible!</p>
+        <p><em>This is an experimental version. Features may change.</em></p>
+    </div>
+
+    <script src="game.js"></script>
 </body>
 </html>
