@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - نظام التحكم المعدل</title>
+    <title>Alpha Arena - إطلاق نار بالماوس</title>
     <style>
         * {
             margin: 0;
@@ -13,59 +13,68 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            background: linear-gradient(135deg, #0c0c2e, #1a1a4a, #2d2d6e);
             color: white;
             text-align: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
             overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .header {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-align: center;
         }
 
         .game-title {
-            font-size: 3.5em;
+            font-size: 4em;
             font-weight: bold;
             margin-bottom: 10px;
             background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
         }
 
         .game-subtitle {
-            font-size: 1.2em;
+            font-size: 1.4em;
             color: #cccccc;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .content {
+        .main-content {
             display: flex;
-            flex-wrap: wrap;
             gap: 20px;
+            flex-wrap: wrap;
             justify-content: center;
-            width: 100%;
+        }
+
+        .game-section {
+            flex: 2;
+            min-width: 700px;
+        }
+
+        .panels-section {
+            flex: 1;
+            min-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .panel {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             border: 2px solid;
             border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
             backdrop-filter: blur(10px);
-            flex: 1;
-            min-width: 300px;
-            max-width: 500px;
         }
 
         .admin-panel {
@@ -81,7 +90,7 @@
         }
 
         .panel-title {
-            font-size: 1.5em;
+            font-size: 1.6em;
             margin-bottom: 15px;
             color: #00ffff;
         }
@@ -98,20 +107,20 @@
             background: linear-gradient(45deg, #ff00ff, #00ffff);
             border: none;
             color: white;
-            padding: 12px 20px;
-            font-size: 1em;
+            padding: 14px 22px;
+            font-size: 1.1em;
             font-weight: bold;
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 5px;
+            margin: 6px;
             width: 100%;
-            max-width: 200px;
+            max-width: 220px;
         }
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+            box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5);
         }
 
         .btn:active {
@@ -133,16 +142,22 @@
             color: white;
         }
 
+        .start-btn {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            font-size: 1.3em;
+            padding: 18px 30px;
+        }
+
         .btn-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 12px;
             margin-top: 15px;
         }
 
         .status {
             margin-top: 15px;
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
             background: rgba(255, 255, 255, 0.1);
         }
@@ -150,7 +165,8 @@
         .status-item {
             display: flex;
             justify-content: space-between;
-            margin: 5px 0;
+            margin: 6px 0;
+            font-size: 1.1em;
         }
 
         .status-label {
@@ -164,6 +180,7 @@
 
         .cheat-active {
             color: #00ff00;
+            text-shadow: 0 0 8px #00ff00;
         }
 
         .cheat-inactive {
@@ -175,29 +192,31 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.9);
-            padding: 20px 30px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 25px 35px;
             border-radius: 15px;
             border: 3px solid #ffff00;
             color: #ffff00;
-            font-size: 1.5em;
+            font-size: 1.8em;
             font-weight: bold;
             z-index: 1000;
             display: none;
-            box-shadow: 0 0 30px rgba(255, 255, 0, 0.5);
+            box-shadow: 0 0 40px rgba(255, 255, 0, 0.6);
         }
 
         .instructions {
             margin-top: 20px;
-            padding: 15px;
+            padding: 18px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             text-align: right;
+            font-size: 1.1em;
         }
 
         .instructions h3 {
             color: #00ffff;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-size: 1.3em;
         }
 
         .instructions ul {
@@ -206,13 +225,13 @@
         }
 
         .instructions li {
-            margin: 8px 0;
+            margin: 10px 0;
             color: #cccccc;
         }
 
         .instructions code {
             background: rgba(0, 0, 0, 0.5);
-            padding: 2px 6px;
+            padding: 3px 8px;
             border-radius: 4px;
             font-family: monospace;
             color: #ffff00;
@@ -226,12 +245,12 @@
             background: linear-gradient(45deg, #ff00ff, #ffff00);
             border: none;
             color: black;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 1.4em;
             font-weight: bold;
-            box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
         }
 
         .music-toggle {
@@ -242,104 +261,121 @@
             background: linear-gradient(45deg, #ff00ff, #ff0066);
             border: none;
             color: white;
-            padding: 10px 15px;
+            padding: 12px 18px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.2em;
+            font-size: 1.4em;
             font-weight: bold;
-            box-shadow: 0 0 10px rgba(255, 0, 102, 0.5);
+            box-shadow: 0 0 15px rgba(255, 0, 102, 0.6);
         }
 
         .cheat-input {
             width: 100%;
-            padding: 10px;
-            margin: 10px 0;
+            padding: 12px;
+            margin: 12px 0;
             border-radius: 10px;
             border: 2px solid #00ffff;
             background: rgba(0, 0, 0, 0.5);
             color: white;
             text-align: center;
-            font-size: 1em;
+            font-size: 1.1em;
         }
 
         .game-area {
             width: 100%;
-            height: 400px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            border: 2px solid #00ffff;
-            margin: 20px 0;
+            height: 600px;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(40, 40, 100, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(100, 40, 100, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(40, 100, 100, 0.3) 0%, transparent 50%),
+                rgba(10, 10, 40, 0.9);
+            border-radius: 20px;
+            border: 3px solid #00ffff;
+            margin: 10px 0;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            cursor: crosshair;
         }
 
         .player {
             position: absolute;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             background: linear-gradient(45deg, #00ff00, #00ffff);
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+            z-index: 10;
         }
 
         .enemy {
             position: absolute;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             background: linear-gradient(45deg, #ff0000, #ff4444);
-            border-radius: 5px;
-            box-shadow: 0 0 10px #ff0000;
+            border-radius: 8px;
+            box-shadow: 0 0 15px #ff0000;
+            z-index: 5;
         }
 
         .bullet {
             position: absolute;
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             background: #ffff00;
             border-radius: 50%;
-            box-shadow: 0 0 5px #ffff00;
+            box-shadow: 0 0 8px #ffff00;
+            z-index: 8;
         }
 
         .resource {
             position: absolute;
-            width: 15px;
-            height: 15px;
+            width: 18px;
+            height: 18px;
             background: #00ffff;
             border-radius: 50%;
-            box-shadow: 0 0 10px #00ffff;
+            box-shadow: 0 0 15px #00ffff;
+            z-index: 6;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
 
         .controls-info {
-            margin: 15px 0;
-            padding: 10px;
+            margin: 20px 0;
+            padding: 15px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            border-radius: 15px;
         }
 
         .controls-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            max-width: 200px;
+            gap: 15px;
+            max-width: 250px;
             margin: 0 auto;
         }
 
         .control-key {
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid #00ffff;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 1.2em;
+            border-radius: 10px;
+            padding: 18px;
+            font-size: 1.3em;
             font-weight: bold;
             color: white;
         }
 
         .control-key.active {
-            background: rgba(0, 255, 255, 0.4);
-            box-shadow: 0 0 10px #00ffff;
+            background: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 15px #00ffff;
         }
 
         .control-center {
@@ -347,37 +383,44 @@
             grid-row: 2;
         }
 
-        .shoot-key {
-            background: rgba(255, 0, 0, 0.3);
-            border: 2px solid #ff4444;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 1.2em;
+        .mouse-info {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            font-size: 1.1em;
+        }
+
+        .mouse-info span {
+            color: #00ffff;
             font-weight: bold;
-            color: white;
-            margin-top: 10px;
         }
 
-        .shoot-key.active {
-            background: rgba(255, 0, 0, 0.6);
-            box-shadow: 0 0 10px #ff0000;
-        }
-
-        @media (max-width: 768px) {
-            .content {
+        @media (max-width: 1200px) {
+            .main-content {
                 flex-direction: column;
             }
             
-            .panel {
-                max-width: 100%;
+            .game-section, .panels-section {
+                min-width: 100%;
+            }
+            
+            .game-area {
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.8em;
+            }
+            
+            .game-area {
+                height: 400px;
             }
             
             .btn-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .game-title {
-                font-size: 2.5em;
             }
         }
     </style>
@@ -389,116 +432,122 @@
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">نظام تحكم معدل - Z للأعلى، S للأسفل، Q لليسار، D لليمين</div>
+            <div class="game-subtitle">انقر لبدء اللعب • إطلاق النار بالماوس • Z, S, Q, D للتحكم</div>
         </div>
 
-        <div class="game-area" id="gameArea">
-            <div class="player" id="player"></div>
-            <!-- سيتم إضافة الأعداء والرصاصات ديناميكيًا -->
-        </div>
-
-        <div class="controls-info">
-            <h3 style="color: #00ffff; margin-bottom: 10px;">أزرار التحكم</h3>
-            <div class="controls-grid">
-                <div class="control-key" id="keyZ">Z<br>▲</div>
-                <div class="control-key" id="keyQ">Q<br>◀</div>
-                <div class="control-key" id="keyD">D<br>▶</div>
-                <div class="control-key" id="keyS">S<br>▼</div>
-                <div class="control-key control-center" id="keySpace">Space<br>نار</div>
-            </div>
-        </div>
-
-        <div class="content">
-            <div class="panel game-panel">
-                <h2 class="panel-title">حالة اللعبة</h2>
-                <div class="status">
-                    <div class="status-item">
-                        <span class="status-label">النقاط:</span>
-                        <span class="status-value" id="scoreDisplay">0</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">الصحة:</span>
-                        <span class="status-value" id="healthDisplay">100</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">الطاقة:</span>
-                        <span class="status-value" id="energyDisplay">100</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">الأعداء:</span>
-                        <span class="status-value" id="enemiesDisplay">0</span>
-                    </div>
+        <div class="main-content">
+            <div class="game-section">
+                <div class="game-area" id="gameArea">
+                    <div class="player" id="player"></div>
+                    <!-- سيتم إضافة الأعداء والرصاصات ديناميكيًا -->
                 </div>
-                
-                <div class="btn-grid">
-                    <button class="btn" onclick="startGame()">بدء اللعبة</button>
-                    <button class="btn" onclick="resetGame()">إعادة تعيين</button>
-                    <button class="btn music-btn" onclick="toggleMusic()">تشغيل/إيقاف الموسيقى</button>
-                    <button class="btn" onclick="showInstructions()">تعليمات اللعب</button>
-                </div>
-            </div>
 
-            <div class="panel admin-panel" id="adminPanel" style="display:none">
-                <h2 class="panel-title admin-title">أوامر الإدارة</h2>
-                
-                <div class="btn-grid">
-                    <button class="btn admin-btn" onclick="activateCheat('godmode')">وضع الإله ✨</button>
-                    <button class="btn admin-btn" onclick="activateCheat('unlimitedenergy')">طاقة غير محدودة ⚡</button>
-                    <button class="btn admin-btn" onclick="activateCheat('maxscore')">أقصى نقاط 🏆</button>
-                    <button class="btn admin-btn" onclick="activateCheat('killallenemies')">قتل كل الأعداء 💀</button>
-                    <button class="btn admin-btn" onclick="activateCheat('oneshotkill')">قتل برصاصة واحدة 🔫</button>
-                    <button class="btn admin-btn" onclick="activateCheat('superbullet')">رصاصات خارقة 💥</button>
-                    <button class="btn admin-btn" onclick="activateCheat('freezeenemies')">تجميد الأعداء ❄️</button>
-                    <button class="btn admin-btn" onclick="activateCheat('spawnresources')">إنشاء موارد 💎</button>
-                </div>
-                
-                <div class="status">
-                    <div class="status-item">
-                        <span class="status-label">وضع الإله:</span>
-                        <span class="status-value" id="godmodeStatus">غير مفعل</span>
+                <div class="controls-info">
+                    <h3 style="color: #00ffff; margin-bottom: 15px; font-size: 1.4em;">أزرار التحكم</h3>
+                    <div class="controls-grid">
+                        <div class="control-key" id="keyZ">Z<br>▲</div>
+                        <div class="control-key" id="keyQ">Q<br>◀</div>
+                        <div class="control-key" id="keyD">D<br>▶</div>
+                        <div class="control-key" id="keyS">S<br>▼</div>
                     </div>
-                    <div class="status-item">
-                        <span class="status-label">طاقة غير محدودة:</span>
-                        <span class="status-value" id="unlimitedStatus">غير مفعل</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">قتل برصاصة:</span>
-                        <span class="status-value" id="oneshotStatus">غير مفعل</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">رصاصات خارقة:</span>
-                        <span class="status-value" id="superbulletStatus">غير مفعل</span>
-                    </div>
-                    <div class="status-item">
-                        <span class="status-label">الأعداء مجمدون:</span>
-                        <span class="status-value" id="freezeStatus">غير مفعل</span>
+                    <div class="mouse-info">
+                        🖱️ <span>انقر بالماوس لإطلاق النار</span> • 🎯 حرك الماوس لتوجيه السلاح
                     </div>
                 </div>
             </div>
 
-            <div class="panel cheat-panel">
-                <h2 class="panel-title cheat-title">أكواد الغش</h2>
-                
-                <input type="text" class="cheat-input" id="cheatInput" placeholder="اكتب كود الغش هنا...">
-                
-                <div class="btn-grid">
-                    <button class="btn cheat-btn" onclick="enterCheatCode()">تفعيل الكود</button>
-                    <button class="btn cheat-btn" onclick="showCheatCodes()">عرض الأكواد</button>
-                    <button class="btn cheat-btn" onclick="resetAllCheats()">إعادة تعيين الكل</button>
+            <div class="panels-section">
+                <div class="panel game-panel">
+                    <h2 class="panel-title">حالة اللعبة</h2>
+                    <div class="status">
+                        <div class="status-item">
+                            <span class="status-label">النقاط:</span>
+                            <span class="status-value" id="scoreDisplay">0</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">الصحة:</span>
+                            <span class="status-value" id="healthDisplay">100</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">الطاقة:</span>
+                            <span class="status-value" id="energyDisplay">100</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">الأعداء:</span>
+                            <span class="status-value" id="enemiesDisplay">0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="btn-grid">
+                        <button class="btn start-btn" onclick="startGame()">🎮 بدء اللعبة</button>
+                        <button class="btn" onclick="resetGame()">🔄 إعادة تعيين</button>
+                        <button class="btn music-btn" onclick="toggleMusic()">🎵 تشغيل/إيقاف الموسيقى</button>
+                        <button class="btn" onclick="showInstructions()">❓ تعليمات اللعب</button>
+                    </div>
                 </div>
-                
-                <div class="instructions">
-                    <h3>تعليمات الأكواد:</h3>
-                    <ul>
-                        <li>GODMODE - مناعة كاملة</li>
-                        <li>UNLIMITED - طاقة غير محدودة</li>
-                        <li>MAXSCORE - 9999 نقطة</li>
-                        <li>KILLALL - تدمير كل الأعداء</li>
-                        <li>ONESHOOT - قتل برصاصة واحدة</li>
-                        <li>SUPERBULLET - رصاصات قوية</li>
-                        <li>FREEZE - تجميد الأعداء</li>
-                        <li>RESOURCES - إنشاء موارد</li>
-                    </ul>
+
+                <div class="panel admin-panel" id="adminPanel" style="display:none">
+                    <h2 class="panel-title admin-title">أوامر الإدارة</h2>
+                    
+                    <div class="btn-grid">
+                        <button class="btn admin-btn" onclick="activateCheat('godmode')">وضع الإله ✨</button>
+                        <button class="btn admin-btn" onclick="activateCheat('unlimitedenergy')">طاقة غير محدودة ⚡</button>
+                        <button class="btn admin-btn" onclick="activateCheat('maxscore')">أقصى نقاط 🏆</button>
+                        <button class="btn admin-btn" onclick="activateCheat('killallenemies')">قتل كل الأعداء 💀</button>
+                        <button class="btn admin-btn" onclick="activateCheat('oneshotkill')">قتل برصاصة واحدة 🔫</button>
+                        <button class="btn admin-btn" onclick="activateCheat('superbullet')">رصاصات خارقة 💥</button>
+                        <button class="btn admin-btn" onclick="activateCheat('freezeenemies')">تجميد الأعداء ❄️</button>
+                        <button class="btn admin-btn" onclick="activateCheat('spawnresources')">إنشاء موارد 💎</button>
+                    </div>
+                    
+                    <div class="status">
+                        <div class="status-item">
+                            <span class="status-label">وضع الإله:</span>
+                            <span class="status-value" id="godmodeStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">طاقة غير محدودة:</span>
+                            <span class="status-value" id="unlimitedStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">قتل برصاصة:</span>
+                            <span class="status-value" id="oneshotStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">رصاصات خارقة:</span>
+                            <span class="status-value" id="superbulletStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">الأعداء مجمدون:</span>
+                            <span class="status-value" id="freezeStatus">غير مفعل</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel cheat-panel">
+                    <h2 class="panel-title cheat-title">أكواد الغش</h2>
+                    
+                    <input type="text" class="cheat-input" id="cheatInput" placeholder="اكتب كود الغش هنا...">
+                    
+                    <div class="btn-grid">
+                        <button class="btn cheat-btn" onclick="enterCheatCode()">تفعيل الكود</button>
+                        <button class="btn cheat-btn" onclick="showCheatCodes()">عرض الأكواد</button>
+                        <button class="btn cheat-btn" onclick="resetAllCheats()">إعادة تعيين الكل</button>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h3>تعليمات الأكواد:</h3>
+                        <ul>
+                            <li>GODMODE - مناعة كاملة</li>
+                            <li>UNLIMITED - طاقة غير محدودة</li>
+                            <li>MAXSCORE - 9999 نقطة</li>
+                            <li>KILLALL - تدمير كل الأعداء</li>
+                            <li>ONESHOOT - قتل برصاصة واحدة</li>
+                            <li>SUPERBULLET - رصاصات قوية</li>
+                            <li>FREEZE - تجميد الأعداء</li>
+                            <li>RESOURCES - إنشاء موارد</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -530,8 +579,10 @@
             enemies: [],
             bullets: [],
             resources: [],
-            playerX: 200,
-            playerY: 200
+            playerX: 350,
+            playerY: 300,
+            mouseX: 0,
+            mouseY: 0
         };
 
         // نظام الموسيقى
@@ -603,7 +654,7 @@
             }
         });
 
-        // زر تشغيل/إيقاف الموسيقى
+        // زر تشغيل/إوقف الموسيقى
         document.getElementById('musicToggle').addEventListener('click', toggleMusic);
 
         // عرض رسالة الإدارة
@@ -774,16 +825,16 @@
             resetGame();
             
             // إضافة بعض الأعداء والموارد
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 8; i++) {
                 spawnEnemy();
             }
             
-            spawnResources(3);
+            spawnResources(5);
             
             // بدء دورة اللعبة
             gameInterval = setInterval(gameLoop, 100);
             
-            showAdminMessage("بدأت اللعبة! استخدم Z, S, Q, D للتحكم 🎮", 2000);
+            showAdminMessage("بدأت اللعبة! انقر بالماوس لإطلاق النار 🎮", 2000);
         }
 
         function resetGame() {
@@ -794,8 +845,10 @@
                 enemies: [],
                 bullets: [],
                 resources: [],
-                playerX: 200,
-                playerY: 200
+                playerX: 350,
+                playerY: 300,
+                mouseX: 0,
+                mouseY: 0
             };
             
             updateGameDisplay();
@@ -806,8 +859,8 @@
             const gameArea = document.getElementById('gameArea');
             if (!gameArea) return;
             
-            const x = Math.random() * (gameArea.offsetWidth - 30);
-            const y = Math.random() * (gameArea.offsetHeight - 30);
+            const x = Math.random() * (gameArea.offsetWidth - 35);
+            const y = Math.random() * (gameArea.offsetHeight - 35);
             
             gameState.enemies.push({ x, y });
         }
@@ -817,29 +870,47 @@
             if (!gameArea) return;
             
             for (let i = 0; i < count; i++) {
-                const x = Math.random() * (gameArea.offsetWidth - 15);
-                const y = Math.random() * (gameArea.offsetHeight - 15);
+                const x = Math.random() * (gameArea.offsetWidth - 18);
+                const y = Math.random() * (gameArea.offsetHeight - 18);
                 
                 gameState.resources.push({ x, y });
             }
         }
 
-        function shoot() {
+        // إطلاق النار باتجاه الماوس
+        function shootAtMouse() {
             if (!gameRunning) return;
             
-            // إضافة رصاصة
-            gameState.bullets.push({
-                x: gameState.playerX + 20,
-                y: gameState.playerY
-            });
+            const dx = gameState.mouseX - gameState.playerX;
+            const dy = gameState.mouseY - gameState.playerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
             
-            // استهلاك الطاقة (ما لم تكن غير محدودة)
-            if (!cheatCodes.UNLIMITED) {
-                gameState.energy = Math.max(0, gameState.energy - 2);
+            if (distance > 0) {
+                const speed = 15;
+                const velocityX = (dx / distance) * speed;
+                const velocityY = (dy / distance) * speed;
+                
+                // إضافة رصاصة
+                gameState.bullets.push({
+                    x: gameState.playerX,
+                    y: gameState.playerY,
+                    velocityX: velocityX,
+                    velocityY: velocityY
+                });
+                
+                // استهلاك الطاقة (ما لم تكن غير محدودة)
+                if (!cheatCodes.UNLIMITED) {
+                    gameState.energy = Math.max(0, gameState.energy - 2);
+                }
+                
+                // تأثير صوتي بسيط
+                if (musicEnabled) {
+                    const shootSound = new Audio();
+                    shootSound.volume = 0.3;
+                    shootSound.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
+                    shootSound.play().catch(e => console.log("لا يمكن تشغيل صوت إطلاق النار"));
+                }
             }
-            
-            // تأثير بصرية عند إطلاق النار
-            highlightKey('keySpace');
         }
 
         function gameLoop() {
@@ -847,11 +918,13 @@
             
             // تحديث موقع الرصاصات
             gameState.bullets.forEach((bullet, index) => {
-                bullet.x += 10;
+                bullet.x += bullet.velocityX;
+                bullet.y += bullet.velocityY;
                 
                 // إزالة الرصاصات التي خرجت من الشاشة
                 const gameArea = document.getElementById('gameArea');
-                if (bullet.x > (gameArea ? gameArea.offsetWidth : 800)) {
+                if (bullet.x < 0 || bullet.x > (gameArea ? gameArea.offsetWidth : 800) || 
+                    bullet.y < 0 || bullet.y > (gameArea ? gameArea.offsetHeight : 600)) {
                     gameState.bullets.splice(index, 1);
                 }
             });
@@ -875,7 +948,7 @@
                         Math.pow(gameState.playerY - enemy.y, 2)
                     );
                     
-                    if (playerDistance < 35) {
+                    if (playerDistance < 45) {
                         if (!cheatCodes.GODMODE) {
                             gameState.health -= 10;
                         }
@@ -893,7 +966,7 @@
                         Math.pow(bullet.y - enemy.y, 2)
                     );
                     
-                    if (distance < 25) {
+                    if (distance < 30) {
                         // إزالة العدو والرصاصة
                         gameState.enemies.splice(enemyIndex, 1);
                         gameState.bullets.splice(bulletIndex, 1);
@@ -914,7 +987,7 @@
                     Math.pow(gameState.playerY - resource.y, 2)
                 );
                 
-                if (distance < 30) {
+                if (distance < 35) {
                     gameState.resources.splice(index, 1);
                     gameState.energy = Math.min(100, gameState.energy + 20);
                     gameState.score += 50;
@@ -945,8 +1018,8 @@
             
             if (player) {
                 // تحديث موقع اللاعب
-                player.style.left = (gameState.playerX - 20) + 'px';
-                player.style.top = (gameState.playerY - 20) + 'px';
+                player.style.left = (gameState.playerX - 25) + 'px';
+                player.style.top = (gameState.playerY - 25) + 'px';
             }
             
             // إضافة الأعداء
@@ -990,7 +1063,7 @@
                   "- S: التحرك للأسفل\n" +
                   "- Q: التحرك لليسار\n" +
                   "- D: التحرك لليمين\n" +
-                  "- Space: إطلاق النار\n\n" +
+                  "- انقر بالماوس: إطلاق النار باتجاه المؤشر\n\n" +
                   "⚡ نظام الطاقة:\n" +
                   "- الطاقة تنفد مع الوقت والحركة\n" +
                   "- اجمع الموارد الزرقاء لشحن الطاقة\n" +
@@ -1022,23 +1095,23 @@
             const speed = gameState.energy > 20 ? 10 : 5;
             const gameArea = document.getElementById('gameArea');
             const areaWidth = gameArea ? gameArea.offsetWidth : 800;
-            const areaHeight = gameArea ? gameArea.offsetHeight : 400;
+            const areaHeight = gameArea ? gameArea.offsetHeight : 600;
             
             switch(direction) {
                 case 'up':
-                    gameState.playerY = Math.max(20, gameState.playerY - speed);
+                    gameState.playerY = Math.max(25, gameState.playerY - speed);
                     highlightKey('keyZ');
                     break;
                 case 'down':
-                    gameState.playerY = Math.min(areaHeight - 20, gameState.playerY + speed);
+                    gameState.playerY = Math.min(areaHeight - 25, gameState.playerY + speed);
                     highlightKey('keyS');
                     break;
                 case 'left':
-                    gameState.playerX = Math.max(20, gameState.playerX - speed);
+                    gameState.playerX = Math.max(25, gameState.playerX - speed);
                     highlightKey('keyQ');
                     break;
                 case 'right':
-                    gameState.playerX = Math.min(areaWidth - 20, gameState.playerX + speed);
+                    gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
                     highlightKey('keyD');
                     break;
             }
@@ -1051,6 +1124,22 @@
             renderGame();
         }
 
+        // تتبع حركة الماوس
+        document.getElementById('gameArea').addEventListener('mousemove', function(e) {
+            const rect = this.getBoundingClientRect();
+            gameState.mouseX = e.clientX - rect.left;
+            gameState.mouseY = e.clientY - rect.top;
+        });
+
+        // إطلاق النار بالماوس
+        document.getElementById('gameArea').addEventListener('click', function() {
+            if (gameRunning) {
+                shootAtMouse();
+            } else {
+                startGame();
+            }
+        });
+
         // أكواد الغش عبر لوحة المفاتيح
         let currentCheatCode = '';
         document.addEventListener('keydown', function(e) {
@@ -1061,7 +1150,6 @@
                     case 's': movePlayer('down'); break;
                     case 'q': movePlayer('left'); break;
                     case 'd': movePlayer('right'); break;
-                    case ' ': shoot(); break;
                 }
             }
             
@@ -1117,6 +1205,11 @@
             
             renderGame();
             initializeAudio();
+            
+            // رسالة ترحيب
+            setTimeout(() => {
+                showAdminMessage("انقر على منطقة اللعبة لبدء اللعب! 🎮", 3000);
+            }, 1000);
         });
     </script>
 </body>
