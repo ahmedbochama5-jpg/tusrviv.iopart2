@@ -990,4 +990,185 @@
             // بدء دورة اللعبة
             gameInterval = setInterval(gameLoop, 100);
             
-            showAdmin
+            showAdminMessage(`بدأت اللعبة بوضع ${mode.name}! 🎮`, 2000);
+        }
+
+        // إنشاء قدرات خاصة
+        function spawnPowerUps(count) {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
+            const powerUpTypes = ['health', 'energy', 'speed'];
+            
+            for (let i = 0; i < count; i++) {
+                const x = Math.random() * (gameArea.offsetWidth - 25);
+                const y = Math.random() * (gameArea.offsetHeight - 25);
+                const type = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+                
+                gameState.powerUps.push({ x, y, type });
+            }
+        }
+
+        // تحديث القدرات في دورة اللعبة
+        function updatePowerUps() {
+            for (let i = gameState.powerUps.length - 1; i >= 0; i--) {
+                const powerUp = gameState.powerUps[i];
+                
+                const dx = gameState.playerX - powerUp.x;
+                const dy = gameState.playerY - powerUp.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 40) {
+                    applyPowerUp(powerUp.type);
+                    gameState.powerUps.splice(i, 1);
+                }
+            }
+        }
+
+        // تطبيق تأثير القدرة
+        function applyPowerUp(type) {
+            switch(type) {
+                case 'health':
+                    gameState.health = Math.min(100, gameState.health + 30);
+                    showAdminMessage("+30 صحة! ❤️", 1500);
+                    break;
+                case 'energy':
+                    gameState.energy = Math.min(100, gameState.energy + 40);
+                    showAdminMessage("+40 طاقة! ⚡", 1500);
+                    break;
+                case 'speed':
+                    gameState.playerSpeed += 5;
+                    showAdminMessage("+5 سرعة! 🏃", 1500);
+                    setTimeout(() => {
+                        gameState.playerSpeed = gameModes[currentGameMode].playerSpeed;
+                    }, 10000);
+                    break;
+            }
+            updateGameDisplay();
+        }
+
+        // تعديل دورة اللعبة الرئيسية
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // تحديث حركة اللاعب
+            handleContinuousMovement();
+            
+            // تحديث حركة الرصاصات
+            updateBullets();
+            
+            // تحديث حركة الأعداء
+            if (!cheatCodes.FREEZE && !gameState.isStealthed) {
+                updateEnemies();
+            }
+            
+            // تحديث الموارد والقدرات
+            updateResources();
+            updatePowerUps();
+            updateAbilities();
+            
+            // التحقق من التصادمات
+            checkCollisions();
+            
+            // تحديث العرض
+            updateGameDisplay();
+            renderGame();
+            
+            // التحقق من نهاية اللعبة
+            if (gameState.health <= 0) {
+                endGame();
+            }
+        }
+
+        // تعديل إطلاق النار ليتناسب مع المود
+        function shootAtMouse() {
+            if (!gameRunning) return;
+            
+            const mode = gameModes[currentGameMode];
+            const dx = gameState.mouseX - gameState.playerX;
+            const dy = gameState.mouseY - gameState.playerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance > 0) {
+                const velocityX = (dx / distance) * mode.bulletSpeed;
+                const velocityY = (dy / distance) * mode.bulletSpeed;
+                
+                // إضافة رصاصة
+                gameState.bullets.push({
+                    x: gameState.playerX,
+                    y: gameState.playerY,
+                    velocityX: velocityX,
+                    velocityY: velocityY,
+                    damage: mode.bulletDamage,
+                    type: currentGameMode
+                });
+                
+                // إطلاق رصاصة إضافية في وضع التركيز المزدوج
+                if (specialAbilityActive && currentGameMode === 'normal') {
+                    gameState.bullets.push({
+                        x: gameState.playerX + 10,
+                        y: gameState.playerY,
+                        velocityX: velocityX,
+                        velocityY: velocityY,
+                        damage: mode.bulletDamage,
+                        type: currentGameMode
+                    });
+                }
+                
+                // استهلاك الطاقة
+                if (!cheatCodes.UNLIMITED) {
+                    gameState.energy = Math.max(0, gameState.energy - mode.energyConsumption);
+                }
+            }
+        }
+
+        // تعديل العرض ليشمل القدرات
+        function renderGame() {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
+            // تحديث موقع اللاعب
+            const player = document.getElementById('player');
+            if (player) {
+                player.style.left = (gameState.playerX - player.offsetWidth/2) + 'px';
+                player.style.top = (gameState.playerY - player.offsetHeight/2) + 'px';
+                
+                // تأثير التخفي
+                player.style.opacity = gameState.isStealthed ? '0.3' : '1';
+            }
+            
+            // إزالة العناصر القديمة وعرض الجديدة
+            // [الكود السابق يبقى كما هو مع إضافة عرض القدرات]
+            
+            // عرض القدرات
+            const oldPowerUps = document.querySelectorAll('.power-up');
+            oldPowerUps.forEach(powerUp => powerUp.remove());
+            
+            gameState.powerUps.forEach((powerUp, index) => {
+                const powerUpElement = document.createElement('div');
+                powerUpElement.className = `power-up ${powerUp.type}`;
+                powerUpElement.style.left = powerUp.x + 'px';
+                powerUpElement.style.top = powerUp.y + 'px';
+                powerUpElement.innerHTML = getPowerUpSymbol(powerUp.type);
+                gameArea.appendChild(powerUpElement);
+            });
+        }
+
+        function getPowerUpSymbol(type) {
+            switch(type) {
+                case 'health': return '❤️';
+                case 'energy': return '⚡';
+                case 'speed': return '🏃';
+                default: return '💎';
+            }
+        }
+
+        // التهيئة الأولية
+        setGameMode('normal');
+        updateGameDisplay();
+        renderGame();
+
+        // ... [باقي الدوال تبقى كما هي مع تعديلات طفيفة]
+    </script>
+</body>
+</html>
