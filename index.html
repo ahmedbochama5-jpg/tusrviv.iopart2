@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - نظام الإدارة السري (مُصلح)</title>
+    <title>Alpha Arena - نظام التحكم المعدل</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             color: white;
             text-align: center;
             min-height: 100vh;
@@ -128,6 +128,11 @@
             color: black;
         }
 
+        .music-btn {
+            background: linear-gradient(45deg, #ff00ff, #ff0066);
+            color: white;
+        }
+
         .btn-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -229,6 +234,22 @@
             box-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
         }
 
+        .music-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: linear-gradient(45deg, #ff00ff, #ff0066);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 0, 102, 0.5);
+        }
+
         .cheat-input {
             width: 100%;
             padding: 10px;
@@ -291,46 +312,55 @@
             box-shadow: 0 0 10px #00ffff;
         }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
+        .controls-info {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
         }
 
-        .control-btn {
-            width: 60px;
-            height: 60px;
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .control-key {
             background: rgba(255, 255, 255, 0.2);
             border: 2px solid #00ffff;
-            border-radius: 10px;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
             color: white;
-            font-size: 1.5em;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .control-btn:active {
-            background: rgba(0, 255, 255, 0.3);
+        .control-key.active {
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 10px #00ffff;
         }
 
         .control-center {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            grid-column: 2;
+            grid-row: 2;
         }
 
-        .shoot-btn {
-            width: 80px;
-            height: 80px;
+        .shoot-key {
             background: rgba(255, 0, 0, 0.3);
             border: 2px solid #ff4444;
-            border-radius: 50%;
-            color: white;
+            border-radius: 8px;
+            padding: 15px;
             font-size: 1.2em;
-            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .shoot-key.active {
+            background: rgba(255, 0, 0, 0.6);
+            box-shadow: 0 0 10px #ff0000;
         }
 
         @media (max-width: 768px) {
@@ -354,11 +384,12 @@
 </head>
 <body>
     <button class="toggle-btn" id="adminToggle">⚡</button>
+    <button class="music-toggle" id="musicToggle">🎵</button>
 
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">لعبة تجريبية مع نظام إدارة سري (مُصلح)</div>
+            <div class="game-subtitle">نظام تحكم معدل - Z للأعلى، S للأسفل، Q لليسار، D لليمين</div>
         </div>
 
         <div class="game-area" id="gameArea">
@@ -366,18 +397,15 @@
             <!-- سيتم إضافة الأعداء والرصاصات ديناميكيًا -->
         </div>
 
-        <div class="controls">
-            <div></div> <!-- عنصر فارغ للمحاذاة -->
-            <button class="control-btn" id="upBtn">↑</button>
-            <div></div> <!-- عنصر فارغ للمحاذاة -->
-            <button class="control-btn" id="leftBtn">←</button>
-            <div class="control-center">
-                <button class="shoot-btn" id="shootBtn">🔥</button>
+        <div class="controls-info">
+            <h3 style="color: #00ffff; margin-bottom: 10px;">أزرار التحكم</h3>
+            <div class="controls-grid">
+                <div class="control-key" id="keyZ">Z<br>▲</div>
+                <div class="control-key" id="keyQ">Q<br>◀</div>
+                <div class="control-key" id="keyD">D<br>▶</div>
+                <div class="control-key" id="keyS">S<br>▼</div>
+                <div class="control-key control-center" id="keySpace">Space<br>نار</div>
             </div>
-            <button class="control-btn" id="rightBtn">→</button>
-            <div></div> <!-- عنصر فارغ للمحاذاة -->
-            <button class="control-btn" id="downBtn">↓</button>
-            <div></div> <!-- عنصر فارغ للمحاذاة -->
         </div>
 
         <div class="content">
@@ -405,6 +433,7 @@
                 <div class="btn-grid">
                     <button class="btn" onclick="startGame()">بدء اللعبة</button>
                     <button class="btn" onclick="resetGame()">إعادة تعيين</button>
+                    <button class="btn music-btn" onclick="toggleMusic()">تشغيل/إيقاف الموسيقى</button>
                     <button class="btn" onclick="showInstructions()">تعليمات اللعب</button>
                 </div>
             </div>
@@ -505,6 +534,58 @@
             playerY: 200
         };
 
+        // نظام الموسيقى
+        let gameMusic;
+        let musicEnabled = false;
+
+        function initializeAudio() {
+            try {
+                // إنشاء عنصر صوت
+                gameMusic = new Audio();
+                gameMusic.loop = true;
+                gameMusic.volume = 0.7;
+                
+                // استخدام صوت افتراضي (يمكن استبداله برابط ملف صوتي حقيقي)
+                gameMusic.src = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAABAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAABQTEFNRTMuMTAwBKkAAAAAAAAAADUgJAOBTwAB9AAACHDLG/jmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+                
+                gameMusic.addEventListener('canplaythrough', function() {
+                    console.log("الموسيقى جاهزة للتشغيل");
+                });
+                
+                gameMusic.addEventListener('error', function(e) {
+                    console.log("خطأ في تحميل الموسيقى:", e);
+                });
+                
+            } catch (error) {
+                console.log("خطأ في تهيئة النظام الصوتي:", error);
+            }
+        }
+
+        function toggleMusic() {
+            if (!gameMusic) {
+                initializeAudio();
+            }
+            
+            if (musicEnabled) {
+                gameMusic.pause();
+                musicEnabled = false;
+                document.getElementById('musicToggle').textContent = '🔇';
+                showAdminMessage("تم إيقاف الموسيقى", 1500);
+            } else {
+                const playPromise = gameMusic.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        musicEnabled = true;
+                        document.getElementById('musicToggle').textContent = '🎵';
+                        showAdminMessage("تم تشغيل الموسيقى", 1500);
+                    }).catch(error => {
+                        console.log("خطأ في تشغيل الموسيقى:", error);
+                        showAdminMessage("اضغط لتشغيل الموسيقى", 1500);
+                    });
+                }
+            }
+        }
+
         // زر تبديل لوحة الإدارة
         document.getElementById('adminToggle').addEventListener('click', function() {
             const panel = document.getElementById('adminPanel');
@@ -521,6 +602,9 @@
                 panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
             }
         });
+
+        // زر تشغيل/إيقاف الموسيقى
+        document.getElementById('musicToggle').addEventListener('click', toggleMusic);
 
         // عرض رسالة الإدارة
         function showAdminMessage(message, duration = 2000) {
@@ -699,7 +783,7 @@
             // بدء دورة اللعبة
             gameInterval = setInterval(gameLoop, 100);
             
-            showAdminMessage("بدأت اللعبة! استخدم أزرار التحكم للعب 🎮", 2000);
+            showAdminMessage("بدأت اللعبة! استخدم Z, S, Q, D للتحكم 🎮", 2000);
         }
 
         function resetGame() {
@@ -753,6 +837,9 @@
             if (!cheatCodes.UNLIMITED) {
                 gameState.energy = Math.max(0, gameState.energy - 2);
             }
+            
+            // تأثير بصرية عند إطلاق النار
+            highlightKey('keySpace');
         }
 
         function gameLoop() {
@@ -899,8 +986,11 @@
         function showInstructions() {
             alert("تعليمات اللعبة:\n\n" +
                   "🎮 أزرار التحكم:\n" +
-                  "- استخدم الأسهم للتحكم في المركبة\n" +
-                  "- زر النار لإطلاق الرصاص\n\n" +
+                  "- Z: التحرك للأعلى\n" +
+                  "- S: التحرك للأسفل\n" +
+                  "- Q: التحرك لليسار\n" +
+                  "- D: التحرك لليمين\n" +
+                  "- Space: إطلاق النار\n\n" +
                   "⚡ نظام الطاقة:\n" +
                   "- الطاقة تنفد مع الوقت والحركة\n" +
                   "- اجمع الموارد الزرقاء لشحن الطاقة\n" +
@@ -909,38 +999,23 @@
                   "- انقر على زر ⚡ لفتح لوحة الإدارة\n" +
                   "- كلمة المرور: 1234\n" +
                   "- استخدم الأكواد لتفعيل الميزات الخاصة\n\n" +
+                  "🎵 الموسيقى:\n" +
+                  "- انقر على زر 🎵 لتشغيل/إيقاف الموسيقى\n\n" +
                   "حظًا موفقًا! 🚀");
         }
 
-        // أحداث أزرار التحكم
-        document.getElementById('upBtn').addEventListener('mousedown', () => movePlayer('up'));
-        document.getElementById('downBtn').addEventListener('mousedown', () => movePlayer('down'));
-        document.getElementById('leftBtn').addEventListener('mousedown', () => movePlayer('left'));
-        document.getElementById('rightBtn').addEventListener('mousedown', () => movePlayer('right'));
-        document.getElementById('shootBtn').addEventListener('click', shoot);
+        // وظيفة لتسليط الضوء على الأزرار عند الضغط
+        function highlightKey(keyId) {
+            const keyElement = document.getElementById(keyId);
+            if (keyElement) {
+                keyElement.classList.add('active');
+                setTimeout(() => {
+                    keyElement.classList.remove('active');
+                }, 200);
+            }
+        }
 
-        // إضافة أحداث اللمس للأجهزة المحمولة
-        document.getElementById('upBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            movePlayer('up');
-        });
-        document.getElementById('downBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            movePlayer('down');
-        });
-        document.getElementById('leftBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            movePlayer('left');
-        });
-        document.getElementById('rightBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            movePlayer('right');
-        });
-        document.getElementById('shootBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            shoot();
-        });
-
+        // نظام التحكم المعدل
         function movePlayer(direction) {
             if (!gameRunning) return;
             
@@ -952,15 +1027,19 @@
             switch(direction) {
                 case 'up':
                     gameState.playerY = Math.max(20, gameState.playerY - speed);
+                    highlightKey('keyZ');
                     break;
                 case 'down':
                     gameState.playerY = Math.min(areaHeight - 20, gameState.playerY + speed);
+                    highlightKey('keyS');
                     break;
                 case 'left':
                     gameState.playerX = Math.max(20, gameState.playerX - speed);
+                    highlightKey('keyQ');
                     break;
                 case 'right':
                     gameState.playerX = Math.min(areaWidth - 20, gameState.playerX + speed);
+                    highlightKey('keyD');
                     break;
             }
             
@@ -975,6 +1054,18 @@
         // أكواد الغش عبر لوحة المفاتيح
         let currentCheatCode = '';
         document.addEventListener('keydown', function(e) {
+            // نظام التحكم المعدل
+            if (gameRunning) {
+                switch(e.key.toLowerCase()) {
+                    case 'z': movePlayer('up'); break;
+                    case 's': movePlayer('down'); break;
+                    case 'q': movePlayer('left'); break;
+                    case 'd': movePlayer('right'); break;
+                    case ' ': shoot(); break;
+                }
+            }
+            
+            // أكواد الغش
             if (e.key === 'Enter') {
                 currentCheatCode = '';
                 showAdminMessage('أدخل كود الغش...', 3000);
@@ -1004,20 +1095,14 @@
                 }
             }
             
-            // اختصارات لوحة المفاتيح للتحكم
-            if (gameRunning) {
-                switch(e.key) {
-                    case 'ArrowUp': movePlayer('up'); break;
-                    case 'ArrowDown': movePlayer('down'); break;
-                    case 'ArrowLeft': movePlayer('left'); break;
-                    case 'ArrowRight': movePlayer('right'); break;
-                    case ' ': shoot(); break;
-                }
-            }
-            
             // اختصار لوحة المفاتيح للإدارة
             if (e.ctrlKey && e.shiftKey && e.key === 'A') {
                 document.getElementById('adminToggle').click();
+            }
+            
+            // اختصار الموسيقى
+            if (e.ctrlKey && e.key === 'm') {
+                toggleMusic();
             }
         });
 
@@ -1031,6 +1116,7 @@
             }
             
             renderGame();
+            initializeAudio();
         });
     </script>
 </body>
