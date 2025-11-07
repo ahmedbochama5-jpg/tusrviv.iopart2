@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - نظام الإدارة</title>
+    <title>Alpha Arena - قائمة المتصدرين</title>
     <style>
         * {
             margin: 0;
@@ -78,6 +78,12 @@
             backdrop-filter: blur(5px);
         }
 
+        .leaderboard-panel {
+            border-color: #ffd93d;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
         .admin-panel {
             border-color: #ff6b6b;
         }
@@ -90,15 +96,15 @@
             border-color: #ffd93d;
         }
 
-        .broadcast-panel {
-            border-color: #a55eea;
-        }
-
         .panel-title {
             font-size: 1.6em;
             margin-bottom: 15px;
             color: #4ecdc4;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .leaderboard-title {
+            color: #ffd93d;
         }
 
         .admin-title {
@@ -107,10 +113,6 @@
 
         .cheat-title {
             color: #ffd93d;
-        }
-
-        .broadcast-title {
-            color: #a55eea;
         }
 
         .btn {
@@ -159,8 +161,8 @@
             padding: 18px 30px;
         }
 
-        .broadcast-btn {
-            background: linear-gradient(45deg, #a55eea, #8854d0);
+        .leaderboard-btn {
+            background: linear-gradient(45deg, #ffd93d, #ff9f43);
             color: white;
         }
 
@@ -223,33 +225,93 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        .broadcast-message {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(45deg, #a55eea, #8854d0);
-            padding: 15px 30px;
-            border-radius: 8px;
-            color: white;
-            font-size: 1.4em;
-            font-weight: bold;
-            z-index: 999;
-            display: none;
-            box-shadow: 0 5px 20px rgba(165, 94, 234, 0.6);
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-            animation: broadcastSlide 0.5s ease-out;
+        .leaderboard-list {
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
-        @keyframes broadcastSlide {
-            from {
-                top: -100px;
-                opacity: 0;
-            }
-            to {
-                top: 20px;
-                opacity: 1;
-            }
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(50, 50, 70, 0.6);
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(-5px);
+            border-color: #ffd93d;
+        }
+
+        .leaderboard-item.current-player {
+            background: rgba(255, 217, 61, 0.2);
+            border-color: #ffd93d;
+        }
+
+        .leaderboard-rank {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd93d;
+            min-width: 30px;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+            text-align: right;
+            font-size: 1.1em;
+            margin: 0 15px;
+            color: white;
+        }
+
+        .leaderboard-score {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4ecdc4;
+            min-width: 80px;
+        }
+
+        .leaderboard-medal {
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: rgba(255, 217, 61, 0.3);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .leaderboard-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(50, 50, 70, 0.6);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .player-input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 8px;
+            border: 2px solid #ffd93d;
+            background: rgba(30, 30, 50, 0.8);
+            color: white;
+            text-align: center;
+            font-size: 1.1em;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .instructions {
@@ -319,7 +381,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
-        .cheat-input, .broadcast-input {
+        .cheat-input {
             width: 100%;
             padding: 12px;
             margin: 12px 0;
@@ -330,10 +392,6 @@
             text-align: center;
             font-size: 1.1em;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .broadcast-input {
-            border-color: #a55eea;
         }
 
         .game-area {
@@ -519,8 +577,6 @@
     <button class="toggle-btn" id="adminToggle">⚡</button>
     <button class="music-toggle" id="musicToggle">🎵</button>
 
-    <div class="broadcast-message" id="broadcastMessage"></div>
-
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
@@ -552,6 +608,34 @@
             </div>
 
             <div class="panels-section">
+                <!-- لوحة قائمة المتصدرين -->
+                <div class="panel leaderboard-panel">
+                    <h2 class="panel-title leaderboard-title">🏆 قائمة المتصدرين</h2>
+                    
+                    <input type="text" class="player-input" id="playerNameInput" placeholder="أدخل اسمك هنا..." maxlength="15">
+                    
+                    <div class="btn-grid">
+                        <button class="btn leaderboard-btn" onclick="savePlayerScore()">💾 حفظ النتيجة</button>
+                        <button class="btn leaderboard-btn" onclick="showLeaderboard()">🔄 تحديث القائمة</button>
+                        <button class="btn leaderboard-btn" onclick="clearLeaderboard()">🗑️ مسح القائمة</button>
+                    </div>
+                    
+                    <div class="leaderboard-header">
+                        <span>الترتيب</span>
+                        <span>اللاعب</span>
+                        <span>النقاط</span>
+                    </div>
+                    
+                    <div class="leaderboard-list" id="leaderboardList">
+                        <!-- سيتم ملء القائمة ديناميكياً -->
+                    </div>
+                    
+                    <div class="leaderboard-stats">
+                        <div>عدد اللاعبين: <span id="totalPlayers">0</span></div>
+                        <div>أعلى نتيجة: <span id="highestScore">0</span></div>
+                    </div>
+                </div>
+
                 <div class="panel game-panel">
                     <h2 class="panel-title">حالة اللعبة</h2>
                     <div class="status">
@@ -589,55 +673,6 @@
                         <button class="btn admin-btn" onclick="activateCheat('unlimitedenergy')">طاقة غير محدودة ⚡</button>
                         <button class="btn admin-btn" onclick="activateCheat('maxscore')">أقصى نقاط 🏆</button>
                         <button class="btn admin-btn" onclick="activateCheat('killallenemies')">قتل كل الأعداء 💀</button>
-                        <button class="btn admin-btn" onclick="activateCheat('oneshotkill')">قتل برصاصة واحدة 🔫</button>
-                        <button class="btn admin-btn" onclick="activateCheat('superbullet')">رصاصات خارقة 💥</button>
-                        <button class="btn admin-btn" onclick="activateCheat('freezeenemies')">تجميد الأعداء ❄️</button>
-                        <button class="btn admin-btn" onclick="activateCheat('spawnresources')">إنشاء موارد 💎</button>
-                    </div>
-                    
-                    <div class="status">
-                        <div class="status-item">
-                            <span class="status-label">وضع الإله:</span>
-                            <span class="status-value" id="godmodeStatus">غير مفعل</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">طاقة غير محدودة:</span>
-                            <span class="status-value" id="unlimitedStatus">غير مفعل</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">قتل برصاصة:</span>
-                            <span class="status-value" id="oneshotStatus">غير مفعل</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">رصاصات خارقة:</span>
-                            <span class="status-value" id="superbulletStatus">غير مفعل</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">الأعداء مجمدون:</span>
-                            <span class="status-value" id="freezeStatus">غير مفعل</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="panel broadcast-panel">
-                    <h2 class="panel-title broadcast-title">نظام البث</h2>
-                    
-                    <input type="text" class="broadcast-input" id="broadcastInput" placeholder="اكتب رسالة البث هنا...">
-                    
-                    <div class="btn-grid">
-                        <button class="btn broadcast-btn" onclick="sendBroadcast()">📢 بث رسالة</button>
-                        <button class="btn broadcast-btn" onclick="sendAnnouncement()">📣 إعلان مهم</button>
-                        <button class="btn broadcast-btn" onclick="sendWarning()">⚠️ تحذير</button>
-                    </div>
-                    
-                    <div class="instructions">
-                        <h3>تعليمات البث:</h3>
-                        <ul>
-                            <li>أدخل الرسالة ثم اضغط على "بث رسالة"</li>
-                            <li>"إعلان مهم" يظهر لفترة أطول</li>
-                            <li>"تحذير" يظهر بلون مختلف</li>
-                            <li>الرسائل تظهر لكل اللاعبين</li>
-                        </ul>
                     </div>
                 </div>
 
@@ -651,20 +686,6 @@
                         <button class="btn cheat-btn" onclick="showCheatCodes()">عرض الأكواد</button>
                         <button class="btn cheat-btn" onclick="resetAllCheats()">إعادة تعيين الكل</button>
                     </div>
-                    
-                    <div class="instructions">
-                        <h3>تعليمات الأكواد:</h3>
-                        <ul>
-                            <li>GODMODE - مناعة كاملة</li>
-                            <li>UNLIMITED - طاقة غير محدودة</li>
-                            <li>MAXSCORE - 9999 نقطة</li>
-                            <li>KILLALL - تدمير كل الأعداء</li>
-                            <li>ONESHOOT - قتل برصاصة واحدة</li>
-                            <li>SUPERBULLET - رصاصات قوية</li>
-                            <li>FREEZE - تجميد الأعداء</li>
-                            <li>RESOURCES - إنشاء موارد</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
@@ -673,6 +694,143 @@
     <div class="admin-message" id="adminMessage"></div>
 
     <script>
+        // ==================== نظام قائمة المتصدرين ====================
+        let leaderboard = [];
+        let currentPlayerName = '';
+
+        // تحميل قائمة المتصدرين من التخزين المحلي
+        function loadLeaderboard() {
+            const saved = localStorage.getItem('alphaArenaLeaderboard');
+            if (saved) {
+                leaderboard = JSON.parse(saved);
+            }
+            updateLeaderboardDisplay();
+        }
+
+        // حفظ قائمة المتصدرين في التخزين المحلي
+        function saveLeaderboard() {
+            localStorage.setItem('alphaArenaLeaderboard', JSON.stringify(leaderboard));
+        }
+
+        // حفظ نتيجة اللاعب
+        function savePlayerScore() {
+            const nameInput = document.getElementById('playerNameInput');
+            const playerName = nameInput ? nameInput.value.trim() : '';
+            
+            if (!playerName) {
+                showAdminMessage("الرجاء إدخال اسم اللاعب!", 2000);
+                return;
+            }
+            
+            if (gameState.score === 0) {
+                showAdminMessage("لا توجد نقاط لحفظها!", 2000);
+                return;
+            }
+            
+            currentPlayerName = playerName;
+            
+            // إضافة النتيجة إلى القائمة
+            leaderboard.push({
+                name: playerName,
+                score: gameState.score,
+                date: new Date().toLocaleDateString('ar-SA'),
+                timestamp: Date.now()
+            });
+            
+            // ترتيب القائمة تنازلياً حسب النقاط
+            leaderboard.sort((a, b) => b.score - a.score);
+            
+            // الاحتفاظ بأفضل 20 نتيجة فقط
+            if (leaderboard.length > 20) {
+                leaderboard = leaderboard.slice(0, 20);
+            }
+            
+            saveLeaderboard();
+            updateLeaderboardDisplay();
+            
+            showAdminMessage(`تم حفظ نتيجة ${playerName}! 🎉`, 3000);
+            
+            if (nameInput) {
+                nameInput.value = '';
+            }
+        }
+
+        // تحديث عرض قائمة المتصدرين
+        function updateLeaderboardDisplay() {
+            const leaderboardList = document.getElementById('leaderboardList');
+            const totalPlayers = document.getElementById('totalPlayers');
+            const highestScore = document.getElementById('highestScore');
+            
+            if (!leaderboardList) return;
+            
+            leaderboardList.innerHTML = '';
+            
+            if (leaderboard.length === 0) {
+                leaderboardList.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">لا توجد نتائج مسجلة بعد</div>';
+                if (totalPlayers) totalPlayers.textContent = '0';
+                if (highestScore) highestScore.textContent = '0';
+                return;
+            }
+            
+            // تحديث الإحصائيات
+            if (totalPlayers) totalPlayers.textContent = leaderboard.length;
+            if (highestScore) highestScore.textContent = leaderboard[0].score;
+            
+            // عرض كل لاعب في القائمة
+            leaderboard.forEach((player, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                if (player.name === currentPlayerName) {
+                    item.classList.add('current-player');
+                }
+                
+                const medal = getMedalForRank(index + 1);
+                const rankDisplay = getRankDisplay(index + 1);
+                
+                item.innerHTML = `
+                    <div class="leaderboard-rank">${rankDisplay}</div>
+                    <div class="leaderboard-medal">${medal}</div>
+                    <div class="leaderboard-name">${player.name}</div>
+                    <div class="leaderboard-score">${player.score}</div>
+                `;
+                
+                leaderboardList.appendChild(item);
+            });
+        }
+
+        // الحصول على الوسام المناسب للترتيب
+        function getMedalForRank(rank) {
+            switch(rank) {
+                case 1: return '🥇';
+                case 2: return '🥈';
+                case 3: return '🥉';
+                default: return '🎯';
+            }
+        }
+
+        // تنسيق عرض الترتيب
+        function getRankDisplay(rank) {
+            return rank <= 3 ? rank : rank;
+        }
+
+        // عرض قائمة المتصدرين
+        function showLeaderboard() {
+            updateLeaderboardDisplay();
+            showAdminMessage("تم تحديث قائمة المتصدرين! 📊", 2000);
+        }
+
+        // مسح قائمة المتصدرين
+        function clearLeaderboard() {
+            if (!confirm("هل أنت متأكد من مسح قائمة المتصدرين؟ لا يمكن التراجع عن هذا الإجراء!")) {
+                return;
+            }
+            
+            leaderboard = [];
+            saveLeaderboard();
+            updateLeaderboardDisplay();
+            showAdminMessage("تم مسح قائمة المتصدرين! 🗑️", 3000);
+        }
+
         // ==================== نظام الإدارة السري ====================
         let isAdmin = false;
         let gameRunning = false;
@@ -681,11 +839,7 @@
             'GODMODE': false,
             'UNLIMITED': false,
             'MAXSCORE': false,
-            'KILLALL': false,
-            'ONESHOOT': false,
-            'SUPERBULLET': false,
-            'FREEZE': false,
-            'RESOURCES': false
+            'KILLALL': false
         };
 
         // متغيرات اللعبة
@@ -713,84 +867,6 @@
         // نظام الموسيقى المبسط
         let musicEnabled = false;
 
-        // ==================== نظام البث ====================
-        function sendBroadcast() {
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            const broadcastInput = document.getElementById('broadcastInput');
-            const message = broadcastInput ? broadcastInput.value.trim() : '';
-            
-            if (!message) {
-                showAdminMessage("الرجاء إدخال رسالة البث!", 2000);
-                return;
-            }
-            
-            showBroadcastMessage(`📢 ${message}`, 5000);
-            
-            if (broadcastInput) {
-                broadcastInput.value = '';
-            }
-        }
-
-        function sendAnnouncement() {
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            const broadcastInput = document.getElementById('broadcastInput');
-            const message = broadcastInput ? broadcastInput.value.trim() : '';
-            
-            if (!message) {
-                showAdminMessage("الرجاء إدخال رسالة الإعلان!", 2000);
-                return;
-            }
-            
-            showBroadcastMessage(`📣 ${message}`, 8000, '#ffd93d');
-            
-            if (broadcastInput) {
-                broadcastInput.value = '';
-            }
-        }
-
-        function sendWarning() {
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            const broadcastInput = document.getElementById('broadcastInput');
-            const message = broadcastInput ? broadcastInput.value.trim() : '';
-            
-            if (!message) {
-                showAdminMessage("الرجاء إدخال رسالة التحذير!", 2000);
-                return;
-            }
-            
-            showBroadcastMessage(`⚠️ ${message}`, 6000, '#ff6b6b');
-            
-            if (broadcastInput) {
-                broadcastInput.value = '';
-            }
-        }
-
-        function showBroadcastMessage(message, duration = 5000, color = '#a55eea') {
-            const broadcastDiv = document.getElementById('broadcastMessage');
-            if (broadcastDiv) {
-                broadcastDiv.textContent = message;
-                broadcastDiv.style.background = `linear-gradient(45deg, ${color}, ${color}99)`;
-                broadcastDiv.style.display = 'block';
-                
-                setTimeout(() => {
-                    broadcastDiv.style.display = 'none';
-                }, duration);
-            }
-        }
-
-        // ==================== نظام الموسيقى ====================
         function toggleMusic() {
             if (musicEnabled) {
                 musicEnabled = false;
@@ -803,7 +879,7 @@
             }
         }
 
-        // ==================== نظام الإدارة ====================
+        // زر تبديل لوحة الإدارة
         document.getElementById('adminToggle').addEventListener('click', function() {
             const panel = document.getElementById('adminPanel');
             if (!isAdmin) {
@@ -820,8 +896,10 @@
             }
         });
 
+        // زر تشغيل/إيقاف الموسيقى
         document.getElementById('musicToggle').addEventListener('click', toggleMusic);
 
+        // عرض رسالة الإدارة
         function showAdminMessage(message, duration = 2000) {
             const messageDiv = document.getElementById('adminMessage');
             if (messageDiv) {
@@ -834,7 +912,7 @@
             }
         }
 
-        // ==================== نظام الغش ====================
+        // تفعيل أكواد الغش
         function activateCheat(cheatType) {
             if (!isAdmin) {
                 showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
@@ -846,7 +924,6 @@
                     cheatCodes.GODMODE = !cheatCodes.GODMODE;
                     showAdminMessage(cheatCodes.GODMODE ? 'تم تفعيل وضع الإله! ✨' : 'تم إلغاء وضع الإله');
                     if (cheatCodes.GODMODE) gameState.health = 9999;
-                    updateCheatStatus('godmodeStatus', cheatCodes.GODMODE);
                     updateGameDisplay();
                     break;
                     
@@ -854,7 +931,6 @@
                     cheatCodes.UNLIMITED = !cheatCodes.UNLIMITED;
                     showAdminMessage(cheatCodes.UNLIMITED ? 'طاقة غير محدودة! ⚡' : 'تم إلغاء الطاقة غير المحدودة');
                     if (cheatCodes.UNLIMITED) gameState.energy = 100;
-                    updateCheatStatus('unlimitedStatus', cheatCodes.UNLIMITED);
                     updateGameDisplay();
                     break;
                     
@@ -870,40 +946,10 @@
                     updateGameDisplay();
                     renderGame();
                     break;
-                    
-                case 'oneshotkill':
-                    cheatCodes.ONESHOOT = !cheatCodes.ONESHOOT;
-                    showAdminMessage(cheatCodes.ONESHOOT ? 'قتل برصاصة واحدة! 🔫' : 'تم إلغاء القتل برصاصة واحدة');
-                    updateCheatStatus('oneshotStatus', cheatCodes.ONESHOOT);
-                    break;
-                    
-                case 'superbullet':
-                    cheatCodes.SUPERBULLET = !cheatCodes.SUPERBULLET;
-                    showAdminMessage(cheatCodes.SUPERBULLET ? 'رصاصات خارقة! 💥' : 'تم إلغاء الرصاصات الخارقة');
-                    updateCheatStatus('superbulletStatus', cheatCodes.SUPERBULLET);
-                    break;
-                    
-                case 'freezeenemies':
-                    cheatCodes.FREEZE = !cheatCodes.FREEZE;
-                    showAdminMessage(cheatCodes.FREEZE ? 'تم تجميد الأعداء! ❄️' : 'تم إلغاء تجميد الأعداء');
-                    updateCheatStatus('freezeStatus', cheatCodes.FREEZE);
-                    break;
-                    
-                case 'spawnresources':
-                    spawnResources(5);
-                    showAdminMessage('تم إنشاء الموارد! 💎');
-                    break;
             }
         }
 
-        function updateCheatStatus(elementId, isActive) {
-            const element = document.getElementById(elementId);
-            if (element) {
-                element.textContent = isActive ? 'مفعل' : 'غير مفعل';
-                element.className = isActive ? 'status-value cheat-active' : 'status-value cheat-inactive';
-            }
-        }
-
+        // إدخال أكواد الغش يدويًا
         function enterCheatCode() {
             const cheatInput = document.getElementById('cheatInput');
             const code = cheatInput ? cheatInput.value.toUpperCase().trim() : '';
@@ -938,18 +984,16 @@
             }
         }
 
+        // عرض أكواد الغش
         function showCheatCodes() {
             alert("أكواد الغش المتاحة:\n\n" +
                   "GODMODE - مناعة كاملة\n" +
                   "UNLIMITED - طاقة غير محدودة\n" +
                   "MAXSCORE - 9999 نقطة\n" +
-                  "KILLALL - تدمير كل الأعداء\n" +
-                  "ONESHOOT - قتل برصاصة واحدة\n" +
-                  "SUPERBULLET - رصاصات قوية\n" +
-                  "FREEZE - تجميد الأعداء\n" +
-                  "RESOURCES - إنشاء موارد");
+                  "KILLALL - تدمير كل الأعداء");
         }
 
+        // إعادة تعيين كل أكواد الغش
         function resetAllCheats() {
             if (!isAdmin) {
                 showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
@@ -958,13 +1002,12 @@
             
             for (let cheat in cheatCodes) {
                 cheatCodes[cheat] = false;
-                updateCheatStatus(cheat.toLowerCase() + 'Status', false);
             }
             
             showAdminMessage("تم إعادة تعيين كل أكواد الغش! 🔄", 2000);
         }
 
-        // ==================== تحديث العرض ====================
+        // تحديث عرض حالة اللعبة
         function updateGameDisplay() {
             const scoreDisplay = document.getElementById('scoreDisplay');
             const healthDisplay = document.getElementById('healthDisplay');
@@ -1214,7 +1257,7 @@
         function endGame() {
             gameRunning = false;
             clearInterval(gameInterval);
-            showAdminMessage("انتهت اللعبة! النقاط النهائية: " + gameState.score, 5000);
+            showAdminMessage(`انتهت اللعبة! النقاط النهائية: ${gameState.score}`, 5000);
         }
 
         function renderGame() {
@@ -1311,10 +1354,11 @@
                   "- حرك الماوس لتوجيه سلاحك\n" +
                   "- تجنب الاصطدام بالأعداء للحفاظ على صحتك\n" +
                   "- اجمع الموارد الخضراء لزيادة طاقتك\n" +
-                  "- استخدم أكواد الغش من لوحة الإدارة للحصول على قدرات خاصة");
+                  "- احفظ نتيجتك في قائمة المتصدرين بعد انتهاء اللعبة");
         }
 
         // التهيئة الأولية
+        loadLeaderboard();
         updateGameDisplay();
         renderGame();
     </script>
