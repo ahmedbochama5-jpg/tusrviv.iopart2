@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - إطلاق نار بالماوس</title>
+    <title>Alpha Arena - تحكم مستمر</title>
     <style>
         * {
             margin: 0;
@@ -371,11 +371,13 @@
             font-size: 1.3em;
             font-weight: bold;
             color: white;
+            transition: all 0.2s ease;
         }
 
         .control-key.active {
             background: rgba(0, 255, 255, 0.5);
             box-shadow: 0 0 15px #00ffff;
+            transform: scale(0.95);
         }
 
         .control-center {
@@ -394,6 +396,14 @@
         .mouse-info span {
             color: #00ffff;
             font-weight: bold;
+        }
+
+        .control-mode {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1em;
         }
 
         @media (max-width: 1200px) {
@@ -432,7 +442,7 @@
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">انقر لبدء اللعب • إطلاق النار بالماوس • Z, S, Q, D للتحكم</div>
+            <div class="game-subtitle">تحكم مستمر - اضغط مرة واحدة للحركة المستمرة</div>
         </div>
 
         <div class="main-content">
@@ -452,6 +462,9 @@
                     </div>
                     <div class="mouse-info">
                         🖱️ <span>انقر بالماوس لإطلاق النار</span> • 🎯 حرك الماوس لتوجيه السلاح
+                    </div>
+                    <div class="control-mode">
+                        💡 <strong>وضع التحكم المستمر:</strong> اضغط على الزر مرة واحدة للحركة المستمرة
                     </div>
                 </div>
             </div>
@@ -583,6 +596,14 @@
             playerY: 300,
             mouseX: 0,
             mouseY: 0
+        };
+
+        // نظام التحكم المستمر
+        let activeKeys = {
+            'z': false,
+            's': false,
+            'q': false,
+            'd': false
         };
 
         // نظام الموسيقى
@@ -834,7 +855,7 @@
             // بدء دورة اللعبة
             gameInterval = setInterval(gameLoop, 100);
             
-            showAdminMessage("بدأت اللعبة! انقر بالماوس لإطلاق النار 🎮", 2000);
+            showAdminMessage("بدأت اللعبة! اضغط على Z, S, Q, D للتحكم المستمر 🎮", 2000);
         }
 
         function resetGame() {
@@ -850,6 +871,15 @@
                 mouseX: 0,
                 mouseY: 0
             };
+            
+            // إعادة تعيين مفاتيح التحكم
+            for (let key in activeKeys) {
+                activeKeys[key] = false;
+                const keyElement = document.getElementById('key' + key.toUpperCase());
+                if (keyElement) {
+                    keyElement.classList.remove('active');
+                }
+            }
             
             updateGameDisplay();
             renderGame();
@@ -913,8 +943,45 @@
             }
         }
 
+        // نظام الحركة المستمرة
+        function handleContinuousMovement() {
+            if (!gameRunning) return;
+            
+            const speed = gameState.energy > 20 ? 10 : 5;
+            const gameArea = document.getElementById('gameArea');
+            const areaWidth = gameArea ? gameArea.offsetWidth : 800;
+            const areaHeight = gameArea ? gameArea.offsetHeight : 600;
+            
+            let moved = false;
+            
+            if (activeKeys['z']) {
+                gameState.playerY = Math.max(25, gameState.playerY - speed);
+                moved = true;
+            }
+            if (activeKeys['s']) {
+                gameState.playerY = Math.min(areaHeight - 25, gameState.playerY + speed);
+                moved = true;
+            }
+            if (activeKeys['q']) {
+                gameState.playerX = Math.max(25, gameState.playerX - speed);
+                moved = true;
+            }
+            if (activeKeys['d']) {
+                gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
+                moved = true;
+            }
+            
+            // استهلاك الطاقة (ما لم تكن غير محدودة)
+            if (moved && !cheatCodes.UNLIMITED) {
+                gameState.energy = Math.max(0, gameState.energy - 0.5);
+            }
+        }
+
         function gameLoop() {
             if (!gameRunning) return;
+            
+            // الحركة المستمرة
+            handleContinuousMovement();
             
             // تحديث موقع الرصاصات
             gameState.bullets.forEach((bullet, index) => {
@@ -1058,11 +1125,12 @@
 
         function showInstructions() {
             alert("تعليمات اللعبة:\n\n" +
-                  "🎮 أزرار التحكم:\n" +
-                  "- Z: التحرك للأعلى\n" +
-                  "- S: التحرك للأسفل\n" +
-                  "- Q: التحرك لليسار\n" +
-                  "- D: التحرك لليمين\n" +
+                  "🎮 أزرار التحكم المستمر:\n" +
+                  "- اضغط Z مرة واحدة للتحرك للأعلى بشكل مستمر\n" +
+                  "- اضغط S مرة واحدة للتحرك للأسفل بشكل مستمر\n" +
+                  "- اضغط Q مرة واحدة للتحرك لليسار بشكل مستمر\n" +
+                  "- اضغط D مرة واحدة للتحرك لليمين بشكل مستمر\n" +
+                  "- اضغط على الزر مرة أخرى لإيقاف الحركة\n" +
                   "- انقر بالماوس: إطلاق النار باتجاه المؤشر\n\n" +
                   "⚡ نظام الطاقة:\n" +
                   "- الطاقة تنفد مع الوقت والحركة\n" +
@@ -1077,51 +1145,17 @@
                   "حظًا موفقًا! 🚀");
         }
 
-        // وظيفة لتسليط الضوء على الأزرار عند الضغط
-        function highlightKey(keyId) {
-            const keyElement = document.getElementById(keyId);
+        // نظام التحكم المستمر
+        function toggleKey(key, state) {
+            activeKeys[key] = state;
+            const keyElement = document.getElementById('key' + key.toUpperCase());
             if (keyElement) {
-                keyElement.classList.add('active');
-                setTimeout(() => {
+                if (state) {
+                    keyElement.classList.add('active');
+                } else {
                     keyElement.classList.remove('active');
-                }, 200);
+                }
             }
-        }
-
-        // نظام التحكم المعدل
-        function movePlayer(direction) {
-            if (!gameRunning) return;
-            
-            const speed = gameState.energy > 20 ? 10 : 5;
-            const gameArea = document.getElementById('gameArea');
-            const areaWidth = gameArea ? gameArea.offsetWidth : 800;
-            const areaHeight = gameArea ? gameArea.offsetHeight : 600;
-            
-            switch(direction) {
-                case 'up':
-                    gameState.playerY = Math.max(25, gameState.playerY - speed);
-                    highlightKey('keyZ');
-                    break;
-                case 'down':
-                    gameState.playerY = Math.min(areaHeight - 25, gameState.playerY + speed);
-                    highlightKey('keyS');
-                    break;
-                case 'left':
-                    gameState.playerX = Math.max(25, gameState.playerX - speed);
-                    highlightKey('keyQ');
-                    break;
-                case 'right':
-                    gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
-                    highlightKey('keyD');
-                    break;
-            }
-            
-            // استهلاك الطاقة (ما لم تكن غير محدودة)
-            if (!cheatCodes.UNLIMITED) {
-                gameState.energy = Math.max(0, gameState.energy - 0.5);
-            }
-            
-            renderGame();
         }
 
         // تتبع حركة الماوس
@@ -1140,19 +1174,30 @@
             }
         });
 
+        // أحداث لوحة المفاتيح للتحكم المستمر
+        document.addEventListener('keydown', function(e) {
+            const key = e.key.toLowerCase();
+            
+            if (['z', 's', 'q', 'd'].includes(key)) {
+                e.preventDefault();
+                if (!activeKeys[key]) {
+                    toggleKey(key, true);
+                }
+            }
+        });
+
+        document.addEventListener('keyup', function(e) {
+            const key = e.key.toLowerCase();
+            
+            if (['z', 's', 'q', 'd'].includes(key)) {
+                e.preventDefault();
+                toggleKey(key, false);
+            }
+        });
+
         // أكواد الغش عبر لوحة المفاتيح
         let currentCheatCode = '';
         document.addEventListener('keydown', function(e) {
-            // نظام التحكم المعدل
-            if (gameRunning) {
-                switch(e.key.toLowerCase()) {
-                    case 'z': movePlayer('up'); break;
-                    case 's': movePlayer('down'); break;
-                    case 'q': movePlayer('left'); break;
-                    case 'd': movePlayer('right'); break;
-                }
-            }
-            
             // أكواد الغش
             if (e.key === 'Enter') {
                 currentCheatCode = '';
