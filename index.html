@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - نمط SURVIV.IO</title>
+    <title>Alpha Arena - اللعبة النهائية</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
             color: white;
             text-align: center;
             min-height: 100vh;
@@ -374,14 +374,6 @@
             border: 2px solid #fff;
         }
 
-        .obstacle {
-            position: absolute;
-            background: linear-gradient(45deg, #7f8c8d, #95a5a6);
-            border-radius: 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            border: 2px solid #636e72;
-        }
-
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
@@ -487,7 +479,7 @@
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">نمط SURVIV.IO - تحكم مستمر - انقر لبدء اللعب</div>
+            <div class="game-subtitle">اللعبة النهائية - انقر لبدء اللعب!</div>
         </div>
 
         <div class="main-content">
@@ -637,7 +629,6 @@
             enemies: [],
             bullets: [],
             resources: [],
-            obstacles: [],
             playerX: 350,
             playerY: 300,
             mouseX: 0,
@@ -654,54 +645,16 @@
 
         // نظام الموسيقى المبسط
         let musicEnabled = false;
-        let audioContext;
-        let oscillator;
-        let gainNode;
-
-        function initializeAudio() {
-            try {
-                // إنشاء سياق صوتي مبسط
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                gainNode = audioContext.createGain();
-                gainNode.connect(audioContext.destination);
-                gainNode.gain.value = 0;
-                
-                console.log("النظام الصوتي جاهز");
-            } catch (error) {
-                console.log("تعذر تهيئة النظام الصوتي:", error);
-            }
-        }
 
         function toggleMusic() {
-            if (!audioContext) {
-                initializeAudio();
-            }
-            
             if (musicEnabled) {
-                // إيقاف الموسيقى
-                if (oscillator) {
-                    oscillator.stop();
-                }
                 musicEnabled = false;
                 document.getElementById('musicToggle').textContent = '🔇';
                 showAdminMessage("تم إيقاف الموسيقى", 1500);
             } else {
-                // تشغيل نغمة بسيطة
-                try {
-                    oscillator = audioContext.createOscillator();
-                    oscillator.connect(gainNode);
-                    oscillator.type = 'sine';
-                    oscillator.frequency.value = 220;
-                    gainNode.gain.value = 0.1;
-                    
-                    oscillator.start();
-                    musicEnabled = true;
-                    document.getElementById('musicToggle').textContent = '🎵';
-                    showAdminMessage("تم تشغيل الموسيقى", 1500);
-                } catch (error) {
-                    console.log("تعذر تشغيل الموسيقى:", error);
-                    showAdminMessage("تعذر تشغيل الموسيقى", 1500);
-                }
+                musicEnabled = true;
+                document.getElementById('musicToggle').textContent = '🎵';
+                showAdminMessage("تم تشغيل الموسيقى", 1500);
             }
         }
 
@@ -913,7 +866,6 @@
                 enemies: [],
                 bullets: [],
                 resources: [],
-                obstacles: [],
                 playerX: 350,
                 playerY: 300,
                 mouseX: 0,
@@ -980,32 +932,6 @@
                 if (!cheatCodes.UNLIMITED) {
                     gameState.energy = Math.max(0, gameState.energy - 2);
                 }
-                
-                // تأثير صوتي بسيط لإطلاق النار
-                playShootSound();
-            }
-        }
-
-        // تشغيل صوت إطلاق النار
-        function playShootSound() {
-            if (!audioContext) return;
-            
-            try {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.type = 'square';
-                oscillator.frequency.value = 100;
-                gainNode.gain.value = 0.1;
-                
-                oscillator.start();
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
-                oscillator.stop(audioContext.currentTime + 0.1);
-            } catch (error) {
-                console.log("تعذر تشغيل صوت إطلاق النار:", error);
             }
         }
 
@@ -1032,296 +958,4 @@
                 gameState.playerX = Math.max(25, gameState.playerX - speed);
                 moved = true;
             }
-            if (activeKeys['d']) {
-                gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
-                moved = true;
-            }
-            
-            // استهلاك الطاقة (ما لم تكن غير محدودة)
-            if (moved && !cheatCodes.UNLIMITED) {
-                gameState.energy = Math.max(0, gameState.energy - 0.5);
-            }
-        }
-
-        function gameLoop() {
-            if (!gameRunning) return;
-            
-            // الحركة المستمرة
-            handleContinuousMovement();
-            
-            // تحديث موقع الرصاصات
-            gameState.bullets.forEach((bullet, index) => {
-                bullet.x += bullet.velocityX;
-                bullet.y += bullet.velocityY;
-                
-                // إزالة الرصاصات التي خرجت من الشاشة
-                const gameArea = document.getElementById('gameArea');
-                if (bullet.x < 0 || bullet.x > (gameArea ? gameArea.offsetWidth : 800) || 
-                    bullet.y < 0 || bullet.y > (gameArea ? gameArea.offsetHeight : 600)) {
-                    gameState.bullets.splice(index, 1);
-                }
-            });
-            
-            // تحديث موقع الأعداء (ما لم يكونوا مجمدين)
-            if (!cheatCodes.FREEZE) {
-                gameState.enemies.forEach((enemy, index) => {
-                    // حركة بسيطة نحو اللاعب
-                    const dx = gameState.playerX - enemy.x;
-                    const dy = gameState.playerY - enemy.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance > 0) {
-                        enemy.x += (dx / distance) * 2;
-                        enemy.y += (dy / distance) * 2;
-                    }
-                    
-                    // اكتشاف التصادم مع اللاعب
-                    const playerDistance = Math.sqrt(
-                        Math.pow(gameState.playerX - enemy.x, 2) + 
-                        Math.pow(gameState.playerY - enemy.y, 2)
-                    );
-                    
-                    if (playerDistance < 45) {
-                        if (!cheatCodes.GODMODE) {
-                            gameState.health -= 10;
-                        }
-                        gameState.enemies.splice(index, 1);
-                        spawnEnemy();
-                    }
-                });
-            }
-            
-            // اكتشاف تصادم الرصاصات مع الأعداء
-            gameState.bullets.forEach((bullet, bulletIndex) => {
-                gameState.enemies.forEach((enemy, enemyIndex) => {
-                    const distance = Math.sqrt(
-                        Math.pow(bullet.x - enemy.x, 2) + 
-                        Math.pow(bullet.y - enemy.y, 2)
-                    );
-                    
-                    if (distance < 30) {
-                        // إزالة العدو والرصاصة
-                        gameState.enemies.splice(enemyIndex, 1);
-                        gameState.bullets.splice(bulletIndex, 1);
-                        
-                        // إضافة النقاط
-                        gameState.score += 100;
-                        
-                        // إضافة عدو جديد
-                        spawnEnemy();
-                    }
-                });
-            });
-            
-            // اكتشاف جمع الموارد
-            gameState.resources.forEach((resource, index) => {
-                const distance = Math.sqrt(
-                    Math.pow(gameState.playerX - resource.x, 2) + 
-                    Math.pow(gameState.playerY - resource.y, 2)
-                );
-                
-                if (distance < 35) {
-                    gameState.resources.splice(index, 1);
-                    gameState.energy = Math.min(100, gameState.energy + 20);
-                    gameState.score += 50;
-                }
-            });
-            
-            // تجديد الطاقة ببطء
-            if (!cheatCodes.UNLIMITED) {
-                gameState.energy = Math.min(100, gameState.energy + 0.5);
-            }
-            
-            // فحص حالة اللعبة
-            if (gameState.health <= 0) {
-                gameOver();
-            }
-            
-            updateGameDisplay();
-            renderGame();
-        }
-
-        function renderGame() {
-            const gameArea = document.getElementById('gameArea');
-            if (!gameArea) return;
-            
-            // مسح منطقة اللعبة
-            gameArea.innerHTML = '<div class="player" id="player"></div>';
-            const player = document.getElementById('player');
-            
-            if (player) {
-                // تحديث موقع اللاعب
-                player.style.left = (gameState.playerX - 25) + 'px';
-                player.style.top = (gameState.playerY - 25) + 'px';
-            }
-            
-            // إضافة الأعداء
-            gameState.enemies.forEach(enemy => {
-                const enemyElement = document.createElement('div');
-                enemyElement.className = 'enemy';
-                enemyElement.style.left = enemy.x + 'px';
-                enemyElement.style.top = enemy.y + 'px';
-                gameArea.appendChild(enemyElement);
-            });
-            
-            // إضافة الرصاصات
-            gameState.bullets.forEach(bullet => {
-                const bulletElement = document.createElement('div');
-                bulletElement.className = 'bullet';
-                bulletElement.style.left = bullet.x + 'px';
-                bulletElement.style.top = bullet.y + 'px';
-                gameArea.appendChild(bulletElement);
-            });
-            
-            // إضافة الموارد
-            gameState.resources.forEach(resource => {
-                const resourceElement = document.createElement('div');
-                resourceElement.className = 'resource';
-                resourceElement.style.left = resource.x + 'px';
-                resourceElement.style.top = resource.y + 'px';
-                gameArea.appendChild(resourceElement);
-            });
-        }
-
-        function gameOver() {
-            gameRunning = false;
-            clearInterval(gameInterval);
-            showAdminMessage("انتهت اللعبة! النقاط النهائية: " + gameState.score, 5000);
-        }
-
-        function showInstructions() {
-            alert("تعليمات اللعبة:\n\n" +
-                  "🎮 أزرار التحكم المستمر:\n" +
-                  "- اضغط Z مرة واحدة للتحرك للأعلى بشكل مستمر\n" +
-                  "- اضغط S مرة واحدة للتحرك للأسفل بشكل مستمر\n" +
-                  "- اضغط Q مرة واحدة للتحرك لليسار بشكل مستمر\n" +
-                  "- اضغط D مرة واحدة للتحرك لليمين بشكل مستمر\n" +
-                  "- اضغط على الزر مرة أخرى لإيقاف الحركة\n" +
-                  "- انقر بالماوس: إطلاق النار باتجاه المؤشر\n\n" +
-                  "⚡ نظام الطاقة:\n" +
-                  "- الطاقة تنفد مع الوقت والحركة\n" +
-                  "- اجمع الموارد الزرقاء لشحن الطاقة\n" +
-                  "- الطاقة المنخفضة تبطئ حركتك\n\n" +
-                  "🎯 نظام الإدارة:\n" +
-                  "- انقر على زر ⚡ لفتح لوحة الإدارة\n" +
-                  "- كلمة المرور: 1234\n" +
-                  "- استخدم الأكواد لتفعيل الميزات الخاصة\n\n" +
-                  "🎵 الموسيقى:\n" +
-                  "- انقر على زر 🎵 لتشغيل/إيقاف الموسيقى\n\n" +
-                  "حظًا موفقًا! 🚀");
-        }
-
-        // نظام التحكم المستمر
-        function toggleKey(key, state) {
-            activeKeys[key] = state;
-            const keyElement = document.getElementById('key' + key.toUpperCase());
-            if (keyElement) {
-                if (state) {
-                    keyElement.classList.add('active');
-                } else {
-                    keyElement.classList.remove('active');
-                }
-            }
-        }
-
-        // تتبع حركة الماوس
-        document.getElementById('gameArea').addEventListener('mousemove', function(e) {
-            const rect = this.getBoundingClientRect();
-            gameState.mouseX = e.clientX - rect.left;
-            gameState.mouseY = e.clientY - rect.top;
-        });
-
-        // إطلاق النار بالماوس
-        document.getElementById('gameArea').addEventListener('click', function() {
-            if (gameRunning) {
-                shootAtMouse();
-            } else {
-                startGame();
-            }
-        });
-
-        // أحداث لوحة المفاتيح للتحكم المستمر
-        document.addEventListener('keydown', function(e) {
-            const key = e.key.toLowerCase();
-            
-            if (['z', 's', 'q', 'd'].includes(key)) {
-                e.preventDefault();
-                if (!activeKeys[key]) {
-                    toggleKey(key, true);
-                }
-            }
-        });
-
-        document.addEventListener('keyup', function(e) {
-            const key = e.key.toLowerCase();
-            
-            if (['z', 's', 'q', 'd'].includes(key)) {
-                e.preventDefault();
-                toggleKey(key, false);
-            }
-        });
-
-        // أكواد الغش عبر لوحة المفاتيح
-        let currentCheatCode = '';
-        document.addEventListener('keydown', function(e) {
-            // أكواد الغش
-            if (e.key === 'Enter') {
-                currentCheatCode = '';
-                showAdminMessage('أدخل كود الغش...', 3000);
-                const cheatInput = document.getElementById('cheatInput');
-                if (cheatInput) cheatInput.focus();
-                return;
-            }
-            
-            if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
-                currentCheatCode += e.key.toUpperCase();
-                
-                const cheatKeys = Object.keys(cheatCodes);
-                for (let cheat of cheatKeys) {
-                    if (currentCheatCode.includes(cheat)) {
-                        if (isAdmin) {
-                            activateCheat(cheat.toLowerCase());
-                        } else {
-                            showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                        }
-                        currentCheatCode = '';
-                        break;
-                    }
-                }
-                
-                if (currentCheatCode.length > 20) {
-                    currentCheatCode = '';
-                }
-            }
-            
-            // اختصار لوحة المفاتيح للإدارة
-            if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                document.getElementById('adminToggle').click();
-            }
-            
-            // اختصار الموسيقى
-            if (e.ctrlKey && e.key === 'm') {
-                toggleMusic();
-            }
-        });
-
-        // التهيئة الأولية
-        window.addEventListener('load', function() {
-            updateGameDisplay();
-            
-            // تحديث حالة كل أكواد الغش
-            for (let cheat in cheatCodes) {
-                updateCheatStatus(cheat.toLowerCase() + 'Status', false);
-            }
-            
-            renderGame();
-            initializeAudio();
-            
-            // رسالة ترحيب
-            setTimeout(() => {
-                showAdminMessage("انقر على منطقة اللعبة لبدء اللعب! 🎮", 3000);
-            }, 1000);
-        });
-    </script>
-</body>
-</html>
+            if (active
