@@ -360,7 +360,7 @@
     </div>
 
     <script>
-        // ==================== AUDIO SYSTEM ====================
+        // ==================== AUDIO SYSTEM - INLINE ====================
         let gameMusic;
         let musicEnabled = false;
 
@@ -621,7 +621,7 @@
                 speed: playerType.speed, 
                 color: playerType.color,
                 type: selectedPlayerType,
-                baseSpeed: playerType.speed
+                baseSpeed: playerType.speed // حفظ السرعة الأساسية
             };
 
             keys = {};
@@ -739,28 +739,28 @@
         function update() {
             if (!gameRunning) return;
 
-            // Calculate speed based on energy level
+            // حساب سرعة اللاعب بناءً على الطاقة
             let currentSpeedMultiplier = 1;
             
             if (energy <= 0) {
-                // No energy - very slow
+                // لا طاقة - بطيء جداً
                 currentSpeedMultiplier = 0.3;
                 lowEnergyEffect = true;
             } else if (energy <= 20) {
-                // Low energy - slow
+                // طاقة منخفضة - بطيء
                 currentSpeedMultiplier = 0.5;
                 lowEnergyEffect = true;
             } else if (energy <= 50) {
-                // Medium energy - normal speed
+                // طاقة متوسطة - سرعة عادية
                 currentSpeedMultiplier = 0.8;
                 lowEnergyEffect = false;
             } else {
-                // Full energy - full speed
+                // طاقة كافية - سرعة كاملة
                 currentSpeedMultiplier = 1;
                 lowEnergyEffect = false;
             }
 
-            // Apply speed multiplier based on ship type and energy
+            // تطبيق مضاعف السرعة حسب نوع السفينة والطاقة
             const speedMultiplier = (selectedPlayerType === 'SPEED' ? 1.2 : 
                                    selectedPlayerType === 'TANK' ? 0.8 : 1) * currentSpeedMultiplier;
             
@@ -769,11 +769,10 @@
             if (keys['a'] || keys['ArrowLeft']) player.x -= player.baseSpeed * speedMultiplier;
             if (keys['d'] || keys['ArrowRight']) player.x += player.baseSpeed * speedMultiplier;
 
-            // Screen boundaries
             player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
             player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
 
-            // Update bullets
+            // تحديث الرصاص
             bullets.forEach((bullet, index) => {
                 bullet.x += bullet.velocityX;
                 bullet.y += bullet.velocityY;
@@ -783,7 +782,7 @@
                 }
             });
 
-            // Update enemies
+            // تحديث الأعداء
             enemies.forEach((enemy, index) => {
                 const dx = player.x - enemy.x;
                 const dy = player.y - enemy.y;
@@ -792,14 +791,13 @@
                 enemy.x += (dx / distance) * enemy.speed;
                 enemy.y += (dy / distance) * enemy.speed;
                 
-                // Collision with player
                 if (distance < player.size + enemy.size) {
                     health -= selectedPlayerType === 'TANK' ? 3 : 5;
                     enemies.splice(index, 1);
                 }
             });
 
-            // Update resources
+            // تحديث الموارد
             resources.forEach((resource, index) => {
                 const dx = player.x - resource.x;
                 const dy = player.y - resource.y;
@@ -812,34 +810,25 @@
                 }
             });
 
-            // Show low energy warning
+            // إظهار تحذير الطاقة المنخفضة
             if (energy <= 20) {
                 energyWarningTimer++;
-                if (energyWarningTimer % 60 === 0) { // Approximately every second
+                if (energyWarningTimer % 60 === 0) { // كل ثانية تقريباً
                     showEnergyWarning();
                 }
             } else {
                 energyWarningTimer = 0;
             }
 
-            // Spawn enemies randomly
-            if (Math.random() < 0.02) {
-                spawnEnemy();
-            }
+            if (Math.random() < 0.02) spawnEnemy();
+            if (Math.random() < 0.01 && resources.length < 5) spawnResource();
 
-            // Spawn resources randomly
-            if (Math.random() < 0.01 && resources.length < 5) {
-                spawnResource();
-            }
-
-            // Energy drain (faster when moving at higher speeds)
+            // استهلاك الطاقة (أسرع عندما تكون السرعة أعلى)
             const energyDrain = currentSpeedMultiplier > 0.8 ? 0.15 : 0.1;
             energy = Math.max(0, energy - energyDrain);
             
-            // Score increases over time
             score += 0.1;
             
-            // Game over condition
             if (health <= 0) {
                 health = 0;
                 gameOver();
@@ -859,13 +848,13 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Low energy effect - pulsing red background
+            // تأثير الطاقة المنخفضة - خلفية حمراء متقطعة
             if (lowEnergyEffect && energy <= 20) {
                 ctx.fillStyle = energy <= 0 ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 100, 0, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
             
-            // Draw resources
+            // رسم الموارد
             resources.forEach(resource => {
                 ctx.fillStyle = resource.color;
                 ctx.beginPath();
@@ -873,11 +862,11 @@
                 ctx.fill();
             });
             
-            // Draw player with low energy effect
+            // رسم اللاعب مع تأثير الطاقة المنخفضة
             const playerType = PLAYER_TYPES[player.type];
             ctx.save();
             
-            // Flashing effect when energy is low
+            // تأثير الوميض عندما تكون الطاقة منخفضة
             if (lowEnergyEffect && energy <= 20) {
                 if (Math.floor(Date.now() / 200) % 2 === 0) {
                     ctx.globalAlpha = 0.7;
@@ -887,7 +876,7 @@
             playerType.draw(ctx, player.x, player.y, player.size);
             ctx.restore();
             
-            // Draw enemies
+            // رسم الأعداء
             enemies.forEach(enemy => {
                 ctx.fillStyle = enemy.color;
                 if (enemy.type === 'TRIANGLE') {
@@ -906,7 +895,7 @@
                 }
             });
             
-            // Draw bullets
+            // رسم الرصاص
             bullets.forEach(bullet => {
                 ctx.fillStyle = bullet.color;
                 ctx.beginPath();
@@ -914,7 +903,7 @@
                 ctx.fill();
             });
             
-            // Draw UI
+            // رسم واجهة المستخدم
             drawUI();
         }
 
@@ -935,7 +924,7 @@
             ctx.font = '14px Arial';
             ctx.fillText('SCORE: ' + Math.floor(score), 20, 50);
             
-            // Display speed status based on energy
+            // عرض حالة السرعة بناءً على الطاقة
             let speedStatus = 'SPEED: NORMAL';
             let speedColor = '#00ff00';
             
@@ -956,13 +945,13 @@
             ctx.fillStyle = '#ff4444';
             ctx.fillText('HEALTH: ' + Math.floor(health), 20, 90);
             
-            // Health bar
+            // شريط الصحة
             ctx.fillStyle = '#333333';
             ctx.fillRect(150, 77, 120, 12);
             ctx.fillStyle = '#ff4444';
             ctx.fillRect(150, 77, (health / maxHealth) * 120, 12);
             
-            // Energy bar with color changing based on level
+            // شريط الطاقة مع لون يتغير حسب المستوى
             ctx.fillStyle = '#333333';
             ctx.fillRect(150, 57, 120, 10);
             
