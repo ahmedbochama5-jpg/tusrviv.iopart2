@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - Enhanced Enemies</title>
+    <title>Alpha Arena - Ultimate Edition</title>
     <style>
         * {
             margin: 0;
@@ -15,7 +15,7 @@
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
             text-align: center;
@@ -23,28 +23,140 @@
             width: 100vw;
             height: 100vh;
         }
-        
-        .header {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 0 0 15px 15px;
-            border: 2px solid #ff9800;
+
+        /* Stars Background */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Main Container */
+        .container {
             position: relative;
-            z-index: 10;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        
-        h1 {
-            font-size: 2em;
-            margin: 0;
-            text-shadow: 0 0 10px #ff9800;
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: glow 2s ease-in-out infinite alternate;
         }
-        
-        .subtitle {
-            color: #ff9800;
-            font-size: 1em;
-            margin-top: 5px;
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+            to { text-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff; }
         }
-        
+
+        .game-title {
+            font-size: 4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-subtitle {
+            font-size: 1.2em;
+            color: #cccccc;
+            margin-bottom: 20px;
+        }
+
+        /* Menu Box */
+        .menu-box {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        /* Menu Buttons */
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .menu-btn {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            color: white;
+            padding: 18px 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 255, 255, 0.4);
+        }
+
+        .menu-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #00ffff;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+
+        /* Game Canvas */
         #gameCanvas {
             position: absolute;
             top: 0;
@@ -53,28 +165,10 @@
             height: 100%;
             border: none;
             background: #1a1a2e;
+            display: none;
+            z-index: 10;
         }
-        
-        #startButton {
-            background: #ff9800;
-            color: black;
-            border: none;
-            padding: 20px 50px;
-            font-size: 1.5em;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 100;
-            margin-top: 20px;
-        }
-        
-        #startButton:hover {
-            background: #ff5722;
-            transform: scale(1.1);
-        }
-        
+
         /* Mobile Controls */
         #leftJoystick {
             position: fixed;
@@ -87,6 +181,7 @@
             border-radius: 50%;
             z-index: 100;
             touch-action: none;
+            display: none;
         }
         
         #leftStick {
@@ -114,574 +209,244 @@
             color: white;
             font-size: 0.9em;
             font-weight: bold;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 100;
             touch-action: none;
-            user-select: none;
         }
-        
-        #shootButton:active {
-            background: rgba(255, 0, 0, 0.9);
-            transform: scale(1.1);
-        }
-        
+
         .mobile-controls-text {
-            position: fixed;
-            bottom: 250px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: #ff9800;
-            font-size: 14px;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 5px;
+            display: none;
         }
-        
-        .beta-badge {
-            background: #ff9800;
-            color: black;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-        
-        .instructions {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 15px;
-            margin: 20px auto;
-            max-width: 90%;
-            position: relative;
-            z-index: 100;
-        }
-        
-        /* Hide controls on desktop */
-        @media (min-width: 768px) {
-            #leftJoystick, #shootButton, .mobile-controls-text {
-                display: none;
-            }
-        }
-        
-        /* Show controls on mobile */
-        @media (max-width: 767px) {
-            .header h1 {
-                font-size: 1.5em;
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2.5em;
             }
             
-            #startButton {
-                padding: 25px 60px;
-                font-size: 1.3em;
+            .menu-box {
+                padding: 20px;
             }
+            
+            .menu-btn {
+                padding: 15px 20px;
+                font-size: 1.1em;
+            }
+        }
+
+        /* Game Over Screen */
+        #gameOverScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .game-over-title {
+            font-size: 4em;
+            color: #ff4444;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #ff0000;
+        }
+
+        .final-score {
+            font-size: 2em;
+            color: #00ffff;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Alpha Arena</h1>
-        <div class="subtitle">Enhanced Enemies Edition</div>
-        <div class="beta-badge">New Enemy Designs!</div>
-    </div>
-    
-    <button id="startButton">Start Battle</button>
-    
-    <div class="instructions">
-        <h3>New Enemy Types:</h3>
-        <p>🔴 Red Triangle - Fast | 🔷 Blue Square - Tank | 🟢 Green Hexagon - Shooter</p>
-        <p>🟡 Yellow Star - Boss | 🟣 Purple Diamond - Elite</p>
+    <!-- Stars Background -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Main Menu -->
+    <div class="container" id="mainMenu">
+        <div class="header">
+            <div class="game-title">ALPHA ARENA</div>
+            <div class="game-subtitle">Ultimate Space Battle</div>
+        </div>
+
+        <div class="menu-box">
+            <div class="stats-section">
+                <div class="stat-box">
+                    <div class="stat-value" id="highScore">0</div>
+                    <div class="stat-label">High Score</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="totalGames">0</div>
+                    <div class="stat-label">Games Played</div>
+                </div>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="menu-btn" id="startBtn">Start Game</button>
+                <button class="menu-btn" id="howToPlayBtn">How to Play</button>
+            </div>
+
+            <div style="color: #888; margin-top: 20px;">
+                Use WASD to move • Mouse to shoot • Survive as long as possible!
+            </div>
+        </div>
     </div>
 
+    <!-- Game Canvas -->
     <canvas id="gameCanvas"></canvas>
-    
+
+    <!-- Game Over Screen -->
+    <div id="gameOverScreen">
+        <div class="game-over-title">GAME OVER</div>
+        <div class="final-score" id="finalScore">Score: 0</div>
+        <div style="margin-bottom: 20px; color: #ccc;">
+            <div id="newHighScore" style="color: #ffd700; font-size: 1.5em; display: none;">
+                🏆 NEW HIGH SCORE! 🏆
+            </div>
+        </div>
+        <button class="restart-btn" id="restartBtn">Play Again</button>
+        <button class="restart-btn" id="menuBtn">Main Menu</button>
+    </div>
+
     <!-- Mobile Controls -->
     <div class="mobile-controls-text">Touch & Drag to Move | Tap to Shoot</div>
     <div id="leftJoystick">
         <div id="leftStick"></div>
     </div>
-    <div id="shootButton">SHOOT</div>
+    <div id="shootButton">FIRE</div>
 
     <script>
-        // Game Elements
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const startButton = document.getElementById('startButton');
-        const leftJoystick = document.getElementById('leftJoystick');
-        const leftStick = document.getElementById('leftStick');
-        const shootButton = document.getElementById('shootButton');
-
-        // Set canvas size to full screen
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        // ==================== MENU SYSTEM ====================
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starCount = 100;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
         }
-        
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
 
-        // Music
-        const music = {
-            play: function() { 
-                console.log('🎵 Game music started'); 
-            },
-            pause: function() { 
-                console.log('🎵 Game music stopped'); 
-            },
-            loop: true,
-            volume: 0.5
+        const gameState = {
+            highScore: localStorage.getItem('alphaArenaHighScore') || 0,
+            totalGames: localStorage.getItem('alphaArenaTotalGames') || 0,
+            currentScore: 0
         };
+
+        function updateMenuStats() {
+            document.getElementById('highScore').textContent = gameState.highScore;
+            document.getElementById('totalGames').textContent = gameState.totalGames;
+        }
+
+        // ==================== GAME CODE ====================
+        let canvas, ctx;
+        let player, keys, score, energy, health, enemies, bullets, resources, gameRunning;
+        let animationId;
 
         // Enemy Types
         const ENEMY_TYPES = {
-            TRIANGLE: {
-                name: 'Triangle',
-                color: '#ff4444',
-                size: 18,
-                speed: 3.5,
-                health: 1,
-                points: 10,
-                draw: function(enemy) {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.moveTo(enemy.x, enemy.y - enemy.size);
-                    ctx.lineTo(enemy.x - enemy.size, enemy.y + enemy.size);
-                    ctx.lineTo(enemy.x + enemy.size, enemy.y + enemy.size);
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    // Glowing effect
-                    ctx.strokeStyle = '#ff8888';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-            },
-            SQUARE: {
-                name: 'Square',
-                color: '#4444ff',
-                size: 22,
-                speed: 1.8,
-                health: 3,
-                points: 20,
-                draw: function(enemy) {
-                    ctx.fillStyle = this.color;
-                    ctx.fillRect(enemy.x - enemy.size, enemy.y - enemy.size, enemy.size * 2, enemy.size * 2);
-                    
-                    // 3D effect
-                    ctx.strokeStyle = '#8888ff';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(enemy.x - enemy.size, enemy.y - enemy.size, enemy.size * 2, enemy.size * 2);
-                    
-                    // Health indicator
-                    if (enemy.health < this.health) {
-                        ctx.fillStyle = '#ffffff';
-                        ctx.font = '10px Arial';
-                        ctx.textAlign = 'center';
-                        ctx.fillText(enemy.health, enemy.x, enemy.y + 4);
-                    }
-                }
-            },
-            HEXAGON: {
-                name: 'Hexagon',
-                color: '#44ff44',
-                size: 16,
-                speed: 2.2,
-                health: 2,
-                points: 15,
-                draw: function(enemy) {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    for (let i = 0; i < 6; i++) {
-                        const angle = (i * Math.PI / 3);
-                        const x = enemy.x + enemy.size * Math.cos(angle);
-                        const y = enemy.y + enemy.size * Math.sin(angle);
-                        if (i === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    // Pulsing effect
-                    ctx.strokeStyle = '#88ff88';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-            },
-            STAR: {
-                name: 'Star',
-                color: '#ffff44',
-                size: 25,
-                speed: 1.5,
-                health: 5,
-                points: 50,
-                draw: function(enemy) {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    const spikes = 5;
-                    const outerRadius = enemy.size;
-                    const innerRadius = enemy.size * 0.4;
-                    
-                    for (let i = 0; i < spikes * 2; i++) {
-                        const radius = i % 2 === 0 ? outerRadius : innerRadius;
-                        const angle = (i * Math.PI / spikes) + enemy.rotation;
-                        const x = enemy.x + radius * Math.cos(angle);
-                        const y = enemy.y + radius * Math.sin(angle);
-                        if (i === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    // Glowing effect
-                    ctx.strokeStyle = '#ffff88';
-                    ctx.lineWidth = 3;
-                    ctx.stroke();
-                }
-            },
-            DIAMOND: {
-                name: 'Diamond',
-                color: '#ff44ff',
-                size: 20,
-                speed: 2.8,
-                health: 2,
-                points: 25,
-                draw: function(enemy) {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.moveTo(enemy.x, enemy.y - enemy.size);
-                    ctx.lineTo(enemy.x + enemy.size, enemy.y);
-                    ctx.lineTo(enemy.x, enemy.y + enemy.size);
-                    ctx.lineTo(enemy.x - enemy.size, enemy.y);
-                    ctx.closePath();
-                    ctx.fill();
-                    
-                    // Shiny effect
-                    ctx.strokeStyle = '#ff88ff';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    
-                    // Sparkle
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(enemy.x - 3, enemy.y - 3, 2, 2);
-                    ctx.fillRect(enemy.x + 2, enemy.y + 2, 2, 2);
-                }
-            }
+            TRIANGLE: { name: 'Triangle', color: '#ff4444', size: 18, speed: 3.5, health: 1, points: 10 },
+            SQUARE: { name: 'Square', color: '#4444ff', size: 22, speed: 1.8, health: 3, points: 20 },
+            HEXAGON: { name: 'Hexagon', color: '#44ff44', size: 16, speed: 2.2, health: 2, points: 15 },
+            STAR: { name: 'Star', color: '#ffff44', size: 25, speed: 1.5, health: 5, points: 50 },
+            DIAMOND: { name: 'Diamond', color: '#ff44ff', size: 20, speed: 2.8, health: 2, points: 25 }
         };
 
-        // Game Variables
-        let player = { x: 400, y: 300, size: 20, speed: 5, color: '#00ff00' };
-        let keys = {};
-        let score = 0;
-        let energy = 100;
-        let health = 100;
-        let enemies = [];
-        let bullets = [];
-        let resources = [];
-        let gameOver = false;
-        let enemySpawnTimer = 0;
-        
-        // Mobile Control Variables
-        let touchId = null;
-        let joystickActive = false;
-        let joystickX = 0;
-        let joystickY = 0;
+        function initializeGame() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
 
-        // Mobile Joystick Control
-        leftJoystick.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            joystickActive = true;
-            touchId = e.changedTouches[0].identifier;
-            updateJoystick(e);
-        });
+            // Initialize game variables
+            player = { x: canvas.width / 2, y: canvas.height / 2, size: 20, speed: 5, color: '#00ff00' };
+            keys = {};
+            score = 0;
+            energy = 100;
+            health = 100;
+            enemies = [];
+            bullets = [];
+            resources = [];
+            gameRunning = true;
 
-        leftJoystick.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-            if (joystickActive) {
-                updateJoystick(e);
-            }
-        });
-
-        leftJoystick.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            for (let touch of e.changedTouches) {
-                if (touch.identifier === touchId) {
-                    joystickActive = false;
-                    touchId = null;
-                    joystickX = 0;
-                    joystickY = 0;
-                    leftStick.style.transform = 'translate(-50%, -50%)';
-                    break;
-                }
-            }
-        });
-
-        function updateJoystick(e) {
-            const touch = Array.from(e.changedTouches).find(t => t.identifier === touchId);
-            if (!touch) return;
+            // Setup event listeners
+            setupEventListeners();
             
-            const rect = leftJoystick.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
+            // Start game loop
+            gameLoop();
             
-            const deltaX = touch.clientX - centerX;
-            const deltaY = touch.clientY - centerY;
-            
-            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const maxDistance = rect.width / 2;
-            
-            if (distance > maxDistance) {
-                joystickX = (deltaX / distance) * maxDistance;
-                joystickY = (deltaY / distance) * maxDistance;
-            } else {
-                joystickX = deltaX;
-                joystickY = deltaY;
-            }
-            
-            leftStick.style.transform = `translate(${joystickX}px, ${joystickY}px)`;
+            // Spawn initial enemies and resources
+            for (let i = 0; i < 3; i++) spawnEnemy();
+            for (let i = 0; i < 2; i++) spawnResource();
         }
 
-        // Shoot Button
-        shootButton.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            shootBullet();
-            shootButton.style.background = 'rgba(255, 0, 0, 0.9)';
-            shootButton.style.transform = 'scale(1.1)';
-        });
-
-        shootButton.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            shootButton.style.background = 'rgba(255, 0, 0, 0.7)';
-            shootButton.style.transform = 'scale(1)';
-        });
-
-        // Auto-shoot when holding
-        let autoShootInterval;
-        shootButton.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            shootBullet();
-            autoShootInterval = setInterval(shootBullet, 300);
-        });
-
-        shootButton.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            clearInterval(autoShootInterval);
-        });
-
-        // Keyboard Controls
-        document.addEventListener('keydown', (e) => keys[e.key] = true);
-        document.addEventListener('keyup', (e) => keys[e.key] = false);
-
-        // Touch shooting on canvas
-        canvas.addEventListener('touchstart', function(e) {
-            if (gameOver) {
-                restartGame();
-                return;
+        function resizeCanvas() {
+            if (canvas) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
             }
-        });
+        }
 
-        // Shoot function
+        function setupEventListeners() {
+            // Keyboard events
+            document.addEventListener('keydown', (e) => keys[e.key] = true);
+            document.addEventListener('keyup', (e) => keys[e.key] = false);
+
+            // Mouse events
+            canvas.addEventListener('mousedown', shootBullet);
+            canvas.addEventListener('touchstart', handleTouch);
+
+            // Game over screen buttons
+            document.getElementById('restartBtn').addEventListener('click', restartGame);
+            document.getElementById('menuBtn').addEventListener('click', showMainMenu);
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            if (!gameRunning) return;
+            shootBullet();
+        }
+
         function shootBullet() {
-            if (gameOver) return;
+            if (!gameRunning) return;
             
-            let angle;
-            if (joystickX !== 0 || joystickY !== 0) {
-                angle = Math.atan2(joystickY, joystickX);
-            } else {
-                angle = Math.atan2(0, 1);
-            }
-            
+            // Simple forward shooting for demo
             bullets.push({
                 x: player.x,
                 y: player.y,
-                speed: 10,
-                velocityX: Math.cos(angle) * 10,
-                velocityY: Math.sin(angle) * 10,
+                velocityX: 10,
+                velocityY: 0,
                 size: 5,
                 color: '#ffff00',
                 damage: 1
             });
         }
 
-        // Draw Player
-        function drawPlayer() {
-            ctx.fillStyle = player.color;
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
-            ctx.fill();
-            
-            ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-        }
-
-        // Draw Enemies
-        function drawEnemies() {
-            enemies.forEach(enemy => {
-                const enemyType = ENEMY_TYPES[enemy.type];
-                enemyType.draw(enemy);
-            });
-        }
-
-        // Draw Bullets
-        function drawBullets() {
-            bullets.forEach(bullet => {
-                ctx.fillStyle = bullet.color;
-                ctx.beginPath();
-                ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Trail effect
-                ctx.strokeStyle = '#ffff88';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-            });
-        }
-
-        // Draw Resources
-        function drawResources() {
-            resources.forEach(resource => {
-                ctx.fillStyle = resource.color;
-                ctx.beginPath();
-                ctx.arc(resource.x, resource.y, resource.size, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.strokeStyle = '#ffff00';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-            });
-        }
-
-        // Draw UI
-        function drawUI() {
-            const fontSize = window.innerWidth < 768 ? 20 : 16;
-            const uiWidth = window.innerWidth < 768 ? 250 : 200;
-            const uiHeight = window.innerWidth < 768 ? 130 : 110;
-            
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(10, 10, uiWidth, uiHeight);
-            ctx.strokeStyle = '#ff9800';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(10, 10, uiWidth, uiHeight);
-            
-            ctx.fillStyle = '#ff9800';
-            ctx.font = `bold ${fontSize + 2}px Arial`;
-            ctx.fillText('PLAYER STATS', 20, 30);
-            
-            ctx.strokeStyle = '#ff9800';
-            ctx.beginPath();
-            ctx.moveTo(20, 40);
-            ctx.lineTo(uiWidth - 10, 40);
-            ctx.stroke();
-            
-            ctx.font = `${fontSize}px Arial`;
-            ctx.fillStyle = '#00ff00';
-            ctx.fillText('Score: ' + score, 20, 65);
-            
-            ctx.fillStyle = '#ffff00';
-            ctx.fillText('Energy: ' + Math.round(energy), 20, 90);
-            
-            ctx.fillStyle = '#ff4444';
-            ctx.fillText('Health: ' + Math.round(health), 20, 115);
-            
-            // Health bar
-            const barWidth = window.innerWidth < 768 ? 120 : 100;
-            ctx.fillStyle = '#333333';
-            ctx.fillRect(100, 102, barWidth, 12);
-            ctx.fillStyle = '#ff4444';
-            ctx.fillRect(100, 102, (health / 100) * barWidth, 12);
-            
-            // Energy bar
-            ctx.fillStyle = '#333333';
-            ctx.fillRect(100, 77, barWidth, 10);
-            ctx.fillStyle = '#ffff00';
-            ctx.fillRect(100, 77, (energy / 100) * barWidth, 10);
-        }
-
-        // Draw Alpha Watermark
-        function drawAlphaWatermark() {
-            ctx.save();
-            
-            ctx.globalAlpha = 0.1;
-            ctx.fillStyle = '#ff9800';
-            ctx.font = 'bold 60px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('ALPHA ARENA', canvas.width / 2, canvas.height / 2);
-            
-            ctx.globalAlpha = 0.7;
-            ctx.fillStyle = '#ff9800';
-            ctx.font = '14px Arial';
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText('Enhanced Enemies v1.0', 10, canvas.height - 10);
-            
-            ctx.restore();
-        }
-
-        // Show Game Over Screen
-        function showGameOver() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = '#ff4444';
-            ctx.font = 'bold 50px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 60);
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 30px Arial';
-            ctx.fillText('Final Score: ' + score, canvas.width / 2, canvas.height / 2);
-            
-            ctx.fillStyle = '#ff9800';
-            ctx.font = '24px Arial';
-            ctx.fillText('Tap anywhere to restart', canvas.width / 2, canvas.height / 2 + 60);
-            
-            music.pause();
-        }
-
-        // Get Random Enemy Type based on score
-        function getRandomEnemyType() {
-            const scoreWeight = Math.min(score / 100, 5); // Increase difficulty with score
-            const types = Object.keys(ENEMY_TYPES);
-            let weights = [];
-            
-            // Base weights
-            const baseWeights = {
-                'TRIANGLE': 40,  // Common
-                'SQUARE': 25,    // Uncommon  
-                'HEXAGON': 20,   // Uncommon
-                'DIAMOND': 10,   // Rare
-                'STAR': 5        // Very rare
-            };
-            
-            // Adjust weights based on score
-            weights = types.map(type => {
-                let weight = baseWeights[type];
-                if (score > 200) {
-                    if (type === 'STAR') weight += 10;
-                    if (type === 'DIAMOND') weight += 15;
-                } else if (score > 100) {
-                    if (type === 'DIAMOND') weight += 5;
-                }
-                return weight;
-            });
-            
-            let totalWeight = weights.reduce((a, b) => a + b, 0);
-            let random = Math.random() * totalWeight;
-            
-            for (let i = 0; i < weights.length; i++) {
-                if (random < weights[i]) return types[i];
-                random -= weights[i];
-            }
-            
-            return types[0];
-        }
-
-        // Spawn Enemies
         function spawnEnemy() {
             const side = Math.floor(Math.random() * 4);
             let x, y;
@@ -693,115 +458,64 @@
                 case 3: x = -20; y = Math.random() * canvas.height; break;
             }
             
-            const enemyType = getRandomEnemyType();
-            const typeConfig = ENEMY_TYPES[enemyType];
+            const enemyTypes = Object.keys(ENEMY_TYPES);
+            const randomType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+            const typeConfig = ENEMY_TYPES[randomType];
             
             enemies.push({
-                x: x, 
-                y: y, 
+                x: x, y: y,
                 size: typeConfig.size,
                 speed: typeConfig.speed,
                 color: typeConfig.color,
-                type: enemyType,
+                type: randomType,
                 health: typeConfig.health,
-                maxHealth: typeConfig.health,
-                points: typeConfig.points,
-                rotation: 0
+                points: typeConfig.points
             });
         }
 
-        // Spawn Resources
         function spawnResource() {
             resources.push({
                 x: Math.random() * (canvas.width - 40) + 20,
                 y: Math.random() * (canvas.height - 40) + 20,
-                size: 8, color: '#00ffff', value: 10
+                size: 8,
+                color: '#00ffff',
+                value: 10
             });
         }
 
-        // Restart Game
-        function restartGame() {
-            gameOver = false;
-            health = 100;
-            energy = 100;
-            score = 0;
-            player.x = canvas.width / 2;
-            player.y = canvas.height / 2;
-            enemies = [];
-            bullets = [];
-            resources = [];
-            
-            music.play();
-            
-            for (let i = 0; i < 3; i++) spawnEnemy();
-            for (let i = 0; i < 2; i++) spawnResource();
-        }
-
-        // Update Game
         function update() {
-            if (gameOver) return;
+            if (!gameRunning) return;
 
-            // Mobile movement
-            if (joystickActive) {
-                player.x += joystickX * 0.2;
-                player.y += joystickY * 0.2;
-            } else {
-                // Keyboard fallback
-                if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
-                if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
-                if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
-                if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
-            }
+            // Player movement
+            if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
+            if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
+            if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
+            if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
 
             // Screen boundaries
             player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
             player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
 
-            // Update bullets and check collisions
-            bullets.forEach((bullet, bulletIndex) => {
+            // Update bullets
+            bullets.forEach((bullet, index) => {
                 bullet.x += bullet.velocityX;
                 bullet.y += bullet.velocityY;
                 
                 // Remove bullets out of screen
                 if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) {
-                    bullets.splice(bulletIndex, 1);
-                    return;
+                    bullets.splice(index, 1);
                 }
-                
-                // Check bullet-enemy collisions
-                enemies.forEach((enemy, enemyIndex) => {
-                    const dx = bullet.x - enemy.x;
-                    const dy = bullet.y - enemy.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < enemy.size + bullet.size) {
-                        enemy.health -= bullet.damage;
-                        
-                        // Remove bullet on hit
-                        bullets.splice(bulletIndex, 1);
-                        
-                        // Remove enemy if health <= 0
-                        if (enemy.health <= 0) {
-                            score += enemy.points;
-                            enemies.splice(enemyIndex, 1);
-                        }
-                    }
-                });
             });
 
             // Update enemies
             enemies.forEach((enemy, index) => {
+                // Move towards player
                 const dx = player.x - enemy.x;
                 const dy = player.y - enemy.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
                 enemy.x += (dx / distance) * enemy.speed;
                 enemy.y += (dy / distance) * enemy.speed;
-                
-                // Rotation for star enemies
-                if (enemy.type === 'STAR') {
-                    enemy.rotation += 0.05;
-                }
                 
                 // Collision with player
                 if (distance < player.size + enemy.size) {
@@ -817,18 +531,15 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
                 if (distance < player.size + resource.size) {
-                    energy += resource.value;
+                    energy = Math.min(100, energy + resource.value);
                     resources.splice(index, 1);
                     score += 10;
                 }
             });
 
-            // Spawn enemies based on timer and difficulty
-            enemySpawnTimer++;
-            const spawnRate = Math.max(60, 120 - Math.floor(score / 10)); // Faster spawning as score increases
-            if (enemySpawnTimer > spawnRate) {
+            // Spawn enemies randomly
+            if (Math.random() < 0.02) {
                 spawnEnemy();
-                enemySpawnTimer = 0;
             }
 
             // Spawn resources randomly
@@ -839,49 +550,157 @@
             // Energy drain
             energy = Math.max(0, energy - 0.1);
             
+            // Score increase over time
+            score += 0.1;
+            
             // Game over condition
             if (health <= 0) {
                 health = 0;
-                gameOver = true;
+                gameOver();
             }
         }
 
-        // Game Loop
-        function gameLoop() {
-            if (!gameOver) update();
-            
+        function draw() {
+            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            drawResources();
-            drawPlayer();
-            drawEnemies();
-            drawBullets();
+            // Draw resources
+            resources.forEach(resource => {
+                ctx.fillStyle = resource.color;
+                ctx.beginPath();
+                ctx.arc(resource.x, resource.y, resource.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw player
+            ctx.fillStyle = player.color;
+            ctx.beginPath();
+            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw enemies
+            enemies.forEach(enemy => {
+                ctx.fillStyle = enemy.color;
+                if (enemy.type === 'TRIANGLE') {
+                    ctx.beginPath();
+                    ctx.moveTo(enemy.x, enemy.y - enemy.size);
+                    ctx.lineTo(enemy.x - enemy.size, enemy.y + enemy.size);
+                    ctx.lineTo(enemy.x + enemy.size, enemy.y + enemy.size);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (enemy.type === 'SQUARE') {
+                    ctx.fillRect(enemy.x - enemy.size, enemy.y - enemy.size, enemy.size * 2, enemy.size * 2);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            
+            // Draw bullets
+            bullets.forEach(bullet => {
+                ctx.fillStyle = bullet.color;
+                ctx.beginPath();
+                ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            
+            // Draw UI
             drawUI();
-            drawAlphaWatermark();
-            
-            if (gameOver) showGameOver();
-            
-            requestAnimationFrame(gameLoop);
         }
 
-        // Start Game
-        startButton.addEventListener('click', () => {
-            startButton.style.display = 'none';
-            document.querySelector('.instructions').style.display = 'none';
-            canvas.style.display = 'block';
-            music.play();
+        function drawUI() {
+            // Player stats background
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(10, 10, 200, 100);
+            ctx.strokeStyle = '#00ffff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(10, 10, 200, 100);
             
-            player.x = canvas.width / 2;
-            player.y = canvas.height / 2;
+            // Stats
+            ctx.fillStyle = '#00ffff';
+            ctx.font = '16px Arial';
+            ctx.fillText('SCORE: ' + Math.floor(score), 20, 35);
+            ctx.fillText('ENERGY: ' + Math.floor(energy), 20, 60);
+            ctx.fillText('HEALTH: ' + Math.floor(health), 20, 85);
             
-            gameLoop();
+            // Health bar
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(120, 72, 80, 12);
+            ctx.fillStyle = '#ff4444';
+            ctx.fillRect(120, 72, (health / 100) * 80, 12);
             
-            for (let i = 0; i < 3; i++) spawnEnemy();
-            for (let i = 0; i < 2; i++) spawnResource();
+            // Energy bar
+            ctx.fillStyle = '#333333';
+            ctx.fillRect(120, 47, 80, 10);
+            ctx.fillStyle = '#ffff00';
+            ctx.fillRect(120, 47, (energy / 100) * 80, 10);
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            update();
+            draw();
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            cancelAnimationFrame(animationId);
+            
+            // Update game stats
+            gameState.totalGames++;
+            const finalScore = Math.floor(score);
+            
+            // Check for new high score
+            let newHighScore = false;
+            if (finalScore > gameState.highScore) {
+                gameState.highScore = finalScore;
+                newHighScore = true;
+                localStorage.setItem('alphaArenaHighScore', gameState.highScore);
+            }
+            localStorage.setItem('alphaArenaTotalGames', gameState.totalGames);
+            
+            // Show game over screen
+            document.getElementById('finalScore').textContent = 'Score: ' + finalScore;
+            if (newHighScore) {
+                document.getElementById('newHighScore').style.display = 'block';
+            }
+            document.getElementById('gameOverScreen').style.display = 'flex';
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('newHighScore').style.display = 'none';
+            initializeGame();
+        }
+
+        function showMainMenu() {
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('gameCanvas').style.display = 'none';
+            document.getElementById('mainMenu').style.display = 'flex';
+            updateMenuStats();
+        }
+
+        // ==================== MENU EVENT LISTENERS ====================
+        document.getElementById('startBtn').addEventListener('click', function() {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameCanvas').style.display = 'block';
+            initializeGame();
         });
 
-        // Prevent context menu
-        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+        document.getElementById('howToPlayBtn').addEventListener('click', function() {
+            alert('HOW TO PLAY:\n\n🎮 CONTROLS:\n• WASD or Arrow Keys - Move\n• Mouse Click - Shoot\n\n🎯 OBJECTIVE:\n• Survive as long as possible\n• Collect energy resources (blue circles)\n• Avoid enemy collisions\n• Shoot enemies to destroy them\n\n⭐ TIPS:\n• Different enemies have different behaviors\n• Keep your energy above zero\n• Higher scores unlock tougher enemies!\n\nGood luck, Commander! 🚀');
+        });
+
+        // ==================== INITIALIZATION ====================
+        window.addEventListener('load', function() {
+            createStars();
+            updateMenuStats();
+        });
+
+        document.addEventListener('contextmenu', (e) => e.preventDefault());
     </script>
 </body>
 </html>
