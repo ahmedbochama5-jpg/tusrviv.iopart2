@@ -475,19 +475,25 @@
     </div>
 
     <script>
-        // ==================== ADMIN SYSTEM ====================
-        const ADMIN_PASSWORD = "ADMIN";
-        let isAdmin = false;
-        let cheatCodes = {
-            'GODMODE': false,
-            'UNLIMITED': false,
-            'MAXSCORE': false,
-            'KILLALL': false,
-            'ONESHOOT': false,
-            'SUPERBULLET': false,
-            'FREEZE': false,
-            'RESOURCES': false
-        };
+       // ==================== ADMIN SYSTEM ====================
+let isAdmin = true;
+let cheatCodes = {
+    'GODMODE': false,
+    'UNLIMITED': false,
+    'MAXSCORE': false,
+    'KILLALL': false,
+    'ONESHOOT': false,
+    'SUPERBULLET': false,
+    'FREEZE': false,
+    'RESOURCES': false
+};
+
+// Admin panel toggle - no password
+document.getElementById('adminToggle').addEventListener('click', function() {
+    const panel = document.getElementById('adminPanel');
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    document.getElementById('cheatCodes').style.display = 'block';
+});
 
         // Admin panel toggle with password protection
         document.getElementById('adminToggle').addEventListener('click', function() {
