@@ -3,42 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - Experimental Version</title>
+    <title>Alpha Arena - Mobile Version</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: none;
+        }
+        
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
             text-align: center;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
         }
         
         .header {
             background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 0 0 15px 15px;
             border: 2px solid #ff9800;
+            position: relative;
+            z-index: 10;
         }
         
         h1 {
-            font-size: 3em;
+            font-size: 2em;
             margin: 0;
             text-shadow: 0 0 10px #ff9800;
         }
         
         .subtitle {
             color: #ff9800;
-            font-size: 1.2em;
+            font-size: 1em;
             margin-top: 5px;
         }
         
         #gameCanvas {
-            border: 3px solid #ff9800;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 152, 0, 0.5);
-            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
             background: #1a1a2e;
         }
         
@@ -46,17 +59,85 @@
             background: #ff9800;
             color: black;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.2em;
+            padding: 20px 50px;
+            font-size: 1.5em;
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
             transition: all 0.3s;
+            position: relative;
+            z-index: 100;
+            margin-top: 20px;
         }
         
         #startButton:hover {
             background: #ff5722;
             transform: scale(1.1);
+        }
+        
+        /* Mobile Controls */
+        #leftJoystick {
+            position: fixed;
+            bottom: 120px;
+            left: 80px;
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            z-index: 100;
+            touch-action: none;
+        }
+        
+        #leftStick {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 152, 0, 0.8);
+            border: 2px solid white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s;
+        }
+        
+        #shootButton {
+            position: fixed;
+            bottom: 120px;
+            right: 80px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 0, 0, 0.7);
+            border: 3px solid white;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.9em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            touch-action: none;
+            user-select: none;
+        }
+        
+        #shootButton:active {
+            background: rgba(255, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+        
+        .mobile-controls-text {
+            position: fixed;
+            bottom: 250px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #ff9800;
+            font-size: 14px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px;
         }
         
         .beta-badge {
@@ -67,54 +148,82 @@
             font-weight: bold;
             display: inline-block;
             margin-top: 10px;
+            font-size: 0.9em;
         }
         
         .instructions {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.8);
             padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 90%;
+            position: relative;
+            z-index: 100;
         }
         
-        .footer {
-            margin-top: 20px;
-            color: #ccc;
-            font-size: 0.9em;
+        /* Hide controls on desktop */
+        @media (min-width: 768px) {
+            #leftJoystick, #shootButton, .mobile-controls-text {
+                display: none;
+            }
+        }
+        
+        /* Show controls on mobile */
+        @media (max-width: 767px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            #startButton {
+                padding: 25px 60px;
+                font-size: 1.3em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Alpha Arena</h1>
-        <div class="subtitle">Experimental Battle Arena - Prepare for Challenge!</div>
-        <div class="beta-badge">Alpha Version - Under Development</div>
+        <div class="subtitle">Mobile Battle Arena</div>
+        <div class="beta-badge">Mobile Beta</div>
     </div>
     
     <button id="startButton">Start Battle</button>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
-
+    
     <div class="instructions">
-        <h3>Controls:</h3>
-        <p><strong>WASD</strong> or <strong>Arrow Keys</strong> - Move Player</p>
-        <p><strong>Mouse</strong> - Aim and Shoot</p>
-        <p><strong>Survive</strong> as long as possible and collect energy!</p>
-        <p><em>This is an experimental version. Features may change.</em></p>
+        <h3>Mobile Controls:</h3>
+        <p>Left Joystick - Move | Right Button - Shoot</p>
+        <p>Survive as long as possible!</p>
     </div>
 
-    <div class="footer">
-        Alpha Arena - Developed with HTML5 Canvas & JavaScript
+    <canvas id="gameCanvas"></canvas>
+    
+    <!-- Mobile Controls -->
+    <div class="mobile-controls-text">Touch & Drag to Move | Tap to Shoot</div>
+    <div id="leftJoystick">
+        <div id="leftStick"></div>
     </div>
+    <div id="shootButton">SHOOT</div>
 
     <script>
         // Game Elements
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startButton = document.getElementById('startButton');
+        const leftJoystick = document.getElementById('leftJoystick');
+        const leftStick = document.getElementById('leftStick');
+        const shootButton = document.getElementById('shootButton');
 
-        // Music without file error
+        // Set canvas size to full screen
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Music
         const music = {
             play: function() { 
                 console.log('🎵 Game music started'); 
@@ -136,26 +245,119 @@
         let bullets = [];
         let resources = [];
         let gameOver = false;
+        
+        // Mobile Control Variables
+        let touchId = null;
+        let joystickActive = false;
+        let joystickX = 0;
+        let joystickY = 0;
 
-        // Keyboard Controls
+        // Mobile Joystick Control
+        leftJoystick.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            joystickActive = true;
+            touchId = e.changedTouches[0].identifier;
+            updateJoystick(e);
+        });
+
+        leftJoystick.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (joystickActive) {
+                updateJoystick(e);
+            }
+        });
+
+        leftJoystick.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            for (let touch of e.changedTouches) {
+                if (touch.identifier === touchId) {
+                    joystickActive = false;
+                    touchId = null;
+                    joystickX = 0;
+                    joystickY = 0;
+                    leftStick.style.transform = 'translate(-50%, -50%)';
+                    break;
+                }
+            }
+        });
+
+        function updateJoystick(e) {
+            const touch = Array.from(e.changedTouches).find(t => t.identifier === touchId);
+            if (!touch) return;
+            
+            const rect = leftJoystick.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const deltaX = touch.clientX - centerX;
+            const deltaY = touch.clientY - centerY;
+            
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            const maxDistance = rect.width / 2;
+            
+            if (distance > maxDistance) {
+                joystickX = (deltaX / distance) * maxDistance;
+                joystickY = (deltaY / distance) * maxDistance;
+            } else {
+                joystickX = deltaX;
+                joystickY = deltaY;
+            }
+            
+            // Update stick position
+            leftStick.style.transform = `translate(${joystickX}px, ${joystickY}px)`;
+        }
+
+        // Shoot Button
+        shootButton.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            shootBullet();
+            shootButton.style.background = 'rgba(255, 0, 0, 0.9)';
+            shootButton.style.transform = 'scale(1.1)';
+        });
+
+        shootButton.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            shootButton.style.background = 'rgba(255, 0, 0, 0.7)';
+            shootButton.style.transform = 'scale(1)';
+        });
+
+        // Auto-shoot when holding
+        let autoShootInterval;
+        shootButton.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            shootBullet();
+            autoShootInterval = setInterval(shootBullet, 300); // Shoot every 300ms
+        });
+
+        shootButton.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            clearInterval(autoShootInterval);
+        });
+
+        // Keyboard Controls (for desktop)
         document.addEventListener('keydown', (e) => keys[e.key] = true);
         document.addEventListener('keyup', (e) => keys[e.key] = false);
 
-        // Mouse Controls
-        canvas.addEventListener('click', function shootBullet(e) {
+        // Touch shooting on canvas
+        canvas.addEventListener('touchstart', function(e) {
             if (gameOver) {
                 restartGame();
                 return;
             }
+        });
 
-            const rect = canvas.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
+        // Shoot function
+        function shootBullet() {
+            if (gameOver) return;
             
-            // Calculate direction
-            const angle = Math.atan2(mouseY - player.y, mouseX - player.x);
+            // Shoot in the direction the player is moving, or forward if not moving
+            let angle;
+            if (joystickX !== 0 || joystickY !== 0) {
+                angle = Math.atan2(joystickY, joystickX);
+            } else {
+                angle = Math.atan2(0, 1); // Shoot right by default
+            }
             
-            // Create bullet
             bullets.push({
                 x: player.x,
                 y: player.y,
@@ -165,7 +367,7 @@
                 size: 5,
                 color: '#ffff00'
             });
-        });
+        }
 
         // Draw Player
         function drawPlayer() {
@@ -174,7 +376,6 @@
             ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
             ctx.fill();
             
-            // Player outline
             ctx.strokeStyle = '#ffffff';
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -208,7 +409,6 @@
                 ctx.arc(resource.x, resource.y, resource.size, 0, Math.PI * 2);
                 ctx.fill();
                 
-                // Glow effect
                 ctx.strokeStyle = '#ffff00';
                 ctx.lineWidth = 2;
                 ctx.stroke();
@@ -217,100 +417,91 @@
 
         // Draw UI
         function drawUI() {
-            // Player stats background
+            // Make UI larger for mobile
+            const fontSize = window.innerWidth < 768 ? 20 : 16;
+            const uiWidth = window.innerWidth < 768 ? 250 : 200;
+            const uiHeight = window.innerWidth < 768 ? 130 : 110;
+            
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(10, 10, 200, 110);
+            ctx.fillRect(10, 10, uiWidth, uiHeight);
             ctx.strokeStyle = '#ff9800';
             ctx.lineWidth = 2;
-            ctx.strokeRect(10, 10, 200, 110);
+            ctx.strokeRect(10, 10, uiWidth, uiHeight);
             
-            // Title
             ctx.fillStyle = '#ff9800';
-            ctx.font = 'bold 16px Arial';
+            ctx.font = `bold ${fontSize + 2}px Arial`;
             ctx.fillText('PLAYER STATS', 20, 30);
             
-            // Separator line
             ctx.strokeStyle = '#ff9800';
             ctx.beginPath();
             ctx.moveTo(20, 40);
-            ctx.lineTo(190, 40);
+            ctx.lineTo(uiWidth - 10, 40);
             ctx.stroke();
             
-            // Statistics
-            ctx.font = '14px Arial';
+            ctx.font = `${fontSize}px Arial`;
             ctx.fillStyle = '#00ff00';
-            ctx.fillText('Score: ' + score, 20, 60);
+            ctx.fillText('Score: ' + score, 20, 65);
             
             ctx.fillStyle = '#ffff00';
-            ctx.fillText('Energy: ' + energy, 20, 80);
+            ctx.fillText('Energy: ' + Math.round(energy), 20, 90);
             
             ctx.fillStyle = '#ff4444';
-            ctx.fillText('Health: ' + health, 20, 100);
+            ctx.fillText('Health: ' + Math.round(health), 20, 115);
             
             // Health bar
+            const barWidth = window.innerWidth < 768 ? 120 : 100;
             ctx.fillStyle = '#333333';
-            ctx.fillRect(85, 87, 100, 10);
+            ctx.fillRect(100, 102, barWidth, 12);
             ctx.fillStyle = '#ff4444';
-            ctx.fillRect(85, 87, (health / 100) * 100, 10);
+            ctx.fillRect(100, 102, (health / 100) * barWidth, 12);
             
             // Energy bar
             ctx.fillStyle = '#333333';
-            ctx.fillRect(85, 67, 100, 8);
+            ctx.fillRect(100, 77, barWidth, 10);
             ctx.fillStyle = '#ffff00';
-            ctx.fillRect(85, 67, (energy / 100) * 100, 8);
+            ctx.fillRect(100, 77, (energy / 100) * barWidth, 10);
         }
 
         // Draw Alpha Watermark
         function drawAlphaWatermark() {
             ctx.save();
             
-            // Main watermark
             ctx.globalAlpha = 0.1;
             ctx.fillStyle = '#ff9800';
-            ctx.font = 'bold 80px Arial';
+            ctx.font = 'bold 60px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('ALPHA ARENA', canvas.width / 2, canvas.height / 2);
             
-            // Version info in corner
             ctx.globalAlpha = 0.7;
             ctx.fillStyle = '#ff9800';
-            ctx.font = '12px Arial';
+            ctx.font = '14px Arial';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'bottom';
-            ctx.fillText('Alpha v0.1 - Experimental Build', 10, canvas.height - 30);
-            
-            // Development warning
-            ctx.textAlign = 'center';
-            ctx.fillText('Game Under Active Development - Report Bugs!', canvas.width / 2, canvas.height - 10);
+            ctx.fillText('Mobile Beta v0.2', 10, canvas.height - 10);
             
             ctx.restore();
         }
 
         // Show Game Over Screen
         function showGameOver() {
-            // Background
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Game Over text
             ctx.fillStyle = '#ff4444';
-            ctx.font = 'bold 60px Arial';
+            ctx.font = 'bold 50px Arial';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 50);
+            ctx.fillText('GAME OVER', canvas.width / 2, canvas.height / 2 - 60);
             
-            // Final score
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 32px Arial';
-            ctx.fillText('Final Score: ' + score, canvas.width / 2, canvas.height / 2 + 20);
+            ctx.font = 'bold 30px Arial';
+            ctx.fillText('Final Score: ' + score, canvas.width / 2, canvas.height / 2);
             
-            // Restart message
             ctx.fillStyle = '#ff9800';
             ctx.font = '24px Arial';
-            ctx.fillText('Click anywhere to restart', canvas.width / 2, canvas.height / 2 + 80);
+            ctx.fillText('Tap anywhere to restart', canvas.width / 2, canvas.height / 2 + 60);
             
-            // Stop music
             music.pause();
         }
 
@@ -320,30 +511,14 @@
             let x, y;
             
             switch(side) {
-                case 0: // top
-                    x = Math.random() * canvas.width;
-                    y = -20;
-                    break;
-                case 1: // right
-                    x = canvas.width + 20;
-                    y = Math.random() * canvas.height;
-                    break;
-                case 2: // bottom
-                    x = Math.random() * canvas.width;
-                    y = canvas.height + 20;
-                    break;
-                case 3: // left
-                    x = -20;
-                    y = Math.random() * canvas.height;
-                    break;
+                case 0: x = Math.random() * canvas.width; y = -20; break;
+                case 1: x = canvas.width + 20; y = Math.random() * canvas.height; break;
+                case 2: x = Math.random() * canvas.width; y = canvas.height + 20; break;
+                case 3: x = -20; y = Math.random() * canvas.height; break;
             }
             
             enemies.push({
-                x: x,
-                y: y,
-                size: 15,
-                speed: 2,
-                color: '#ff4444'
+                x: x, y: y, size: 15, speed: 2, color: '#ff4444'
             });
         }
 
@@ -352,9 +527,7 @@
             resources.push({
                 x: Math.random() * (canvas.width - 40) + 20,
                 y: Math.random() * (canvas.height - 40) + 20,
-                size: 8,
-                color: '#00ffff',
-                value: 10
+                size: 8, color: '#00ffff', value: 10
             });
         }
 
@@ -364,33 +537,33 @@
             health = 100;
             energy = 100;
             score = 0;
-            player.x = 400;
-            player.y = 300;
+            player.x = canvas.width / 2;
+            player.y = canvas.height / 2;
             enemies = [];
             bullets = [];
             resources = [];
             
-            // Restart music
             music.play();
             
-            // Initial spawn
-            for (let i = 0; i < 3; i++) {
-                spawnEnemy();
-            }
-            for (let i = 0; i < 2; i++) {
-                spawnResource();
-            }
+            for (let i = 0; i < 3; i++) spawnEnemy();
+            for (let i = 0; i < 2; i++) spawnResource();
         }
 
         // Update Game
         function update() {
             if (gameOver) return;
 
-            // Player movement
-            if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
-            if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
-            if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
-            if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
+            // Mobile movement
+            if (joystickActive) {
+                player.x += joystickX * 0.2;
+                player.y += joystickY * 0.2;
+            } else {
+                // Keyboard fallback
+                if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
+                if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
+                if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
+                if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
+            }
 
             // Screen boundaries
             player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
@@ -401,7 +574,6 @@
                 bullet.x += bullet.velocityX;
                 bullet.y += bullet.velocityY;
                 
-                // Remove bullets out of screen
                 if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) {
                     bullets.splice(index, 1);
                 }
@@ -409,7 +581,6 @@
 
             // Update enemies
             enemies.forEach((enemy, index) => {
-                // Move towards player
                 const dx = player.x - enemy.x;
                 const dy = player.y - enemy.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -417,7 +588,6 @@
                 enemy.x += (dx / distance) * enemy.speed;
                 enemy.y += (dy / distance) * enemy.speed;
                 
-                // Collision with player
                 if (distance < player.size + enemy.size) {
                     health -= 5;
                     enemies.splice(index, 1);
@@ -438,14 +608,8 @@
             });
 
             // Spawn enemies randomly
-            if (Math.random() < 0.02) {
-                spawnEnemy();
-            }
-
-            // Spawn resources randomly
-            if (Math.random() < 0.01 && resources.length < 5) {
-                spawnResource();
-            }
+            if (Math.random() < 0.02) spawnEnemy();
+            if (Math.random() < 0.01 && resources.length < 5) spawnResource();
 
             // Energy drain
             energy = Math.max(0, energy - 0.1);
@@ -459,14 +623,10 @@
 
         // Game Loop
         function gameLoop() {
-            if (!gameOver) {
-                update();
-            }
+            if (!gameOver) update();
             
-            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Draw game elements
             drawResources();
             drawPlayer();
             drawEnemies();
@@ -474,10 +634,7 @@
             drawUI();
             drawAlphaWatermark();
             
-            // Draw game over screen if game ended
-            if (gameOver) {
-                showGameOver();
-            }
+            if (gameOver) showGameOver();
             
             requestAnimationFrame(gameLoop);
         }
@@ -485,23 +642,22 @@
         // Start Game
         startButton.addEventListener('click', () => {
             startButton.style.display = 'none';
+            document.querySelector('.instructions').style.display = 'none';
             canvas.style.display = 'block';
             music.play();
+            
+            // Center player on start
+            player.x = canvas.width / 2;
+            player.y = canvas.height / 2;
+            
             gameLoop();
             
-            // Initial spawn
-            for (let i = 0; i < 3; i++) {
-                spawnEnemy();
-            }
-            for (let i = 0; i < 2; i++) {
-                spawnResource();
-            }
+            for (let i = 0; i < 3; i++) spawnEnemy();
+            for (let i = 0; i < 2; i++) spawnResource();
         });
 
-        // Prevent context menu on right-click
-        canvas.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-        });
+        // Prevent context menu
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     </script>
 </body>
 </html>
