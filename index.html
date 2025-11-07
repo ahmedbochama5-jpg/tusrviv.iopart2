@@ -958,4 +958,279 @@
                 gameState.playerX = Math.max(25, gameState.playerX - speed);
                 moved = true;
             }
-            if (active
+            if (activeKeys['d']) {
+                gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
+                moved = true;
+            }
+            
+            // استهلاك الطاقة عند الحركة (ما لم تكن غير محدودة)
+            if (moved && !cheatCodes.UNLIMITED) {
+                gameState.energy = Math.max(0, gameState.energy - 0.5);
+            }
+        }
+
+        // دورة اللعبة الرئيسية
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // تحديث حركة اللاعب
+            handleContinuousMovement();
+            
+            // تحديث حركة الرصاصات
+            updateBullets();
+            
+            // تحديث حركة الأعداء
+            if (!cheatCodes.FREEZE) {
+                updateEnemies();
+            }
+            
+            // تحديث الموارد
+            updateResources();
+            
+            // التحقق من التصادمات
+            checkCollisions();
+            
+            // تحديث العرض
+            updateGameDisplay();
+            renderGame();
+            
+            // التحقق من نهاية اللعبة
+            if (gameState.health <= 0) {
+                endGame();
+            }
+        }
+
+        // تحديث حركة الرصاصات
+        function updateBullets() {
+            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                const bullet = gameState.bullets[i];
+                bullet.x += bullet.velocityX;
+                bullet.y += bullet.velocityY;
+                
+                // إزالة الرصاصات التي تخرج من حدود اللعبة
+                const gameArea = document.getElementById('gameArea');
+                if (!gameArea) continue;
+                
+                if (bullet.x < 0 || bullet.x > gameArea.offsetWidth || 
+                    bullet.y < 0 || bullet.y > gameArea.offsetHeight) {
+                    gameState.bullets.splice(i, 1);
+                }
+            }
+        }
+
+        // تحديث حركة الأعداء
+        function updateEnemies() {
+            for (let i = 0; i < gameState.enemies.length; i++) {
+                const enemy = gameState.enemies[i];
+                
+                // حركة بسيطة نحو اللاعب
+                const dx = gameState.playerX - enemy.x;
+                const dy = gameState.playerY - enemy.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    const speed = 2;
+                    enemy.x += (dx / distance) * speed;
+                    enemy.y += (dy / distance) * speed;
+                }
+            }
+        }
+
+        // تحديث الموارد
+        function updateResources() {
+            // يمكن إضافة حركة أو تأثيرات للموارد هنا
+        }
+
+        // التحقق من التصادمات
+        function checkCollisions() {
+            // تصادم الرصاصات مع الأعداء
+            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                const bullet = gameState.bullets[i];
+                
+                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+                    const enemy = gameState.enemies[j];
+                    
+                    const dx = bullet.x - enemy.x;
+                    const dy = bullet.y - enemy.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 25) { // مسافة تصادم
+                        // إزالة الرصاصة والعدو
+                        gameState.bullets.splice(i, 1);
+                        gameState.enemies.splice(j, 1);
+                        
+                        // زيادة النقاط
+                        gameState.score += 100;
+                        
+                        // إضافة عدو جديد
+                        spawnEnemy();
+                        
+                        break;
+                    }
+                }
+            }
+            
+            // تصادم اللاعب مع الأعداء
+            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                const enemy = gameState.enemies[i];
+                
+                const dx = gameState.playerX - enemy.x;
+                const dy = gameState.playerY - enemy.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 40) { // مسافة تصادم
+                    // إزالة العدو
+                    gameState.enemies.splice(i, 1);
+                    
+                    // تقليل الصحة (ما لم يكن وضع الإله مفعلاً)
+                    if (!cheatCodes.GODMODE) {
+                        gameState.health -= 10;
+                    }
+                    
+                    // إضافة عدو جديد
+                    spawnEnemy();
+                }
+            }
+            
+            // تصادم اللاعب مع الموارد
+            for (let i = gameState.resources.length - 1; i >= 0; i--) {
+                const resource = gameState.resources[i];
+                
+                const dx = gameState.playerX - resource.x;
+                const dy = gameState.playerY - resource.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 35) { // مسافة تصادم
+                    // إزالة المورد
+                    gameState.resources.splice(i, 1);
+                    
+                    // زيادة الطاقة
+                    gameState.energy = Math.min(100, gameState.energy + 20);
+                    
+                    // زيادة النقاط
+                    gameState.score += 50;
+                }
+            }
+        }
+
+        // نهاية اللعبة
+        function endGame() {
+            gameRunning = false;
+            clearInterval(gameInterval);
+            showAdminMessage("انتهت اللعبة! النقاط النهائية: " + gameState.score, 5000);
+        }
+
+        // عرض اللعبة
+        function renderGame() {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
+            // تحديث موقع اللاعب
+            const player = document.getElementById('player');
+            if (player) {
+                player.style.left = (gameState.playerX - 22.5) + 'px';
+                player.style.top = (gameState.playerY - 22.5) + 'px';
+            }
+            
+            // إزالة العناصر القديمة
+            const oldEnemies = document.querySelectorAll('.enemy');
+            oldEnemies.forEach(enemy => enemy.remove());
+            
+            const oldBullets = document.querySelectorAll('.bullet');
+            oldBullets.forEach(bullet => bullet.remove());
+            
+            const oldResources = document.querySelectorAll('.resource');
+            oldResources.forEach(resource => resource.remove());
+            
+            // عرض الأعداء
+            gameState.enemies.forEach((enemy, index) => {
+                const enemyElement = document.createElement('div');
+                enemyElement.className = 'enemy';
+                enemyElement.style.left = enemy.x + 'px';
+                enemyElement.style.top = enemy.y + 'px';
+                gameArea.appendChild(enemyElement);
+            });
+            
+            // عرض الرصاصات
+            gameState.bullets.forEach((bullet, index) => {
+                const bulletElement = document.createElement('div');
+                bulletElement.className = 'bullet';
+                bulletElement.style.left = bullet.x + 'px';
+                bulletElement.style.top = bullet.y + 'px';
+                gameArea.appendChild(bulletElement);
+            });
+            
+            // عرض الموارد
+            gameState.resources.forEach((resource, index) => {
+                const resourceElement = document.createElement('div');
+                resourceElement.className = 'resource';
+                resourceElement.style.left = resource.x + 'px';
+                resourceElement.style.top = resource.y + 'px';
+                gameArea.appendChild(resourceElement);
+            });
+        }
+
+        // ==================== نظام التحكم ====================
+        // استماع لأحداث لوحة المفاتيح
+        document.addEventListener('keydown', function(event) {
+            const key = event.key.toLowerCase();
+            
+            if (['z', 's', 'q', 'd'].includes(key)) {
+                activeKeys[key] = true;
+                const keyElement = document.getElementById('key' + key.toUpperCase());
+                if (keyElement) {
+                    keyElement.classList.add('active');
+                }
+                
+                // بدء اللعبة تلقائيًا إذا لم تكن قد بدأت
+                if (!gameRunning) {
+                    startGame();
+                }
+            }
+        });
+
+        document.addEventListener('keyup', function(event) {
+            const key = event.key.toLowerCase();
+            
+            if (['z', 's', 'q', 'd'].includes(key)) {
+                activeKeys[key] = false;
+                const keyElement = document.getElementById('key' + key.toUpperCase());
+                if (keyElement) {
+                    keyElement.classList.remove('active');
+                }
+            }
+        });
+
+        // استماع لأحداث الماوس
+        document.getElementById('gameArea').addEventListener('mousemove', function(event) {
+            const rect = this.getBoundingClientRect();
+            gameState.mouseX = event.clientX - rect.left;
+            gameState.mouseY = event.clientY - rect.top;
+        });
+
+        document.getElementById('gameArea').addEventListener('click', function() {
+            shootAtMouse();
+            
+            // بدء اللعبة تلقائيًا إذا لم تكن قد بدأت
+            if (!gameRunning) {
+                startGame();
+            }
+        });
+
+        // تعليمات اللعب
+        function showInstructions() {
+            alert("تعليمات اللعب:\n\n" +
+                  "- استخدم أزرار Z (لأعلى)، S (لأسفل)، Q (لليسار)، D (لليمين) للتحكم\n" +
+                  "- انقر بالماوس لإطلاق النار\n" +
+                  "- حرك الماوس لتوجيه سلاحك\n" +
+                  "- تجنب الاصطدام بالأعداء للحفاظ على صحتك\n" +
+                  "- اجمع الموارد الخضراء لزيادة طاقتك\n" +
+                  "- استخدم أكواد الغش من لوحة الإدارة للحصول على قدرات خاصة");
+        }
+
+        // التهيئة الأولية
+        updateGameDisplay();
+        renderGame();
+    </script>
+</body>
+</html>
