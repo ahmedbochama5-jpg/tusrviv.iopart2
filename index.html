@@ -341,38 +341,48 @@
     </div>
 
     <script>
-        // ==================== AUDIO SYSTEM ====================
+        // ==================== AUDIO SYSTEM - INLINE ====================
         let gameMusic;
         let musicEnabled = false;
 
         function initializeAudio() {
-            // Create audio element
-            gameMusic = new Audio('https://cdn.pixabay.com/download/audio/2025/05/12/audio_8e81be451e.mp3?filename=phonk-phonk-music-340264.mp3');
-            
-            // Configure audio
-            gameMusic.loop = true;
-            gameMusic.volume = 0.7;
-            
-            // Event listeners for audio
-            gameMusic.addEventListener('canplaythrough', function() {
-                document.getElementById('musicStatus').textContent = 'Music: Ready';
-                document.getElementById('musicStatus').className = 'music-status';
-            });
-            
-            gameMusic.addEventListener('error', function(e) {
-                console.error('Audio error:', e);
-                document.getElementById('musicStatus').textContent = 'Music: Error Loading';
+            try {
+                // إنشاء عنصر صوتي مع بيانات inline (سيتم استخدام ملف بديل)
+                gameMusic = new Audio();
+                gameMusic.loop = true;
+                gameMusic.volume = 0.7;
+                
+                // استخدام ملف صوتي بديل مجاني (يمكن استبداله بأي ملف)
+                // هنا نستخدم ملف صوتي أساسي بدلاً من الرابط الخارجي
+                gameMusic.src = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAABAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAABQTEFNRTMuMTAwBKkAAAAAAAAAADUgJAOBTwAB9AAACHDLG/jmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+                
+                // إعداد مستمعي الأحداث
+                gameMusic.addEventListener('canplaythrough', function() {
+                    document.getElementById('musicStatus').textContent = 'Music: Ready';
+                    document.getElementById('musicStatus').className = 'music-status';
+                });
+                
+                gameMusic.addEventListener('error', function(e) {
+                    console.log('Audio not available, continuing without music');
+                    document.getElementById('musicStatus').textContent = 'Music: Not Available';
+                    document.getElementById('musicStatus').className = 'music-status off';
+                    document.querySelector('.audio-controls').style.display = 'none';
+                });
+                
+                gameMusic.addEventListener('waiting', function() {
+                    document.getElementById('musicStatus').textContent = 'Music: Loading...';
+                });
+                
+            } catch (error) {
+                console.log('Audio initialization failed:', error);
+                document.getElementById('musicStatus').textContent = 'Music: Disabled';
                 document.getElementById('musicStatus').className = 'music-status off';
-            });
-            
-            gameMusic.addEventListener('waiting', function() {
-                document.getElementById('musicStatus').textContent = 'Music: Buffering...';
-            });
+                document.querySelector('.audio-controls').style.display = 'none';
+            }
         }
 
         function playMusic() {
             if (gameMusic && !musicEnabled) {
-                // Create a promise to handle autoplay
                 const playPromise = gameMusic.play();
                 
                 if (playPromise !== undefined) {
@@ -381,12 +391,9 @@
                         document.getElementById('musicStatus').textContent = 'Music: Playing 🎵';
                         document.getElementById('musicStatus').className = 'music-status';
                     }).catch(error => {
-                        console.log('Autoplay prevented:', error);
+                        console.log('Play failed:', error);
                         document.getElementById('musicStatus').textContent = 'Music: Click Play Button';
                         document.getElementById('musicStatus').className = 'music-status off';
-                        
-                        // Show alert to user
-                        alert('🔊 Please click the "Play Music" button to start the audio!');
                     });
                 }
             }
@@ -402,15 +409,6 @@
             }
         }
 
-        // Audio control event listeners
-        document.getElementById('playMusic').addEventListener('click', function() {
-            playMusic();
-        });
-
-        document.getElementById('stopMusic').addEventListener('click', function() {
-            stopMusic();
-        });
-
         // ==================== PLAYER TYPES ====================
         const PLAYER_TYPES = {
             CLASSIC: {
@@ -421,7 +419,6 @@
                 color: '#00ff00',
                 special: "Balanced stats",
                 draw: function(ctx, x, y, size) {
-                    // Rocket body
                     ctx.fillStyle = this.color;
                     ctx.beginPath();
                     ctx.moveTo(x, y - size);
@@ -431,7 +428,6 @@
                     ctx.closePath();
                     ctx.fill();
                     
-                    // Rocket flames
                     ctx.fillStyle = '#ffff00';
                     ctx.beginPath();
                     ctx.moveTo(x - size/3, y + size/2);
@@ -449,19 +445,16 @@
                 color: '#ff4444',
                 special: "High speed",
                 draw: function(ctx, x, y, size) {
-                    // UFO top
                     ctx.fillStyle = this.color;
                     ctx.beginPath();
                     ctx.ellipse(x, y - size/3, size, size/1.5, 0, 0, Math.PI * 2);
                     ctx.fill();
                     
-                    // UFO bottom
                     ctx.fillStyle = '#888888';
                     ctx.beginPath();
                     ctx.ellipse(x, y + size/3, size/1.2, size/3, 0, 0, Math.PI * 2);
                     ctx.fill();
                     
-                    // Cockpit
                     ctx.fillStyle = '#00ffff';
                     ctx.beginPath();
                     ctx.arc(x, y - size/3, size/3, 0, Math.PI * 2);
@@ -476,7 +469,6 @@
                 color: '#00ffff',
                 special: "Very fast",
                 draw: function(ctx, x, y, size) {
-                    // Arrow shape
                     ctx.fillStyle = this.color;
                     ctx.beginPath();
                     ctx.moveTo(x, y - size);
@@ -486,7 +478,6 @@
                     ctx.closePath();
                     ctx.fill();
                     
-                    // Speed lines
                     ctx.strokeStyle = '#ffffff';
                     ctx.lineWidth = 2;
                     ctx.beginPath();
@@ -505,20 +496,17 @@
                 color: '#ffff00',
                 special: "More health",
                 draw: function(ctx, x, y, size) {
-                    // Main body
                     ctx.fillStyle = this.color;
                     ctx.beginPath();
                     ctx.arc(x, y, size, 0, Math.PI * 2);
                     ctx.fill();
                     
-                    // Armor plates
                     ctx.strokeStyle = '#888888';
                     ctx.lineWidth = 3;
                     ctx.beginPath();
                     ctx.arc(x, y, size, 0, Math.PI * 2);
                     ctx.stroke();
                     
-                    // Crosshair
                     ctx.strokeStyle = '#ff4444';
                     ctx.lineWidth = 2;
                     ctx.beginPath();
@@ -537,7 +525,6 @@
                 color: '#ff00ff',
                 special: "Small target",
                 draw: function(ctx, x, y, size) {
-                    // Diamond shape
                     ctx.fillStyle = this.color;
                     ctx.beginPath();
                     ctx.moveTo(x, y - size);
@@ -547,14 +534,12 @@
                     ctx.closePath();
                     ctx.fill();
                     
-                    // Glow effect
                     ctx.strokeStyle = '#ffffff';
                     ctx.lineWidth = 1;
                     ctx.setLineDash([5, 5]);
                     ctx.stroke();
                     ctx.setLineDash([]);
                     
-                    // Core
                     ctx.fillStyle = '#ffffff';
                     ctx.beginPath();
                     ctx.arc(x, y, size/3, 0, Math.PI * 2);
@@ -615,7 +600,6 @@
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
 
-            // Initialize player based on selected type
             const playerType = PLAYER_TYPES[selectedPlayerType];
             player = { 
                 x: canvas.width / 2, 
@@ -635,18 +619,13 @@
             resources = [];
             gameRunning = true;
 
-            // Auto-play music when game starts (if user already interacted)
             if (musicEnabled) {
                 playMusic();
             }
 
-            // Setup event listeners
             setupEventListeners();
-            
-            // Start game loop
             gameLoop();
             
-            // Spawn initial enemies and resources
             for (let i = 0; i < 3; i++) spawnEnemy();
             for (let i = 0; i < 2; i++) spawnResource();
         }
@@ -659,14 +638,9 @@
         }
 
         function setupEventListeners() {
-            // Keyboard events
             document.addEventListener('keydown', (e) => keys[e.key] = true);
             document.addEventListener('keyup', (e) => keys[e.key] = false);
-
-            // Mouse events
             canvas.addEventListener('mousedown', shootBullet);
-
-            // Game over screen buttons
             document.getElementById('restartBtn').addEventListener('click', restartGame);
             document.getElementById('menuBtn').addEventListener('click', showMainMenu);
         }
@@ -947,13 +921,22 @@
             });
         });
 
+        // Audio control event listeners
+        document.getElementById('playMusic').addEventListener('click', function() {
+            playMusic();
+        });
+
+        document.getElementById('stopMusic').addEventListener('click', function() {
+            stopMusic();
+        });
+
         // ==================== INITIALIZATION ====================
         window.addEventListener('load', function() {
             createStars();
             updateMenuStats();
             initializeAudio();
             
-            // Try to auto-play music after user interaction
+            // محاولة تشغيل الموسيقى تلقائياً بعد النقر
             document.addEventListener('click', function firstClick() {
                 playMusic();
                 document.removeEventListener('click', firstClick);
