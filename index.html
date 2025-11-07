@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - نظام الإدارة السري</title>
+    <title>Alpha Arena - نظام الإدارة السري (مُصلح)</title>
     <style>
         * {
             margin: 0;
@@ -358,7 +358,7 @@
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">لعبة تجريبية مع نظام إدارة سري</div>
+            <div class="game-subtitle">لعبة تجريبية مع نظام إدارة سري (مُصلح)</div>
         </div>
 
         <div class="game-area" id="gameArea">
@@ -525,12 +525,14 @@
         // عرض رسالة الإدارة
         function showAdminMessage(message, duration = 2000) {
             const messageDiv = document.getElementById('adminMessage');
-            messageDiv.textContent = message;
-            messageDiv.style.display = 'block';
-            
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-            }, duration);
+            if (messageDiv) {
+                messageDiv.textContent = message;
+                messageDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, duration);
+            }
         }
 
         // تفعيل أكواد الغش
@@ -595,17 +597,19 @@
             }
         }
 
-        // تحديث حالة الغش في الواجهة
+        // تحديث حالة الغش في الواجهة - مع التحقق من وجود العنصر
         function updateCheatStatus(elementId, isActive) {
             const element = document.getElementById(elementId);
-            element.textContent = isActive ? 'مفعل' : 'غير مفعل';
-            element.className = isActive ? 'status-value cheat-active' : 'status-value cheat-inactive';
+            if (element) {
+                element.textContent = isActive ? 'مفعل' : 'غير مفعل';
+                element.className = isActive ? 'status-value cheat-active' : 'status-value cheat-inactive';
+            }
         }
 
         // إدخال أكواد الغش يدويًا
         function enterCheatCode() {
             const cheatInput = document.getElementById('cheatInput');
-            const code = cheatInput.value.toUpperCase().trim();
+            const code = cheatInput ? cheatInput.value.toUpperCase().trim() : '';
             
             if (!code) {
                 showAdminMessage("الرجاء إدخال كود الغش!", 2000);
@@ -632,7 +636,9 @@
                 showAdminMessage("كود الغش غير معروف! ❌", 2000);
             }
             
-            cheatInput.value = '';
+            if (cheatInput) {
+                cheatInput.value = '';
+            }
         }
 
         // عرض أكواد الغش
@@ -663,12 +669,17 @@
             showAdminMessage("تم إعادة تعيين كل أكواد الغش! 🔄", 2000);
         }
 
-        // تحديث عرض حالة اللعبة
+        // تحديث عرض حالة اللعبة - مع التحقق من وجود العناصر
         function updateGameDisplay() {
-            document.getElementById('scoreDisplay').textContent = gameState.score;
-            document.getElementById('healthDisplay').textContent = gameState.health;
-            document.getElementById('energyDisplay').textContent = gameState.energy;
-            document.getElementById('enemiesDisplay').textContent = gameState.enemies.length;
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const healthDisplay = document.getElementById('healthDisplay');
+            const energyDisplay = document.getElementById('energyDisplay');
+            const enemiesDisplay = document.getElementById('enemiesDisplay');
+            
+            if (scoreDisplay) scoreDisplay.textContent = gameState.score;
+            if (healthDisplay) healthDisplay.textContent = gameState.health;
+            if (energyDisplay) energyDisplay.textContent = gameState.energy;
+            if (enemiesDisplay) enemiesDisplay.textContent = gameState.enemies.length;
         }
 
         // ==================== محرك اللعبة المبسط ====================
@@ -709,6 +720,8 @@
 
         function spawnEnemy() {
             const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
             const x = Math.random() * (gameArea.offsetWidth - 30);
             const y = Math.random() * (gameArea.offsetHeight - 30);
             
@@ -717,6 +730,7 @@
 
         function spawnResources(count) {
             const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
             
             for (let i = 0; i < count; i++) {
                 const x = Math.random() * (gameArea.offsetWidth - 15);
@@ -749,7 +763,8 @@
                 bullet.x += 10;
                 
                 // إزالة الرصاصات التي خرجت من الشاشة
-                if (bullet.x > document.getElementById('gameArea').offsetWidth) {
+                const gameArea = document.getElementById('gameArea');
+                if (bullet.x > (gameArea ? gameArea.offsetWidth : 800)) {
                     gameState.bullets.splice(index, 1);
                 }
             });
@@ -835,14 +850,17 @@
 
         function renderGame() {
             const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
             
             // مسح منطقة اللعبة
             gameArea.innerHTML = '<div class="player" id="player"></div>';
             const player = document.getElementById('player');
             
-            // تحديث موقع اللاعب
-            player.style.left = (gameState.playerX - 20) + 'px';
-            player.style.top = (gameState.playerY - 20) + 'px';
+            if (player) {
+                // تحديث موقع اللاعب
+                player.style.left = (gameState.playerX - 20) + 'px';
+                player.style.top = (gameState.playerY - 20) + 'px';
+            }
             
             // إضافة الأعداء
             gameState.enemies.forEach(enemy => {
@@ -928,19 +946,21 @@
             
             const speed = gameState.energy > 20 ? 10 : 5;
             const gameArea = document.getElementById('gameArea');
+            const areaWidth = gameArea ? gameArea.offsetWidth : 800;
+            const areaHeight = gameArea ? gameArea.offsetHeight : 400;
             
             switch(direction) {
                 case 'up':
                     gameState.playerY = Math.max(20, gameState.playerY - speed);
                     break;
                 case 'down':
-                    gameState.playerY = Math.min(gameArea.offsetHeight - 20, gameState.playerY + speed);
+                    gameState.playerY = Math.min(areaHeight - 20, gameState.playerY + speed);
                     break;
                 case 'left':
                     gameState.playerX = Math.max(20, gameState.playerX - speed);
                     break;
                 case 'right':
-                    gameState.playerX = Math.min(gameArea.offsetWidth - 20, gameState.playerX + speed);
+                    gameState.playerX = Math.min(areaWidth - 20, gameState.playerX + speed);
                     break;
             }
             
@@ -958,7 +978,8 @@
             if (e.key === 'Enter') {
                 currentCheatCode = '';
                 showAdminMessage('أدخل كود الغش...', 3000);
-                document.getElementById('cheatInput').focus();
+                const cheatInput = document.getElementById('cheatInput');
+                if (cheatInput) cheatInput.focus();
                 return;
             }
             
