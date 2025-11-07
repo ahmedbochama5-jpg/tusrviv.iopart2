@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - قائمة المتصدرين</title>
+    <title>لعبة بانجلزي - Bangles Game</title>
     <style>
         * {
             margin: 0;
@@ -13,179 +13,158 @@
         }
         
         body {
-            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
             min-height: 100vh;
-            padding: 10px;
+            padding: 20px;
             overflow-x: hidden;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         .header {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             text-align: center;
         }
 
         .game-title {
-            font-size: 4em;
+            font-size: 3.5em;
             font-weight: bold;
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
         .game-subtitle {
-            font-size: 1.4em;
+            font-size: 1.3em;
             color: #e0e0e0;
             margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .main-content {
             display: flex;
-            gap: 20px;
+            gap: 30px;
             flex-wrap: wrap;
             justify-content: center;
+            align-items: flex-start;
         }
 
         .game-section {
             flex: 2;
-            min-width: 700px;
+            min-width: 600px;
         }
 
         .panels-section {
             flex: 1;
-            min-width: 400px;
+            min-width: 350px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
         .panel {
-            background: rgba(40, 40, 60, 0.9);
-            border: 3px solid;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-        }
-
-        .leaderboard-panel {
-            border-color: #ffd93d;
-            max-height: 600px;
-            overflow-y: auto;
-        }
-
-        .admin-panel {
-            border-color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
         }
 
         .game-panel {
-            border-color: #4ecdc4;
+            border-color: #48dbfb;
         }
 
-        .cheat-panel {
-            border-color: #ffd93d;
+        .stats-panel {
+            border-color: #feca57;
+        }
+
+        .controls-panel {
+            border-color: #ff9ff3;
         }
 
         .panel-title {
-            font-size: 1.6em;
-            margin-bottom: 15px;
-            color: #4ecdc4;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
-        .leaderboard-title {
-            color: #ffd93d;
+        .stats-title {
+            color: #feca57;
         }
 
-        .admin-title {
-            color: #ff6b6b;
-        }
-
-        .cheat-title {
-            color: #ffd93d;
+        .controls-title {
+            color: #ff9ff3;
         }
 
         .btn {
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
             border: none;
             color: white;
-            padding: 14px 22px;
+            padding: 14px 25px;
             font-size: 1.1em;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 50px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin: 6px;
+            margin: 8px;
             width: 100%;
-            max-width: 220px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 250px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
         }
 
         .btn:active {
-            transform: translateY(0);
-        }
-
-        .admin-btn {
-            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-            color: white;
-        }
-
-        .cheat-btn {
-            background: linear-gradient(45deg, #ffd93d, #4ecdc4);
-            color: white;
-        }
-
-        .music-btn {
-            background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
-            color: white;
+            transform: translateY(-2px);
         }
 
         .start-btn {
-            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            background: linear-gradient(45deg, #48dbfb, #0abde3);
             font-size: 1.3em;
-            padding: 18px 30px;
+            padding: 18px 35px;
         }
 
-        .leaderboard-btn {
-            background: linear-gradient(45deg, #ffd93d, #ff9f43);
-            color: white;
+        .reset-btn {
+            background: linear-gradient(45deg, #ff9ff3, #f368e0);
+        }
+
+        .music-btn {
+            background: linear-gradient(45deg, #feca57, #ff9f43);
         }
 
         .btn-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-            gap: 12px;
-            margin-top: 15px;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
         }
 
         .status {
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 8px;
-            background: rgba(50, 50, 70, 0.6);
-            border: 2px solid #4ecdc4;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .status-item {
             display: flex;
             justify-content: space-between;
-            margin: 6px 0;
-            font-size: 1.1em;
+            margin: 10px 0;
+            font-size: 1.2em;
         }
 
         .status-label {
@@ -193,142 +172,115 @@
         }
 
         .status-value {
-            color: #4ecdc4;
+            color: #feca57;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
         }
 
-        .cheat-active {
-            color: #4ecdc4;
-            text-shadow: 0 0 8px #4ecdc4;
+        .game-area {
+            width: 100%;
+            height: 600px;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+            border-radius: 25px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
         }
 
-        .cheat-inactive {
-            color: #ff6b6b;
+        /* تصميم الأساور (البانجل) */
+        .bangle {
+            position: absolute;
+            border-radius: 50%;
+            border: 8px solid;
+            box-shadow: 0 0 20px currentColor, inset 0 0 10px rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
 
-        .admin-message {
-            position: fixed;
+        .bangle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px currentColor, inset 0 0 15px rgba(255, 255, 255, 0.7);
+        }
+
+        .bangle.selected {
+            transform: scale(1.15);
+            box-shadow: 0 0 40px currentColor, 0 0 60px rgba(255, 255, 255, 0.5);
+            animation: pulse 1s infinite;
+        }
+
+        .bangle.red { border-color: #ff6b6b; color: #ff6b6b; }
+        .bangle.blue { border-color: #48dbfb; color: #48dbfb; }
+        .bangle.green { border-color: #1dd1a1; color: #1dd1a1; }
+        .bangle.yellow { border-color: #feca57; color: #feca57; }
+        .bangle.purple { border-color: #ff9ff3; color: #ff9ff3; }
+        .bangle.orange { border-color: #ff9f43; color: #ff9f43; }
+
+        @keyframes pulse {
+            0% { transform: scale(1.15); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1.15); }
+        }
+
+        /* تأثيرات خاصة */
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: float 1s ease-out forwards;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .combo-display {
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(40, 40, 60, 0.95);
-            padding: 25px 35px;
-            border-radius: 12px;
-            border: 3px solid #ffd93d;
-            color: #ffd93d;
-            font-size: 1.8em;
+            font-size: 4em;
             font-weight: bold;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 0 40px rgba(255, 217, 61, 0.6);
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #feca57;
+            text-shadow: 0 0 20px rgba(254, 202, 87, 0.7);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.5s ease;
         }
 
-        .leaderboard-list {
-            margin-top: 15px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .leaderboard-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            margin: 8px 0;
-            background: rgba(50, 50, 70, 0.6);
-            border-radius: 8px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .leaderboard-item:hover {
-            transform: translateX(-5px);
-            border-color: #ffd93d;
-        }
-
-        .leaderboard-item.current-player {
-            background: rgba(255, 217, 61, 0.2);
-            border-color: #ffd93d;
-        }
-
-        .leaderboard-rank {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #ffd93d;
-            min-width: 30px;
-        }
-
-        .leaderboard-name {
-            flex: 1;
-            text-align: right;
-            font-size: 1.1em;
-            margin: 0 15px;
-            color: white;
-        }
-
-        .leaderboard-score {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #4ecdc4;
-            min-width: 80px;
-        }
-
-        .leaderboard-medal {
-            font-size: 1.5em;
-            margin-left: 10px;
-        }
-
-        .leaderboard-header {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
-            background: rgba(255, 217, 61, 0.3);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #ffd93d;
-        }
-
-        .leaderboard-stats {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(50, 50, 70, 0.6);
-            border-radius: 8px;
-            font-size: 0.9em;
-        }
-
-        .player-input {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border-radius: 8px;
-            border: 2px solid #ffd93d;
-            background: rgba(30, 30, 50, 0.8);
-            color: white;
-            text-align: center;
-            font-size: 1.1em;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+        .combo-display.show {
+            opacity: 1;
+            transform: translate(-50%, -60%);
         }
 
         .instructions {
             margin-top: 20px;
-            padding: 18px;
-            background: rgba(50, 50, 70, 0.6);
-            border-radius: 8px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
             text-align: right;
             font-size: 1.1em;
-            border: 2px solid #4ecdc4;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .instructions h3 {
-            color: #4ecdc4;
-            margin-bottom: 12px;
-            font-size: 1.3em;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            color: #48dbfb;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .instructions ul {
@@ -337,211 +289,46 @@
         }
 
         .instructions li {
-            margin: 10px 0;
-            color: #e0e0e0;
-        }
-
-        .instructions code {
-            background: rgba(30, 30, 50, 0.8);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #ffd93d;
-        }
-
-        .toggle-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 100;
-            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
-            border: none;
-            color: white;
-            padding: 12px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.4em;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .music-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-            background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
-            border: none;
-            color: white;
-            padding: 12px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.4em;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        .cheat-input {
-            width: 100%;
-            padding: 12px;
             margin: 12px 0;
-            border-radius: 8px;
-            border: 2px solid #4ecdc4;
-            background: rgba(30, 30, 50, 0.8);
-            color: white;
-            text-align: center;
-            font-size: 1.1em;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
         }
 
-        .game-area {
-            width: 100%;
-            height: 600px;
-            background: 
-                linear-gradient(45deg, #2c3e50 25%, transparent 25%),
-                linear-gradient(-45deg, #2c3e50 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #2c3e50 75%),
-                linear-gradient(-45deg, transparent 75%, #2c3e50 75%),
-                linear-gradient(135deg, #3498db, #2c3e50);
-            background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 100% 100%;
-            background-position: 0 0, 0 20px, 20px -20px, -20px 0px, 0 0;
-            border-radius: 15px;
-            border: 4px solid #34495e;
-            margin: 10px 0;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-            cursor: crosshair;
+        .instructions li::before {
+            content: "•";
+            color: #feca57;
+            font-size: 1.5em;
+            margin-left: 10px;
         }
 
-        .game-area::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(52, 152, 219, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(155, 89, 182, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(46, 204, 113, 0.3) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .player {
-            position: absolute;
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(45deg, #e74c3c, #c0392b);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px #e74c3c, 0 0 30px rgba(231, 76, 60, 0.5);
-            z-index: 10;
-            border: 3px solid #fff;
-        }
-
-        .enemy {
-            position: absolute;
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(45deg, #3498db, #2980b9);
-            border-radius: 6px;
-            box-shadow: 0 0 15px #3498db;
-            z-index: 5;
-            border: 2px solid #fff;
-        }
-
-        .bullet {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #f1c40f;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #f1c40f;
-            z-index: 8;
-        }
-
-        .resource {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: linear-gradient(45deg, #2ecc71, #27ae60);
-            border-radius: 50%;
-            box-shadow: 0 0 15px #2ecc71;
-            z-index: 6;
-            animation: pulse 2s infinite;
-            border: 2px solid #fff;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .controls-info {
+        .level-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin: 20px 0;
-            padding: 15px;
-            background: rgba(50, 50, 70, 0.8);
-            border-radius: 12px;
-            border: 2px solid #4ecdc4;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .controls-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            max-width: 250px;
-            margin: 0 auto;
+        .level-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .control-key {
-            background: linear-gradient(45deg, #34495e, #2c3e50);
-            border: 2px solid #4ecdc4;
-            border-radius: 8px;
-            padding: 18px;
-            font-size: 1.3em;
+        .level-dot.active {
+            background: #feca57;
+            transform: scale(1.3);
+            box-shadow: 0 0 10px #feca57;
+        }
+
+        .timer {
+            font-size: 2em;
             font-weight: bold;
-            color: white;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .control-key.active {
-            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
-            box-shadow: 0 0 20px #4ecdc4;
-            transform: scale(0.95);
-        }
-
-        .control-center {
-            grid-column: 2;
-            grid-row: 2;
-        }
-
-        .mouse-info {
-            margin-top: 15px;
-            padding: 12px;
-            background: rgba(60, 60, 80, 0.6);
-            border-radius: 8px;
-            font-size: 1.1em;
-            border: 1px solid #4ecdc4;
-        }
-
-        .mouse-info span {
-            color: #4ecdc4;
-            font-weight: bold;
-        }
-
-        .control-mode {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(74, 205, 196, 0.2);
-            border-radius: 8px;
-            font-size: 1em;
-            border: 1px solid #4ecdc4;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            margin: 15px 0;
         }
 
         @media (max-width: 1200px) {
@@ -560,7 +347,7 @@
 
         @media (max-width: 768px) {
             .game-title {
-                font-size: 2.8em;
+                font-size: 2.5em;
             }
             
             .game-area {
@@ -574,793 +361,483 @@
     </style>
 </head>
 <body>
-    <button class="toggle-btn" id="adminToggle">⚡</button>
-    <button class="music-toggle" id="musicToggle">🎵</button>
-
     <div class="container">
         <div class="header">
-            <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">انقر على بدء اللعبة أو اضغط على أي زر تحكم للبدء!</div>
+            <div class="game-title">بانجلزي</div>
+            <div class="game-subtitle">Bangles Game - العب واجمع الأساور الملونة!</div>
         </div>
 
         <div class="main-content">
             <div class="game-section">
-                <div class="game-area" id="gameArea">
-                    <div class="player" id="player"></div>
-                    <!-- سيتم إضافة الأعداء والرصاصات ديناميكيًا -->
-                </div>
-
-                <div class="controls-info">
-                    <h3 style="color: #4ecdc4; margin-bottom: 15px; font-size: 1.4em;">أزرار التحكم</h3>
-                    <div class="controls-grid">
-                        <div class="control-key" id="keyZ">Z<br>▲</div>
-                        <div class="control-key" id="keyQ">Q<br>◀</div>
-                        <div class="control-key" id="keyD">D<br>▶</div>
-                        <div class="control-key" id="keyS">S<br>▼</div>
+                <div class="panel game-panel">
+                    <div class="game-area" id="gameArea">
+                        <div class="combo-display" id="comboDisplay"></div>
+                        <!-- سيتم إضافة الأساور ديناميكياً -->
                     </div>
-                    <div class="mouse-info">
-                        🖱️ <span>انقر بالماوس لإطلاق النار</span> • 🎯 حرك الماوس لتوجيه السلاح
+                    
+                    <div class="level-indicator" id="levelIndicator">
+                        <!-- سيتم إضافة نقاط المستوى ديناميكياً -->
                     </div>
-                    <div class="control-mode">
-                        💡 <strong>وضع التحكم المستمر:</strong> اضغط على الزر مرة واحدة للحركة المستمرة
+                    
+                    <div class="timer" id="timer">60</div>
+                    
+                    <div class="btn-grid">
+                        <button class="btn start-btn" onclick="startGame()">🎮 بدء اللعبة</button>
+                        <button class="btn reset-btn" onclick="resetGame()">🔄 إعادة تعيين</button>
+                        <button class="btn music-btn" onclick="toggleMusic()">🎵 تشغيل/إيقاف الموسيقى</button>
                     </div>
                 </div>
             </div>
 
             <div class="panels-section">
-                <!-- لوحة قائمة المتصدرين -->
-                <div class="panel leaderboard-panel">
-                    <h2 class="panel-title leaderboard-title">🏆 قائمة المتصدرين</h2>
-                    
-                    <input type="text" class="player-input" id="playerNameInput" placeholder="أدخل اسمك هنا..." maxlength="15">
-                    
-                    <div class="btn-grid">
-                        <button class="btn leaderboard-btn" onclick="savePlayerScore()">💾 حفظ النتيجة</button>
-                        <button class="btn leaderboard-btn" onclick="showLeaderboard()">🔄 تحديث القائمة</button>
-                        <button class="btn leaderboard-btn" onclick="clearLeaderboard()">🗑️ مسح القائمة</button>
-                    </div>
-                    
-                    <div class="leaderboard-header">
-                        <span>الترتيب</span>
-                        <span>اللاعب</span>
-                        <span>النقاط</span>
-                    </div>
-                    
-                    <div class="leaderboard-list" id="leaderboardList">
-                        <!-- سيتم ملء القائمة ديناميكياً -->
-                    </div>
-                    
-                    <div class="leaderboard-stats">
-                        <div>عدد اللاعبين: <span id="totalPlayers">0</span></div>
-                        <div>أعلى نتيجة: <span id="highestScore">0</span></div>
-                    </div>
-                </div>
-
-                <div class="panel game-panel">
-                    <h2 class="panel-title">حالة اللعبة</h2>
+                <div class="panel stats-panel">
+                    <h2 class="panel-title stats-title">إحصائيات اللعبة</h2>
                     <div class="status">
                         <div class="status-item">
                             <span class="status-label">النقاط:</span>
                             <span class="status-value" id="scoreDisplay">0</span>
                         </div>
                         <div class="status-item">
-                            <span class="status-label">الصحة:</span>
-                            <span class="status-value" id="healthDisplay">100</span>
+                            <span class="status-label">المستوى:</span>
+                            <span class="status-value" id="levelDisplay">1</span>
                         </div>
                         <div class="status-item">
-                            <span class="status-label">الطاقة:</span>
-                            <span class="status-value" id="energyDisplay">100</span>
+                            <span class="status-label">الكومبو:</span>
+                            <span class="status-value" id="comboDisplay">1x</span>
                         </div>
                         <div class="status-item">
-                            <span class="status-label">الأعداء:</span>
-                            <span class="status-value" id="enemiesDisplay">0</span>
+                            <span class="status-label">الأساور المجمعة:</span>
+                            <span class="status-value" id="banglesCollected">0</span>
                         </div>
-                    </div>
-                    
-                    <div class="btn-grid">
-                        <button class="btn start-btn" onclick="startGame()">🎮 بدء اللعبة</button>
-                        <button class="btn" onclick="resetGame()">🔄 إعادة تعيين</button>
-                        <button class="btn music-btn" onclick="toggleMusic()">🎵 تشغيل/إيقاف الموسيقى</button>
-                        <button class="btn" onclick="showInstructions()">❓ تعليمات اللعب</button>
+                        <div class="status-item">
+                            <span class="status-label">أفضل نتيجة:</span>
+                            <span class="status-value" id="highScoreDisplay">0</span>
+                        </div>
                     </div>
                 </div>
 
-                <div class="panel admin-panel" id="adminPanel" style="display:none">
-                    <h2 class="panel-title admin-title">أوامر الإدارة</h2>
-                    
-                    <div class="btn-grid">
-                        <button class="btn admin-btn" onclick="activateCheat('godmode')">وضع الإله ✨</button>
-                        <button class="btn admin-btn" onclick="activateCheat('unlimitedenergy')">طاقة غير محدودة ⚡</button>
-                        <button class="btn admin-btn" onclick="activateCheat('maxscore')">أقصى نقاط 🏆</button>
-                        <button class="btn admin-btn" onclick="activateCheat('killallenemies')">قتل كل الأعداء 💀</button>
+                <div class="panel controls-panel">
+                    <h2 class="panel-title controls-title">طريقة اللعب</h2>
+                    <div class="instructions">
+                        <h3>كيفية اللعب:</h3>
+                        <ul>
+                            <li>انقر على الأساور الملونة لجمعها</li>
+                            <li>اجمع 3 أساور من نفس اللون لتحصل على كومبو</li>
+                            <li>كل كومبو يضاعف نقاطك</li>
+                            <li>كل مستوى يصبح أكثر صعوبة</li>
+                            <li>انتبه للوقت المتبقي!</li>
+                        </ul>
                     </div>
-                </div>
-
-                <div class="panel cheat-panel">
-                    <h2 class="panel-title cheat-title">أكواد الغش</h2>
                     
-                    <input type="text" class="cheat-input" id="cheatInput" placeholder="اكتب كود الغش هنا...">
-                    
-                    <div class="btn-grid">
-                        <button class="btn cheat-btn" onclick="enterCheatCode()">تفعيل الكود</button>
-                        <button class="btn cheat-btn" onclick="showCheatCodes()">عرض الأكواد</button>
-                        <button class="btn cheat-btn" onclick="resetAllCheats()">إعادة تعيين الكل</button>
+                    <div class="instructions">
+                        <h3>أنواع الأساور:</h3>
+                        <ul>
+                            <li><span style="color: #ff6b6b">🔴 أحمر</span> - 10 نقاط</li>
+                            <li><span style="color: #48dbfb">🔵 أزرق</span> - 15 نقطة</li>
+                            <li><span style="color: #1dd1a1">🟢 أخضر</span> - 20 نقطة</li>
+                            <li><span style="color: #feca57">🟡 أصفر</span> - 25 نقطة</li>
+                            <li><span style="color: #ff9ff3">🟣 بنفسجي</span> - 30 نقطة</li>
+                            <li><span style="color: #ff9f43">🟠 برتقالي</span> - 35 نقطة</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="admin-message" id="adminMessage"></div>
-
     <script>
-        // ==================== نظام قائمة المتصدرين ====================
-        let leaderboard = [];
-        let currentPlayerName = '';
-
-        // تحميل قائمة المتصدرين من التخزين المحلي
-        function loadLeaderboard() {
-            const saved = localStorage.getItem('alphaArenaLeaderboard');
-            if (saved) {
-                leaderboard = JSON.parse(saved);
-            }
-            updateLeaderboardDisplay();
-        }
-
-        // حفظ قائمة المتصدرين في التخزين المحلي
-        function saveLeaderboard() {
-            localStorage.setItem('alphaArenaLeaderboard', JSON.stringify(leaderboard));
-        }
-
-        // حفظ نتيجة اللاعب
-        function savePlayerScore() {
-            const nameInput = document.getElementById('playerNameInput');
-            const playerName = nameInput ? nameInput.value.trim() : '';
-            
-            if (!playerName) {
-                showAdminMessage("الرجاء إدخال اسم اللاعب!", 2000);
-                return;
-            }
-            
-            if (gameState.score === 0) {
-                showAdminMessage("لا توجد نقاط لحفظها!", 2000);
-                return;
-            }
-            
-            currentPlayerName = playerName;
-            
-            // إضافة النتيجة إلى القائمة
-            leaderboard.push({
-                name: playerName,
-                score: gameState.score,
-                date: new Date().toLocaleDateString('ar-SA'),
-                timestamp: Date.now()
-            });
-            
-            // ترتيب القائمة تنازلياً حسب النقاط
-            leaderboard.sort((a, b) => b.score - a.score);
-            
-            // الاحتفاظ بأفضل 20 نتيجة فقط
-            if (leaderboard.length > 20) {
-                leaderboard = leaderboard.slice(0, 20);
-            }
-            
-            saveLeaderboard();
-            updateLeaderboardDisplay();
-            
-            showAdminMessage(`تم حفظ نتيجة ${playerName}! 🎉`, 3000);
-            
-            if (nameInput) {
-                nameInput.value = '';
-            }
-        }
-
-        // تحديث عرض قائمة المتصدرين
-        function updateLeaderboardDisplay() {
-            const leaderboardList = document.getElementById('leaderboardList');
-            const totalPlayers = document.getElementById('totalPlayers');
-            const highestScore = document.getElementById('highestScore');
-            
-            if (!leaderboardList) return;
-            
-            leaderboardList.innerHTML = '';
-            
-            if (leaderboard.length === 0) {
-                leaderboardList.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">لا توجد نتائج مسجلة بعد</div>';
-                if (totalPlayers) totalPlayers.textContent = '0';
-                if (highestScore) highestScore.textContent = '0';
-                return;
-            }
-            
-            // تحديث الإحصائيات
-            if (totalPlayers) totalPlayers.textContent = leaderboard.length;
-            if (highestScore) highestScore.textContent = leaderboard[0].score;
-            
-            // عرض كل لاعب في القائمة
-            leaderboard.forEach((player, index) => {
-                const item = document.createElement('div');
-                item.className = 'leaderboard-item';
-                if (player.name === currentPlayerName) {
-                    item.classList.add('current-player');
-                }
-                
-                const medal = getMedalForRank(index + 1);
-                const rankDisplay = getRankDisplay(index + 1);
-                
-                item.innerHTML = `
-                    <div class="leaderboard-rank">${rankDisplay}</div>
-                    <div class="leaderboard-medal">${medal}</div>
-                    <div class="leaderboard-name">${player.name}</div>
-                    <div class="leaderboard-score">${player.score}</div>
-                `;
-                
-                leaderboardList.appendChild(item);
-            });
-        }
-
-        // الحصول على الوسام المناسب للترتيب
-        function getMedalForRank(rank) {
-            switch(rank) {
-                case 1: return '🥇';
-                case 2: return '🥈';
-                case 3: return '🥉';
-                default: return '🎯';
-            }
-        }
-
-        // تنسيق عرض الترتيب
-        function getRankDisplay(rank) {
-            return rank <= 3 ? rank : rank;
-        }
-
-        // عرض قائمة المتصدرين
-        function showLeaderboard() {
-            updateLeaderboardDisplay();
-            showAdminMessage("تم تحديث قائمة المتصدرين! 📊", 2000);
-        }
-
-        // مسح قائمة المتصدرين
-        function clearLeaderboard() {
-            if (!confirm("هل أنت متأكد من مسح قائمة المتصدرين؟ لا يمكن التراجع عن هذا الإجراء!")) {
-                return;
-            }
-            
-            leaderboard = [];
-            saveLeaderboard();
-            updateLeaderboardDisplay();
-            showAdminMessage("تم مسح قائمة المتصدرين! 🗑️", 3000);
-        }
-
-        // ==================== نظام الإدارة السري ====================
-        let isAdmin = false;
-        let gameRunning = false;
-        let gameInterval;
-        let cheatCodes = {
-            'GODMODE': false,
-            'UNLIMITED': false,
-            'MAXSCORE': false,
-            'KILLALL': false
-        };
-
-        // متغيرات اللعبة
+        // ==================== متغيرات اللعبة ====================
         let gameState = {
             score: 0,
-            health: 100,
-            energy: 100,
-            enemies: [],
-            bullets: [],
-            resources: [],
-            playerX: 350,
-            playerY: 300,
-            mouseX: 0,
-            mouseY: 0
+            level: 1,
+            combo: 1,
+            banglesCollected: 0,
+            highScore: 0,
+            gameRunning: false,
+            timeLeft: 60,
+            selectedBangles: [],
+            bangles: []
         };
 
-        // نظام التحكم المستمر
-        let activeKeys = {
-            'z': false,
-            's': false,
-            'q': false,
-            'd': false
-        };
-
-        // نظام الموسيقى المبسط
+        let gameInterval;
+        let timerInterval;
         let musicEnabled = false;
 
-        function toggleMusic() {
-            if (musicEnabled) {
-                musicEnabled = false;
-                document.getElementById('musicToggle').textContent = '🔇';
-                showAdminMessage("تم إيقاف الموسيقى", 1500);
-            } else {
-                musicEnabled = true;
-                document.getElementById('musicToggle').textContent = '🎵';
-                showAdminMessage("تم تشغيل الموسيقى", 1500);
-            }
-        }
+        // ألوان الأساور المتاحة
+        const bangleColors = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
+        const banglePoints = {
+            'red': 10,
+            'blue': 15,
+            'green': 20,
+            'yellow': 25,
+            'purple': 30,
+            'orange': 35
+        };
 
-        // زر تبديل لوحة الإدارة
-        document.getElementById('adminToggle').addEventListener('click', function() {
-            const panel = document.getElementById('adminPanel');
-            if (!isAdmin) {
-                const password = prompt("🔐 أدخل كلمة مرور الإدارة:");
-                if (password === "1234") {
-                    isAdmin = true;
-                    showAdminMessage("تم منح صلاحية الإدارة! 👑", 3000);
-                    panel.style.display = 'block';
-                } else {
-                    showAdminMessage("تم رفض الوصول! ❌", 2000);
-                }
-            } else {
-                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-            }
-        });
-
-        // زر تشغيل/إيقاف الموسيقى
-        document.getElementById('musicToggle').addEventListener('click', toggleMusic);
-
-        // عرض رسالة الإدارة
-        function showAdminMessage(message, duration = 2000) {
-            const messageDiv = document.getElementById('adminMessage');
-            if (messageDiv) {
-                messageDiv.textContent = message;
-                messageDiv.style.display = 'block';
-                
-                setTimeout(() => {
-                    messageDiv.style.display = 'none';
-                }, duration);
-            }
-        }
-
-        // تفعيل أكواد الغش
-        function activateCheat(cheatType) {
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            switch(cheatType) {
-                case 'godmode':
-                    cheatCodes.GODMODE = !cheatCodes.GODMODE;
-                    showAdminMessage(cheatCodes.GODMODE ? 'تم تفعيل وضع الإله! ✨' : 'تم إلغاء وضع الإله');
-                    if (cheatCodes.GODMODE) gameState.health = 9999;
-                    updateGameDisplay();
-                    break;
-                    
-                case 'unlimitedenergy':
-                    cheatCodes.UNLIMITED = !cheatCodes.UNLIMITED;
-                    showAdminMessage(cheatCodes.UNLIMITED ? 'طاقة غير محدودة! ⚡' : 'تم إلغاء الطاقة غير المحدودة');
-                    if (cheatCodes.UNLIMITED) gameState.energy = 100;
-                    updateGameDisplay();
-                    break;
-                    
-                case 'maxscore':
-                    gameState.score = 9999;
-                    showAdminMessage('تم الوصول لأقصى نقاط! 🏆');
-                    updateGameDisplay();
-                    break;
-                    
-                case 'killallenemies':
-                    gameState.enemies = [];
-                    showAdminMessage('تم تدمير كل الأعداء! 💀');
-                    updateGameDisplay();
-                    renderGame();
-                    break;
-            }
-        }
-
-        // إدخال أكواد الغش يدويًا
-        function enterCheatCode() {
-            const cheatInput = document.getElementById('cheatInput');
-            const code = cheatInput ? cheatInput.value.toUpperCase().trim() : '';
-            
-            if (!code) {
-                showAdminMessage("الرجاء إدخال كود الغش!", 2000);
-                return;
-            }
-            
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            const cheatKeys = Object.keys(cheatCodes);
-            let found = false;
-            
-            for (let cheat of cheatKeys) {
-                if (code.includes(cheat)) {
-                    activateCheat(cheat.toLowerCase());
-                    found = true;
-                    break;
-                }
-            }
-            
-            if (!found) {
-                showAdminMessage("كود الغش غير معروف! ❌", 2000);
-            }
-            
-            if (cheatInput) {
-                cheatInput.value = '';
-            }
-        }
-
-        // عرض أكواد الغش
-        function showCheatCodes() {
-            alert("أكواد الغش المتاحة:\n\n" +
-                  "GODMODE - مناعة كاملة\n" +
-                  "UNLIMITED - طاقة غير محدودة\n" +
-                  "MAXSCORE - 9999 نقطة\n" +
-                  "KILLALL - تدمير كل الأعداء");
-        }
-
-        // إعادة تعيين كل أكواد الغش
-        function resetAllCheats() {
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            for (let cheat in cheatCodes) {
-                cheatCodes[cheat] = false;
-            }
-            
-            showAdminMessage("تم إعادة تعيين كل أكواد الغش! 🔄", 2000);
-        }
-
-        // تحديث عرض حالة اللعبة
-        function updateGameDisplay() {
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            const healthDisplay = document.getElementById('healthDisplay');
-            const energyDisplay = document.getElementById('energyDisplay');
-            const enemiesDisplay = document.getElementById('enemiesDisplay');
-            
-            if (scoreDisplay) scoreDisplay.textContent = gameState.score;
-            if (healthDisplay) healthDisplay.textContent = gameState.health;
-            if (energyDisplay) energyDisplay.textContent = gameState.energy;
-            if (enemiesDisplay) enemiesDisplay.textContent = gameState.enemies.length;
-        }
-
-        // ==================== محرك اللعبة ====================
+        // ==================== بدء اللعبة ====================
         function startGame() {
-            if (gameRunning) return;
+            if (gameState.gameRunning) return;
             
-            gameRunning = true;
             resetGame();
+            gameState.gameRunning = true;
             
-            for (let i = 0; i < 8; i++) {
-                spawnEnemy();
-            }
+            // تحميل أفضل نتيجة
+            loadHighScore();
             
-            spawnResources(5);
+            // إنشاء الأساور الأولى
+            createBangles();
             
-            gameInterval = setInterval(gameLoop, 100);
+            // بدء المؤقت
+            startTimer();
             
-            showAdminMessage("بدأت اللعبة! اضغط على Z, S, Q, D للتحكم المستمر 🎮", 2000);
+            // بدء دورة اللعبة
+            gameInterval = setInterval(updateGame, 100);
+            
+            showMessage("بدأت اللعبة! انقر على الأساور لجمعها 🎮");
         }
 
         function resetGame() {
             gameState = {
                 score: 0,
-                health: 100,
-                energy: 100,
-                enemies: [],
-                bullets: [],
-                resources: [],
-                playerX: 350,
-                playerY: 300,
-                mouseX: 0,
-                mouseY: 0
+                level: 1,
+                combo: 1,
+                banglesCollected: 0,
+                highScore: gameState.highScore,
+                gameRunning: false,
+                timeLeft: 60,
+                selectedBangles: [],
+                bangles: []
             };
             
-            for (let key in activeKeys) {
-                activeKeys[key] = false;
-                const keyElement = document.getElementById('key' + key.toUpperCase());
-                if (keyElement) {
-                    keyElement.classList.remove('active');
-                }
-            }
-            
-            updateGameDisplay();
-            renderGame();
-        }
-
-        function spawnEnemy() {
-            const gameArea = document.getElementById('gameArea');
-            if (!gameArea) return;
-            
-            const x = Math.random() * (gameArea.offsetWidth - 35);
-            const y = Math.random() * (gameArea.offsetHeight - 35);
-            
-            gameState.enemies.push({ x, y });
-        }
-
-        function spawnResources(count) {
-            const gameArea = document.getElementById('gameArea');
-            if (!gameArea) return;
-            
-            for (let i = 0; i < count; i++) {
-                const x = Math.random() * (gameArea.offsetWidth - 18);
-                const y = Math.random() * (gameArea.offsetHeight - 18);
-                
-                gameState.resources.push({ x, y });
-            }
-        }
-
-        function shootAtMouse() {
-            if (!gameRunning) return;
-            
-            const dx = gameState.mouseX - gameState.playerX;
-            const dy = gameState.mouseY - gameState.playerY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > 0) {
-                const speed = 15;
-                const velocityX = (dx / distance) * speed;
-                const velocityY = (dy / distance) * speed;
-                
-                gameState.bullets.push({
-                    x: gameState.playerX,
-                    y: gameState.playerY,
-                    velocityX: velocityX,
-                    velocityY: velocityY
-                });
-                
-                if (!cheatCodes.UNLIMITED) {
-                    gameState.energy = Math.max(0, gameState.energy - 2);
-                }
-            }
-        }
-
-        function handleContinuousMovement() {
-            if (!gameRunning) return;
-            
-            const speed = gameState.energy > 20 ? 10 : 5;
-            const gameArea = document.getElementById('gameArea');
-            const areaWidth = gameArea ? gameArea.offsetWidth : 800;
-            const areaHeight = gameArea ? gameArea.offsetHeight : 600;
-            
-            let moved = false;
-            
-            if (activeKeys['z']) {
-                gameState.playerY = Math.max(25, gameState.playerY - speed);
-                moved = true;
-            }
-            if (activeKeys['s']) {
-                gameState.playerY = Math.min(areaHeight - 25, gameState.playerY + speed);
-                moved = true;
-            }
-            if (activeKeys['q']) {
-                gameState.playerX = Math.max(25, gameState.playerX - speed);
-                moved = true;
-            }
-            if (activeKeys['d']) {
-                gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
-                moved = true;
-            }
-            
-            if (moved && !cheatCodes.UNLIMITED) {
-                gameState.energy = Math.max(0, gameState.energy - 0.5);
-            }
-        }
-
-        function gameLoop() {
-            if (!gameRunning) return;
-            
-            handleContinuousMovement();
-            updateBullets();
-            
-            if (!cheatCodes.FREEZE) {
-                updateEnemies();
-            }
-            
-            updateResources();
-            checkCollisions();
-            
-            updateGameDisplay();
-            renderGame();
-            
-            if (gameState.health <= 0) {
-                endGame();
-            }
-        }
-
-        function updateBullets() {
-            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-                const bullet = gameState.bullets[i];
-                bullet.x += bullet.velocityX;
-                bullet.y += bullet.velocityY;
-                
-                const gameArea = document.getElementById('gameArea');
-                if (!gameArea) continue;
-                
-                if (bullet.x < 0 || bullet.x > gameArea.offsetWidth || 
-                    bullet.y < 0 || bullet.y > gameArea.offsetHeight) {
-                    gameState.bullets.splice(i, 1);
-                }
-            }
-        }
-
-        function updateEnemies() {
-            for (let i = 0; i < gameState.enemies.length; i++) {
-                const enemy = gameState.enemies[i];
-                
-                const dx = gameState.playerX - enemy.x;
-                const dy = gameState.playerY - enemy.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance > 0) {
-                    const speed = 2;
-                    enemy.x += (dx / distance) * speed;
-                    enemy.y += (dy / distance) * speed;
-                }
-            }
-        }
-
-        function updateResources() {
-            // يمكن إضافة حركة أو تأثيرات للموارد هنا
-        }
-
-        function checkCollisions() {
-            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-                const bullet = gameState.bullets[i];
-                
-                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
-                    const enemy = gameState.enemies[j];
-                    
-                    const dx = bullet.x - enemy.x;
-                    const dy = bullet.y - enemy.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 25) {
-                        gameState.bullets.splice(i, 1);
-                        gameState.enemies.splice(j, 1);
-                        gameState.score += 100;
-                        spawnEnemy();
-                        break;
-                    }
-                }
-            }
-            
-            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-                const enemy = gameState.enemies[i];
-                
-                const dx = gameState.playerX - enemy.x;
-                const dy = gameState.playerY - enemy.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 40) {
-                    gameState.enemies.splice(i, 1);
-                    
-                    if (!cheatCodes.GODMODE) {
-                        gameState.health -= 10;
-                    }
-                    
-                    spawnEnemy();
-                }
-            }
-            
-            for (let i = gameState.resources.length - 1; i >= 0; i--) {
-                const resource = gameState.resources[i];
-                
-                const dx = gameState.playerX - resource.x;
-                const dy = gameState.playerY - resource.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 35) {
-                    gameState.resources.splice(i, 1);
-                    gameState.energy = Math.min(100, gameState.energy + 20);
-                    gameState.score += 50;
-                }
-            }
-        }
-
-        function endGame() {
-            gameRunning = false;
             clearInterval(gameInterval);
-            showAdminMessage(`انتهت اللعبة! النقاط النهائية: ${gameState.score}`, 5000);
+            clearInterval(timerInterval);
+            
+            updateDisplay();
+            updateLevelIndicator();
+            clearGameArea();
         }
 
-        function renderGame() {
+        // ==================== إنشاء الأساور ====================
+        function createBangles() {
             const gameArea = document.getElementById('gameArea');
             if (!gameArea) return;
             
-            const player = document.getElementById('player');
-            if (player) {
-                player.style.left = (gameState.playerX - 22.5) + 'px';
-                player.style.top = (gameState.playerY - 22.5) + 'px';
+            const numBangles = 8 + (gameState.level * 2); // زيادة عدد الأساور مع كل مستوى
+            gameState.bangles = [];
+            
+            for (let i = 0; i < numBangles; i++) {
+                const bangle = createBangleElement(gameArea);
+                gameState.bangles.push(bangle);
             }
-            
-            const oldEnemies = document.querySelectorAll('.enemy');
-            oldEnemies.forEach(enemy => enemy.remove());
-            
-            const oldBullets = document.querySelectorAll('.bullet');
-            oldBullets.forEach(bullet => bullet.remove());
-            
-            const oldResources = document.querySelectorAll('.resource');
-            oldResources.forEach(resource => resource.remove());
-            
-            gameState.enemies.forEach((enemy, index) => {
-                const enemyElement = document.createElement('div');
-                enemyElement.className = 'enemy';
-                enemyElement.style.left = enemy.x + 'px';
-                enemyElement.style.top = enemy.y + 'px';
-                gameArea.appendChild(enemyElement);
-            });
-            
-            gameState.bullets.forEach((bullet, index) => {
-                const bulletElement = document.createElement('div');
-                bulletElement.className = 'bullet';
-                bulletElement.style.left = bullet.x + 'px';
-                bulletElement.style.top = bullet.y + 'px';
-                gameArea.appendChild(bulletElement);
-            });
-            
-            gameState.resources.forEach((resource, index) => {
-                const resourceElement = document.createElement('div');
-                resourceElement.className = 'resource';
-                resourceElement.style.left = resource.x + 'px';
-                resourceElement.style.top = resource.y + 'px';
-                gameArea.appendChild(resourceElement);
-            });
         }
 
-        // ==================== نظام التحكم ====================
-        document.addEventListener('keydown', function(event) {
-            const key = event.key.toLowerCase();
+        function createBangleElement(gameArea) {
+            const bangle = document.createElement('div');
+            const color = bangleColors[Math.floor(Math.random() * bangleColors.length)];
+            const size = 40 + Math.random() * 40; // حجم عشوائي بين 40 و80
             
-            if (['z', 's', 'q', 'd'].includes(key)) {
-                activeKeys[key] = true;
-                const keyElement = document.getElementById('key' + key.toUpperCase());
-                if (keyElement) {
-                    keyElement.classList.add('active');
+            bangle.className = `bangle ${color}`;
+            bangle.style.width = `${size}px`;
+            bangle.style.height = `${size}px`;
+            
+            // وضع عشوائي داخل منطقة اللعبة
+            const maxX = gameArea.offsetWidth - size;
+            const maxY = gameArea.offsetHeight - size;
+            const x = Math.random() * maxX;
+            const y = Math.random() * maxY;
+            
+            bangle.style.left = `${x}px`;
+            bangle.style.top = `${y}px`;
+            
+            // إضافة حدث النقر
+            bangle.addEventListener('click', () => handleBangleClick(bangle, color));
+            
+            gameArea.appendChild(bangle);
+            return { element: bangle, color: color, collected: false };
+        }
+
+        // ==================== التعامل مع النقر على الأساور ====================
+        function handleBangleClick(bangleElement, color) {
+            if (!gameState.gameRunning) return;
+            
+            const bangleIndex = gameState.bangles.findIndex(b => b.element === bangleElement);
+            if (bangleIndex === -1 || gameState.bangles[bangleIndex].collected) return;
+            
+            // جمع السوار
+            gameState.bangles[bangleIndex].collected = true;
+            gameState.banglesCollected++;
+            
+            // إضافة إلى القائمة المحددة
+            gameState.selectedBangles.push(color);
+            
+            // تأثيرات بصرية
+            bangleElement.classList.add('selected');
+            createParticles(bangleElement);
+            
+            // حساب النقاط
+            const points = banglePoints[color] * gameState.combo;
+            gameState.score += points;
+            
+            // التحقق من الكومبو
+            checkCombo();
+            
+            // تحديث العرض
+            updateDisplay();
+            
+            // إزالة السوار بعد فترة
+            setTimeout(() => {
+                if (bangleElement.parentNode) {
+                    bangleElement.parentNode.removeChild(bangleElement);
                 }
+            }, 300);
+            
+            // استبدال السوار المُجمع
+            setTimeout(() => {
+                if (gameState.gameRunning) {
+                    replaceBangle(bangleIndex);
+                }
+            }, 500);
+        }
+
+        function replaceBangle(index) {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
+            const newBangle = createBangleElement(gameArea);
+            gameState.bangles[index] = newBangle;
+        }
+
+        // ==================== نظام الكومبو ====================
+        function checkCombo() {
+            if (gameState.selectedBangles.length < 3) return;
+            
+            const lastThree = gameState.selectedBangles.slice(-3);
+            const allSameColor = lastThree.every(color => color === lastThree[0]);
+            
+            if (allSameColor) {
+                gameState.combo++;
+                showComboDisplay(`كومبو ${gameState.combo}x!`);
                 
-                if (!gameRunning) {
-                    startGame();
-                }
+                // مكافأة إضافية للكومبو
+                gameState.score += 50 * gameState.combo;
+                
+                // تأثيرات خاصة للكومبو
+                createComboParticles();
             }
-        });
-
-        document.addEventListener('keyup', function(event) {
-            const key = event.key.toLowerCase();
-            
-            if (['z', 's', 'q', 'd'].includes(key)) {
-                activeKeys[key] = false;
-                const keyElement = document.getElementById('key' + key.toUpperCase());
-                if (keyElement) {
-                    keyElement.classList.remove('active');
-                }
-            }
-        });
-
-        document.getElementById('gameArea').addEventListener('mousemove', function(event) {
-            const rect = this.getBoundingClientRect();
-            gameState.mouseX = event.clientX - rect.left;
-            gameState.mouseY = event.clientY - rect.top;
-        });
-
-        document.getElementById('gameArea').addEventListener('click', function() {
-            shootAtMouse();
-            
-            if (!gameRunning) {
-                startGame();
-            }
-        });
-
-        function showInstructions() {
-            alert("تعليمات اللعب:\n\n" +
-                  "- استخدم أزرار Z (لأعلى)، S (لأسفل)، Q (لليسار)، D (لليمين) للتحكم\n" +
-                  "- انقر بالماوس لإطلاق النار\n" +
-                  "- حرك الماوس لتوجيه سلاحك\n" +
-                  "- تجنب الاصطدام بالأعداء للحفاظ على صحتك\n" +
-                  "- اجمع الموارد الخضراء لزيادة طاقتك\n" +
-                  "- احفظ نتيجتك في قائمة المتصدرين بعد انتهاء اللعبة");
         }
 
-        // التهيئة الأولية
-        loadLeaderboard();
-        updateGameDisplay();
-        renderGame();
+        function showComboDisplay(text) {
+            const comboDisplay = document.getElementById('comboDisplay');
+            if (comboDisplay) {
+                comboDisplay.textContent = text;
+                comboDisplay.classList.add('show');
+                
+                setTimeout(() => {
+                    comboDisplay.classList.remove('show');
+                }, 1500);
+            }
+        }
+
+        // ==================== المؤقت والمستويات ====================
+        function startTimer() {
+            gameState.timeLeft = 60;
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+                updateTimerDisplay();
+                
+                if (gameState.timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const timer = document.getElementById('timer');
+            if (timer) {
+                timer.textContent = gameState.timeLeft;
+                
+                // تغيير اللون عندما يقل الوقت
+                if (gameState.timeLeft <= 10) {
+                    timer.style.color = '#ff6b6b';
+                    timer.style.animation = 'pulse 0.5s infinite';
+                } else if (gameState.timeLeft <= 30) {
+                    timer.style.color = '#feca57';
+                } else {
+                    timer.style.color = '#48dbfb';
+                }
+            }
+        }
+
+        function updateGame() {
+            if (!gameState.gameRunning) return;
+            
+            // زيادة المستوى كل 10 أساور مجمعة
+            if (gameState.banglesCollected >= gameState.level * 10) {
+                levelUp();
+            }
+        }
+
+        function levelUp() {
+            gameState.level++;
+            gameState.combo = 1; // إعادة تعيين الكومبو
+            gameState.banglesCollected = 0; // إعادة تعيين العداد
+            
+            // زيادة الصعوبة
+            clearGameArea();
+            createBangles();
+            
+            updateDisplay();
+            updateLevelIndicator();
+            
+            showMessage(`تهانينا! المستوى ${gameState.level} 🎉`);
+        }
+
+        // ==================== نهاية اللعبة ====================
+        function endGame() {
+            gameState.gameRunning = false;
+            clearInterval(gameInterval);
+            clearInterval(timerInterval);
+            
+            // حفظ أفضل نتيجة
+            if (gameState.score > gameState.highScore) {
+                gameState.highScore = gameState.score;
+                saveHighScore();
+                showMessage(`🎊 أفضل نتيجة جديدة! ${gameState.score} نقطة`);
+            } else {
+                showMessage(`انتهت اللعبة! النقاط: ${gameState.score}`);
+            }
+            
+            updateDisplay();
+        }
+
+        // ==================== التأثيرات البصرية ====================
+        function createParticles(sourceElement) {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
+            const rect = sourceElement.getBoundingClientRect();
+            const sourceX = rect.left + rect.width / 2;
+            const sourceY = rect.top + rect.height / 2;
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = getComputedStyle(sourceElement).borderColor;
+                particle.style.left = `${sourceX}px`;
+                particle.style.top = `${sourceY}px`;
+                
+                // اتجاهات عشوائية
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 100;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                gameArea.appendChild(particle);
+                
+                // إزالة الجسيم بعد انتهاء الأنيميشن
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 1000);
+            }
+        }
+
+        function createComboParticles() {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = '#feca57';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 100 + Math.random() * 200;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', `${tx}px`);
+                particle.style.setProperty('--ty', `${ty}px`);
+                
+                gameArea.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 1000);
+            }
+        }
+
+        // ==================== التخزين المحلي ====================
+        function saveHighScore() {
+            localStorage.setItem('banglesHighScore', gameState.highScore);
+        }
+
+        function loadHighScore() {
+            const saved = localStorage.getItem('banglesHighScore');
+            if (saved) {
+                gameState.highScore = parseInt(saved);
+            }
+        }
+
+        // ==================== تحديث الواجهة ====================
+        function updateDisplay() {
+            document.getElementById('scoreDisplay').textContent = gameState.score;
+            document.getElementById('levelDisplay').textContent = gameState.level;
+            document.getElementById('comboDisplay').textContent = gameState.combo + 'x';
+            document.getElementById('banglesCollected').textContent = gameState.banglesCollected;
+            document.getElementById('highScoreDisplay').textContent = gameState.highScore;
+        }
+
+        function updateLevelIndicator() {
+            const indicator = document.getElementById('levelIndicator');
+            if (!indicator) return;
+            
+            indicator.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const dot = document.createElement('div');
+                dot.className = `level-dot ${i <= gameState.level ? 'active' : ''}`;
+                indicator.appendChild(dot);
+            }
+        }
+
+        function clearGameArea() {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
+            
+            // إزالة جميع الأساور
+            const bangles = gameArea.querySelectorAll('.bangle');
+            bangles.forEach(bangle => bangle.remove());
+            
+            // إزالة جميع الجسيمات
+            const particles = gameArea.querySelectorAll('.particle');
+            particles.forEach(particle => particle.remove());
+        }
+
+        // ==================== وظائف مساعدة ====================
+        function showMessage(message) {
+            // يمكن إضافة نظام رسائل هنا
+            console.log(message);
+        }
+
+        function toggleMusic() {
+            musicEnabled = !musicEnabled;
+            showMessage(musicEnabled ? "تشغيل الموسيقى 🎵" : "إيقاف الموسيقى 🔇");
+        }
+
+        // ==================== التهيئة الأولية ====================
+        loadHighScore();
+        updateDisplay();
+        updateLevelIndicator();
     </script>
 </body>
 </html>
