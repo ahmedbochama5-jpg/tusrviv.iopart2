@@ -46,6 +46,29 @@
             50% { opacity: 1; }
         }
 
+        /* Audio Controls */
+        .audio-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #00ffff;
+        }
+
+        .audio-btn {
+            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 0.9em;
+        }
+
         /* Main Container */
         .container {
             position: relative;
@@ -169,72 +192,6 @@
             z-index: 10;
         }
 
-        /* Mobile Controls */
-        #leftJoystick {
-            position: fixed;
-            bottom: 120px;
-            left: 80px;
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 3px solid rgba(255, 255, 255, 0.5);
-            border-radius: 50%;
-            z-index: 100;
-            touch-action: none;
-            display: none;
-        }
-        
-        #leftStick {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 152, 0, 0.8);
-            border: 2px solid white;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.1s;
-        }
-        
-        #shootButton {
-            position: fixed;
-            bottom: 120px;
-            right: 80px;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 0, 0, 0.7);
-            border: 3px solid white;
-            border-radius: 50%;
-            color: white;
-            font-size: 0.9em;
-            font-weight: bold;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            touch-action: none;
-        }
-
-        .mobile-controls-text {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .game-title {
-                font-size: 2.5em;
-            }
-            
-            .menu-box {
-                padding: 20px;
-            }
-            
-            .menu-btn {
-                padding: 15px 20px;
-                font-size: 1.1em;
-            }
-        }
-
         /* Game Over Screen */
         #gameOverScreen {
             position: absolute;
@@ -273,9 +230,58 @@
             cursor: pointer;
             margin: 10px;
         }
+
+        /* Player Selection */
+        .player-selection {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .player-option {
+            width: 80px;
+            height: 80px;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+
+        .player-option:hover {
+            transform: scale(1.1);
+        }
+
+        .player-option.selected {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px #00ffff;
+        }
+
+        /* Music Status */
+        .music-status {
+            color: #00ff00;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .music-status.off {
+            color: #ff4444;
+        }
     </style>
 </head>
 <body>
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <button class="audio-btn" id="playMusic">🔊 Play Music</button>
+        <button class="audio-btn" id="stopMusic">🔇 Stop Music</button>
+        <div class="music-status" id="musicStatus">Music: Ready</div>
+    </div>
+
     <!-- Stars Background -->
     <div class="stars" id="stars"></div>
 
@@ -283,10 +289,19 @@
     <div class="container" id="mainMenu">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">Ultimate Space Battle</div>
+            <div class="game-subtitle">Choose Your Spaceship</div>
         </div>
 
         <div class="menu-box">
+            <!-- Player Selection -->
+            <div class="player-selection">
+                <div class="player-option selected" data-type="CLASSIC" style="background: rgba(0, 255, 0, 0.3);">🚀</div>
+                <div class="player-option" data-type="FIGHTER" style="background: rgba(255, 0, 0, 0.3);">🛸</div>
+                <div class="player-option" data-type="SPEED" style="background: rgba(0, 255, 255, 0.3);">⚡</div>
+                <div class="player-option" data-type="TANK" style="background: rgba(255, 255, 0, 0.3);">🛡️</div>
+                <div class="player-option" data-type="STEALTH" style="background: rgba(255, 0, 255, 0.3);">🔮</div>
+            </div>
+
             <div class="stats-section">
                 <div class="stat-box">
                     <div class="stat-value" id="highScore">0</div>
@@ -299,7 +314,7 @@
             </div>
 
             <div class="menu-buttons">
-                <button class="menu-btn" id="startBtn">Start Game</button>
+                <button class="menu-btn" id="startBtn">Start Mission</button>
                 <button class="menu-btn" id="howToPlayBtn">How to Play</button>
             </div>
 
@@ -325,15 +340,232 @@
         <button class="restart-btn" id="menuBtn">Main Menu</button>
     </div>
 
-    <!-- Mobile Controls -->
-    <div class="mobile-controls-text">Touch & Drag to Move | Tap to Shoot</div>
-    <div id="leftJoystick">
-        <div id="leftStick"></div>
-    </div>
-    <div id="shootButton">FIRE</div>
-
     <script>
+        // ==================== AUDIO SYSTEM ====================
+        let gameMusic;
+        let musicEnabled = false;
+
+        function initializeAudio() {
+            // Create audio element
+            gameMusic = new Audio('https://cdn.pixabay.com/download/audio/2025/05/12/audio_8e81be451e.mp3?filename=phonk-phonk-music-340264.mp3');
+            
+            // Configure audio
+            gameMusic.loop = true;
+            gameMusic.volume = 0.7;
+            
+            // Event listeners for audio
+            gameMusic.addEventListener('canplaythrough', function() {
+                document.getElementById('musicStatus').textContent = 'Music: Ready';
+                document.getElementById('musicStatus').className = 'music-status';
+            });
+            
+            gameMusic.addEventListener('error', function(e) {
+                console.error('Audio error:', e);
+                document.getElementById('musicStatus').textContent = 'Music: Error Loading';
+                document.getElementById('musicStatus').className = 'music-status off';
+            });
+            
+            gameMusic.addEventListener('waiting', function() {
+                document.getElementById('musicStatus').textContent = 'Music: Buffering...';
+            });
+        }
+
+        function playMusic() {
+            if (gameMusic && !musicEnabled) {
+                // Create a promise to handle autoplay
+                const playPromise = gameMusic.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        musicEnabled = true;
+                        document.getElementById('musicStatus').textContent = 'Music: Playing 🎵';
+                        document.getElementById('musicStatus').className = 'music-status';
+                    }).catch(error => {
+                        console.log('Autoplay prevented:', error);
+                        document.getElementById('musicStatus').textContent = 'Music: Click Play Button';
+                        document.getElementById('musicStatus').className = 'music-status off';
+                        
+                        // Show alert to user
+                        alert('🔊 Please click the "Play Music" button to start the audio!');
+                    });
+                }
+            }
+        }
+
+        function stopMusic() {
+            if (gameMusic && musicEnabled) {
+                gameMusic.pause();
+                gameMusic.currentTime = 0;
+                musicEnabled = false;
+                document.getElementById('musicStatus').textContent = 'Music: Stopped';
+                document.getElementById('musicStatus').className = 'music-status off';
+            }
+        }
+
+        // Audio control event listeners
+        document.getElementById('playMusic').addEventListener('click', function() {
+            playMusic();
+        });
+
+        document.getElementById('stopMusic').addEventListener('click', function() {
+            stopMusic();
+        });
+
+        // ==================== PLAYER TYPES ====================
+        const PLAYER_TYPES = {
+            CLASSIC: {
+                name: "Classic Rocket",
+                emoji: "🚀",
+                size: 20,
+                speed: 5,
+                color: '#00ff00',
+                special: "Balanced stats",
+                draw: function(ctx, x, y, size) {
+                    // Rocket body
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y - size);
+                    ctx.lineTo(x - size/2, y + size/2);
+                    ctx.lineTo(x, y + size/4);
+                    ctx.lineTo(x + size/2, y + size/2);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Rocket flames
+                    ctx.fillStyle = '#ffff00';
+                    ctx.beginPath();
+                    ctx.moveTo(x - size/3, y + size/2);
+                    ctx.lineTo(x, y + size);
+                    ctx.lineTo(x + size/3, y + size/2);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            },
+            FIGHTER: {
+                name: "Alien Fighter",
+                emoji: "🛸",
+                size: 22,
+                speed: 6,
+                color: '#ff4444',
+                special: "High speed",
+                draw: function(ctx, x, y, size) {
+                    // UFO top
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.ellipse(x, y - size/3, size, size/1.5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // UFO bottom
+                    ctx.fillStyle = '#888888';
+                    ctx.beginPath();
+                    ctx.ellipse(x, y + size/3, size/1.2, size/3, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Cockpit
+                    ctx.fillStyle = '#00ffff';
+                    ctx.beginPath();
+                    ctx.arc(x, y - size/3, size/3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            },
+            SPEED: {
+                name: "Speed Ship",
+                emoji: "⚡",
+                size: 18,
+                speed: 7,
+                color: '#00ffff',
+                special: "Very fast",
+                draw: function(ctx, x, y, size) {
+                    // Arrow shape
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y - size);
+                    ctx.lineTo(x - size, y + size);
+                    ctx.lineTo(x, y + size/2);
+                    ctx.lineTo(x + size, y + size);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Speed lines
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    for(let i = 0; i < 3; i++) {
+                        ctx.moveTo(x - size + i*5, y + size);
+                        ctx.lineTo(x - size + i*5 - 10, y + size + 15);
+                    }
+                    ctx.stroke();
+                }
+            },
+            TANK: {
+                name: "Heavy Tank",
+                emoji: "🛡️",
+                size: 25,
+                speed: 3,
+                color: '#ffff00',
+                special: "More health",
+                draw: function(ctx, x, y, size) {
+                    // Main body
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Armor plates
+                    ctx.strokeStyle = '#888888';
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.stroke();
+                    
+                    // Crosshair
+                    ctx.strokeStyle = '#ff4444';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x - size/2, y);
+                    ctx.lineTo(x + size/2, y);
+                    ctx.moveTo(x, y - size/2);
+                    ctx.lineTo(x, y + size/2);
+                    ctx.stroke();
+                }
+            },
+            STEALTH: {
+                name: "Stealth Ship",
+                emoji: "🔮",
+                size: 19,
+                speed: 5.5,
+                color: '#ff00ff',
+                special: "Small target",
+                draw: function(ctx, x, y, size) {
+                    // Diamond shape
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y - size);
+                    ctx.lineTo(x + size, y);
+                    ctx.lineTo(x, y + size);
+                    ctx.lineTo(x - size, y);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Glow effect
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([5, 5]);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // Core
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(x, y, size/3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        };
+
         // ==================== MENU SYSTEM ====================
+        let selectedPlayerType = 'CLASSIC';
+
         function createStars() {
             const starsContainer = document.getElementById('stars');
             const starCount = 100;
@@ -383,16 +615,30 @@
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
 
-            // Initialize game variables
-            player = { x: canvas.width / 2, y: canvas.height / 2, size: 20, speed: 5, color: '#00ff00' };
+            // Initialize player based on selected type
+            const playerType = PLAYER_TYPES[selectedPlayerType];
+            player = { 
+                x: canvas.width / 2, 
+                y: canvas.height / 2, 
+                size: playerType.size, 
+                speed: playerType.speed, 
+                color: playerType.color,
+                type: selectedPlayerType
+            };
+
             keys = {};
             score = 0;
             energy = 100;
-            health = 100;
+            health = selectedPlayerType === 'TANK' ? 150 : 100;
             enemies = [];
             bullets = [];
             resources = [];
             gameRunning = true;
+
+            // Auto-play music when game starts (if user already interacted)
+            if (musicEnabled) {
+                playMusic();
+            }
 
             // Setup event listeners
             setupEventListeners();
@@ -419,31 +665,48 @@
 
             // Mouse events
             canvas.addEventListener('mousedown', shootBullet);
-            canvas.addEventListener('touchstart', handleTouch);
 
             // Game over screen buttons
             document.getElementById('restartBtn').addEventListener('click', restartGame);
             document.getElementById('menuBtn').addEventListener('click', showMainMenu);
         }
 
-        function handleTouch(e) {
-            e.preventDefault();
-            if (!gameRunning) return;
-            shootBullet();
-        }
-
         function shootBullet() {
             if (!gameRunning) return;
             
-            // Simple forward shooting for demo
+            let bulletConfig = {
+                size: 5,
+                damage: 1,
+                velocityX: 10,
+                velocityY: 0
+            };
+
+            switch(selectedPlayerType) {
+                case 'FIGHTER':
+                    bulletConfig.color = '#ff4444';
+                    bulletConfig.size = 6;
+                    break;
+                case 'SPEED':
+                    bulletConfig.color = '#00ffff';
+                    bulletConfig.velocityX = 12;
+                    break;
+                case 'TANK':
+                    bulletConfig.color = '#ffff00';
+                    bulletConfig.size = 7;
+                    bulletConfig.damage = 2;
+                    break;
+                case 'STEALTH':
+                    bulletConfig.color = '#ff00ff';
+                    bulletConfig.velocityX = 11;
+                    break;
+                default:
+                    bulletConfig.color = '#ffff00';
+            }
+            
             bullets.push({
                 x: player.x,
                 y: player.y,
-                velocityX: 10,
-                velocityY: 0,
-                size: 5,
-                color: '#ffff00',
-                damage: 1
+                ...bulletConfig
             });
         }
 
@@ -486,30 +749,27 @@
         function update() {
             if (!gameRunning) return;
 
-            // Player movement
-            if (keys['w'] || keys['ArrowUp']) player.y -= player.speed;
-            if (keys['s'] || keys['ArrowDown']) player.y += player.speed;
-            if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed;
-            if (keys['d'] || keys['ArrowRight']) player.x += player.speed;
+            const speedMultiplier = selectedPlayerType === 'SPEED' ? 1.2 : 
+                                  selectedPlayerType === 'TANK' ? 0.8 : 1;
+            
+            if (keys['w'] || keys['ArrowUp']) player.y -= player.speed * speedMultiplier;
+            if (keys['s'] || keys['ArrowDown']) player.y += player.speed * speedMultiplier;
+            if (keys['a'] || keys['ArrowLeft']) player.x -= player.speed * speedMultiplier;
+            if (keys['d'] || keys['ArrowRight']) player.x += player.speed * speedMultiplier;
 
-            // Screen boundaries
             player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
             player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
 
-            // Update bullets
             bullets.forEach((bullet, index) => {
                 bullet.x += bullet.velocityX;
                 bullet.y += bullet.velocityY;
                 
-                // Remove bullets out of screen
                 if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) {
                     bullets.splice(index, 1);
                 }
             });
 
-            // Update enemies
             enemies.forEach((enemy, index) => {
-                // Move towards player
                 const dx = player.x - enemy.x;
                 const dy = player.y - enemy.y;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -517,14 +777,12 @@
                 enemy.x += (dx / distance) * enemy.speed;
                 enemy.y += (dy / distance) * enemy.speed;
                 
-                // Collision with player
                 if (distance < player.size + enemy.size) {
-                    health -= 5;
+                    health -= selectedPlayerType === 'TANK' ? 3 : 5;
                     enemies.splice(index, 1);
                 }
             });
 
-            // Update resources
             resources.forEach((resource, index) => {
                 const dx = player.x - resource.x;
                 const dy = player.y - resource.y;
@@ -537,23 +795,12 @@
                 }
             });
 
-            // Spawn enemies randomly
-            if (Math.random() < 0.02) {
-                spawnEnemy();
-            }
+            if (Math.random() < 0.02) spawnEnemy();
+            if (Math.random() < 0.01 && resources.length < 5) spawnResource();
 
-            // Spawn resources randomly
-            if (Math.random() < 0.01 && resources.length < 5) {
-                spawnResource();
-            }
-
-            // Energy drain
             energy = Math.max(0, energy - 0.1);
-            
-            // Score increase over time
             score += 0.1;
             
-            // Game over condition
             if (health <= 0) {
                 health = 0;
                 gameOver();
@@ -561,10 +808,8 @@
         }
 
         function draw() {
-            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Draw resources
             resources.forEach(resource => {
                 ctx.fillStyle = resource.color;
                 ctx.beginPath();
@@ -572,13 +817,9 @@
                 ctx.fill();
             });
             
-            // Draw player
-            ctx.fillStyle = player.color;
-            ctx.beginPath();
-            ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
-            ctx.fill();
+            const playerType = PLAYER_TYPES[player.type];
+            playerType.draw(ctx, player.x, player.y, player.size);
             
-            // Draw enemies
             enemies.forEach(enemy => {
                 ctx.fillStyle = enemy.color;
                 if (enemy.type === 'TRIANGLE') {
@@ -597,7 +838,6 @@
                 }
             });
             
-            // Draw bullets
             bullets.forEach(bullet => {
                 ctx.fillStyle = bullet.color;
                 ctx.beginPath();
@@ -605,36 +845,37 @@
                 ctx.fill();
             });
             
-            // Draw UI
             drawUI();
         }
 
         function drawUI() {
-            // Player stats background
+            const maxHealth = selectedPlayerType === 'TANK' ? 150 : 100;
+            
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(10, 10, 200, 100);
+            ctx.fillRect(10, 10, 250, 100);
             ctx.strokeStyle = '#00ffff';
             ctx.lineWidth = 2;
-            ctx.strokeRect(10, 10, 200, 100);
+            ctx.strokeRect(10, 10, 250, 100);
             
-            // Stats
+            ctx.fillStyle = PLAYER_TYPES[selectedPlayerType].color;
+            ctx.font = '14px Arial';
+            ctx.fillText(PLAYER_TYPES[selectedPlayerType].name, 20, 30);
+            
             ctx.fillStyle = '#00ffff';
-            ctx.font = '16px Arial';
-            ctx.fillText('SCORE: ' + Math.floor(score), 20, 35);
-            ctx.fillText('ENERGY: ' + Math.floor(energy), 20, 60);
-            ctx.fillText('HEALTH: ' + Math.floor(health), 20, 85);
+            ctx.font = '14px Arial';
+            ctx.fillText('SCORE: ' + Math.floor(score), 20, 50);
+            ctx.fillText('ENERGY: ' + Math.floor(energy), 20, 70);
+            ctx.fillText('HEALTH: ' + Math.floor(health), 20, 90);
             
-            // Health bar
             ctx.fillStyle = '#333333';
-            ctx.fillRect(120, 72, 80, 12);
+            ctx.fillRect(120, 77, 120, 12);
             ctx.fillStyle = '#ff4444';
-            ctx.fillRect(120, 72, (health / 100) * 80, 12);
+            ctx.fillRect(120, 77, (health / maxHealth) * 120, 12);
             
-            // Energy bar
             ctx.fillStyle = '#333333';
-            ctx.fillRect(120, 47, 80, 10);
+            ctx.fillRect(120, 57, 120, 10);
             ctx.fillStyle = '#ffff00';
-            ctx.fillRect(120, 47, (energy / 100) * 80, 10);
+            ctx.fillRect(120, 57, (energy / 100) * 120, 10);
         }
 
         function gameLoop() {
@@ -649,11 +890,9 @@
             gameRunning = false;
             cancelAnimationFrame(animationId);
             
-            // Update game stats
             gameState.totalGames++;
             const finalScore = Math.floor(score);
             
-            // Check for new high score
             let newHighScore = false;
             if (finalScore > gameState.highScore) {
                 gameState.highScore = finalScore;
@@ -662,7 +901,6 @@
             }
             localStorage.setItem('alphaArenaTotalGames', gameState.totalGames);
             
-            // Show game over screen
             document.getElementById('finalScore').textContent = 'Score: ' + finalScore;
             if (newHighScore) {
                 document.getElementById('newHighScore').style.display = 'block';
@@ -683,7 +921,7 @@
             updateMenuStats();
         }
 
-        // ==================== MENU EVENT LISTENERS ====================
+        // ==================== EVENT LISTENERS ====================
         document.getElementById('startBtn').addEventListener('click', function() {
             document.getElementById('mainMenu').style.display = 'none';
             document.getElementById('gameCanvas').style.display = 'block';
@@ -691,13 +929,35 @@
         });
 
         document.getElementById('howToPlayBtn').addEventListener('click', function() {
-            alert('HOW TO PLAY:\n\n🎮 CONTROLS:\n• WASD or Arrow Keys - Move\n• Mouse Click - Shoot\n\n🎯 OBJECTIVE:\n• Survive as long as possible\n• Collect energy resources (blue circles)\n• Avoid enemy collisions\n• Shoot enemies to destroy them\n\n⭐ TIPS:\n• Different enemies have different behaviors\n• Keep your energy above zero\n• Higher scores unlock tougher enemies!\n\nGood luck, Commander! 🚀');
+            alert('HOW TO PLAY:\n\n🎮 CONTROLS:\n• WASD or Arrow Keys - Move\n• Mouse Click - Shoot\n\n🚀 SHIP TYPES:\n• Classic Rocket - Balanced\n• Alien Fighter - Fast\n• Speed Ship - Very Fast\n• Heavy Tank - More Health\n• Stealth Ship - Small Target\n\n🎯 OBJECTIVE:\n• Survive as long as possible\n• Collect energy resources (blue circles)\n• Avoid enemy collisions\n\nGood luck, Commander! 🚀');
+        });
+
+        document.querySelectorAll('.player-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.player-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                this.classList.add('selected');
+                selectedPlayerType = this.getAttribute('data-type');
+                
+                const shipInfo = PLAYER_TYPES[selectedPlayerType];
+                document.querySelector('.game-subtitle').textContent = 
+                    `${shipInfo.name} - ${shipInfo.special}`;
+            });
         });
 
         // ==================== INITIALIZATION ====================
         window.addEventListener('load', function() {
             createStars();
             updateMenuStats();
+            initializeAudio();
+            
+            // Try to auto-play music after user interaction
+            document.addEventListener('click', function firstClick() {
+                playMusic();
+                document.removeEventListener('click', firstClick);
+            });
         });
 
         document.addEventListener('contextmenu', (e) => e.preventDefault());
