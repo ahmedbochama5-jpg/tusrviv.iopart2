@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - تحكم مستمر</title>
+    <title>Alpha Arena - نمط SURVIV.IO</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         }
         
         body {
-            background: linear-gradient(135deg, #0c0c2e, #1a1a4a, #2d2d6e);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
             color: white;
             text-align: center;
             min-height: 100vh;
@@ -35,7 +35,7 @@
             font-size: 4em;
             font-weight: bold;
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ffff00);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -44,8 +44,9 @@
 
         .game-subtitle {
             font-size: 1.4em;
-            color: #cccccc;
+            color: #e0e0e0;
             margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .main-content {
@@ -69,58 +70,60 @@
         }
 
         .panel {
-            background: rgba(0, 0, 0, 0.85);
-            border: 2px solid;
-            border-radius: 15px;
+            background: rgba(40, 40, 60, 0.9);
+            border: 3px solid;
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
         }
 
         .admin-panel {
-            border-color: #ff00ff;
+            border-color: #ff6b6b;
         }
 
         .game-panel {
-            border-color: #00ffff;
+            border-color: #4ecdc4;
         }
 
         .cheat-panel {
-            border-color: #ffff00;
+            border-color: #ffd93d;
         }
 
         .panel-title {
             font-size: 1.6em;
             margin-bottom: 15px;
-            color: #00ffff;
+            color: #4ecdc4;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         .admin-title {
-            color: #ff00ff;
+            color: #ff6b6b;
         }
 
         .cheat-title {
-            color: #ffff00;
+            color: #ffd93d;
         }
 
         .btn {
-            background: linear-gradient(45deg, #ff00ff, #00ffff);
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
             border: none;
             color: white;
             padding: 14px 22px;
             font-size: 1.1em;
             font-weight: bold;
-            border-radius: 25px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin: 6px;
             width: 100%;
             max-width: 220px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
         }
 
         .btn:active {
@@ -128,22 +131,22 @@
         }
 
         .admin-btn {
-            background: linear-gradient(45deg, #ff00ff, #ffff00);
-            color: black;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: white;
         }
 
         .cheat-btn {
-            background: linear-gradient(45deg, #ffff00, #00ff00);
-            color: black;
+            background: linear-gradient(45deg, #ffd93d, #4ecdc4);
+            color: white;
         }
 
         .music-btn {
-            background: linear-gradient(45deg, #ff00ff, #ff0066);
+            background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
             color: white;
         }
 
         .start-btn {
-            background: linear-gradient(45deg, #00ff00, #00cc00);
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
             font-size: 1.3em;
             padding: 18px 30px;
         }
@@ -158,8 +161,9 @@
         .status {
             margin-top: 15px;
             padding: 12px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            background: rgba(50, 50, 70, 0.6);
+            border: 2px solid #4ecdc4;
         }
 
         .status-item {
@@ -170,21 +174,22 @@
         }
 
         .status-label {
-            color: #cccccc;
+            color: #e0e0e0;
         }
 
         .status-value {
-            color: #00ffff;
+            color: #4ecdc4;
             font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .cheat-active {
-            color: #00ff00;
-            text-shadow: 0 0 8px #00ff00;
+            color: #4ecdc4;
+            text-shadow: 0 0 8px #4ecdc4;
         }
 
         .cheat-inactive {
-            color: #ff4444;
+            color: #ff6b6b;
         }
 
         .admin-message {
@@ -192,31 +197,34 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(40, 40, 60, 0.95);
             padding: 25px 35px;
-            border-radius: 15px;
-            border: 3px solid #ffff00;
-            color: #ffff00;
+            border-radius: 12px;
+            border: 3px solid #ffd93d;
+            color: #ffd93d;
             font-size: 1.8em;
             font-weight: bold;
             z-index: 1000;
             display: none;
-            box-shadow: 0 0 40px rgba(255, 255, 0, 0.6);
+            box-shadow: 0 0 40px rgba(255, 217, 61, 0.6);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .instructions {
             margin-top: 20px;
             padding: 18px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: rgba(50, 50, 70, 0.6);
+            border-radius: 8px;
             text-align: right;
             font-size: 1.1em;
+            border: 2px solid #4ecdc4;
         }
 
         .instructions h3 {
-            color: #00ffff;
+            color: #4ecdc4;
             margin-bottom: 12px;
             font-size: 1.3em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
 
         .instructions ul {
@@ -226,15 +234,15 @@
 
         .instructions li {
             margin: 10px 0;
-            color: #cccccc;
+            color: #e0e0e0;
         }
 
         .instructions code {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(30, 30, 50, 0.8);
             padding: 3px 8px;
             border-radius: 4px;
             font-family: monospace;
-            color: #ffff00;
+            color: #ffd93d;
         }
 
         .toggle-btn {
@@ -242,15 +250,15 @@
             top: 20px;
             left: 20px;
             z-index: 100;
-            background: linear-gradient(45deg, #ff00ff, #ffff00);
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
             border: none;
-            color: black;
+            color: white;
             padding: 12px 18px;
-            border-radius: 50%;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1.4em;
             font-weight: bold;
-            box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .music-toggle {
@@ -258,88 +266,120 @@
             top: 20px;
             right: 20px;
             z-index: 100;
-            background: linear-gradient(45deg, #ff00ff, #ff0066);
+            background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
             border: none;
             color: white;
             padding: 12px 18px;
-            border-radius: 50%;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1.4em;
             font-weight: bold;
-            box-shadow: 0 0 15px rgba(255, 0, 102, 0.6);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .cheat-input {
             width: 100%;
             padding: 12px;
             margin: 12px 0;
-            border-radius: 10px;
-            border: 2px solid #00ffff;
-            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+            border: 2px solid #4ecdc4;
+            background: rgba(30, 30, 50, 0.8);
             color: white;
             text-align: center;
             font-size: 1.1em;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .game-area {
             width: 100%;
             height: 600px;
             background: 
-                radial-gradient(circle at 20% 30%, rgba(40, 40, 100, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(100, 40, 100, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(40, 100, 100, 0.3) 0%, transparent 50%),
-                rgba(10, 10, 40, 0.9);
-            border-radius: 20px;
-            border: 3px solid #00ffff;
+                /* الأرضية الرئيسية */
+                linear-gradient(45deg, #2c3e50 25%, transparent 25%),
+                linear-gradient(-45deg, #2c3e50 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #2c3e50 75%),
+                linear-gradient(-45deg, transparent 75%, #2c3e50 75%),
+                /* التدرج اللوني */
+                linear-gradient(135deg, #3498db, #2c3e50);
+            background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 100% 100%;
+            background-position: 0 0, 0 20px, 20px -20px, -20px 0px, 0 0;
+            border-radius: 15px;
+            border: 4px solid #34495e;
             margin: 10px 0;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             cursor: crosshair;
+        }
+
+        /* عناصر إضافية للخلفية */
+        .game-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(52, 152, 219, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(155, 89, 182, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(46, 204, 113, 0.3) 0%, transparent 50%);
+            pointer-events: none;
         }
 
         .player {
             position: absolute;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(45deg, #00ff00, #00ffff);
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
             border-radius: 50%;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px #00ff00;
+            box-shadow: 0 0 20px #e74c3c, 0 0 30px rgba(231, 76, 60, 0.5);
             z-index: 10;
+            border: 3px solid #fff;
         }
 
         .enemy {
             position: absolute;
             width: 35px;
             height: 35px;
-            background: linear-gradient(45deg, #ff0000, #ff4444);
-            border-radius: 8px;
-            box-shadow: 0 0 15px #ff0000;
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            border-radius: 6px;
+            box-shadow: 0 0 15px #3498db;
             z-index: 5;
+            border: 2px solid #fff;
         }
 
         .bullet {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ffff00;
+            width: 8px;
+            height: 8px;
+            background: #f1c40f;
             border-radius: 50%;
-            box-shadow: 0 0 8px #ffff00;
+            box-shadow: 0 0 10px #f1c40f;
             z-index: 8;
         }
 
         .resource {
             position: absolute;
-            width: 18px;
-            height: 18px;
-            background: #00ffff;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
             border-radius: 50%;
-            box-shadow: 0 0 15px #00ffff;
+            box-shadow: 0 0 15px #2ecc71;
             z-index: 6;
             animation: pulse 2s infinite;
+            border: 2px solid #fff;
+        }
+
+        .obstacle {
+            position: absolute;
+            background: linear-gradient(45deg, #7f8c8d, #95a5a6);
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            border: 2px solid #636e72;
         }
 
         @keyframes pulse {
@@ -351,8 +391,10 @@
         .controls-info {
             margin: 20px 0;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
+            background: rgba(50, 50, 70, 0.8);
+            border-radius: 12px;
+            border: 2px solid #4ecdc4;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .controls-grid {
@@ -364,19 +406,20 @@
         }
 
         .control-key {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid #00ffff;
-            border-radius: 10px;
+            background: linear-gradient(45deg, #34495e, #2c3e50);
+            border: 2px solid #4ecdc4;
+            border-radius: 8px;
             padding: 18px;
             font-size: 1.3em;
             font-weight: bold;
             color: white;
             transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .control-key.active {
-            background: rgba(0, 255, 255, 0.5);
-            box-shadow: 0 0 15px #00ffff;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            box-shadow: 0 0 20px #4ecdc4;
             transform: scale(0.95);
         }
 
@@ -388,22 +431,24 @@
         .mouse-info {
             margin-top: 15px;
             padding: 12px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 10px;
+            background: rgba(60, 60, 80, 0.6);
+            border-radius: 8px;
             font-size: 1.1em;
+            border: 1px solid #4ecdc4;
         }
 
         .mouse-info span {
-            color: #00ffff;
+            color: #4ecdc4;
             font-weight: bold;
         }
 
         .control-mode {
             margin-top: 10px;
             padding: 10px;
-            background: rgba(0, 255, 255, 0.1);
+            background: rgba(74, 205, 196, 0.2);
             border-radius: 8px;
             font-size: 1em;
+            border: 1px solid #4ecdc4;
         }
 
         @media (max-width: 1200px) {
@@ -442,7 +487,7 @@
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">تحكم مستمر - اضغط مرة واحدة للحركة المستمرة</div>
+            <div class="game-subtitle">نمط SURVIV.IO - تحكم مستمر - انقر لبدء اللعب</div>
         </div>
 
         <div class="main-content">
@@ -453,7 +498,7 @@
                 </div>
 
                 <div class="controls-info">
-                    <h3 style="color: #00ffff; margin-bottom: 15px; font-size: 1.4em;">أزرار التحكم</h3>
+                    <h3 style="color: #4ecdc4; margin-bottom: 15px; font-size: 1.4em;">أزرار التحكم</h3>
                     <div class="controls-grid">
                         <div class="control-key" id="keyZ">Z<br>▲</div>
                         <div class="control-key" id="keyQ">Q<br>◀</div>
@@ -592,6 +637,7 @@
             enemies: [],
             bullets: [],
             resources: [],
+            obstacles: [],
             playerX: 350,
             playerY: 300,
             mouseX: 0,
@@ -606,54 +652,55 @@
             'd': false
         };
 
-        // نظام الموسيقى
-        let gameMusic;
+        // نظام الموسيقى المبسط
         let musicEnabled = false;
+        let audioContext;
+        let oscillator;
+        let gainNode;
 
         function initializeAudio() {
             try {
-                // إنشاء عنصر صوت
-                gameMusic = new Audio();
-                gameMusic.loop = true;
-                gameMusic.volume = 0.7;
+                // إنشاء سياق صوتي مبسط
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                gainNode = audioContext.createGain();
+                gainNode.connect(audioContext.destination);
+                gainNode.gain.value = 0;
                 
-                // استخدام صوت افتراضي (يمكن استبداله برابط ملف صوتي حقيقي)
-                gameMusic.src = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAABAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAABQTEFNRTMuMTAwBKkAAAAAAAAAADUgJAOBTwAB9AAACHDLG/jmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
-                
-                gameMusic.addEventListener('canplaythrough', function() {
-                    console.log("الموسيقى جاهزة للتشغيل");
-                });
-                
-                gameMusic.addEventListener('error', function(e) {
-                    console.log("خطأ في تحميل الموسيقى:", e);
-                });
-                
+                console.log("النظام الصوتي جاهز");
             } catch (error) {
-                console.log("خطأ في تهيئة النظام الصوتي:", error);
+                console.log("تعذر تهيئة النظام الصوتي:", error);
             }
         }
 
         function toggleMusic() {
-            if (!gameMusic) {
+            if (!audioContext) {
                 initializeAudio();
             }
             
             if (musicEnabled) {
-                gameMusic.pause();
+                // إيقاف الموسيقى
+                if (oscillator) {
+                    oscillator.stop();
+                }
                 musicEnabled = false;
                 document.getElementById('musicToggle').textContent = '🔇';
                 showAdminMessage("تم إيقاف الموسيقى", 1500);
             } else {
-                const playPromise = gameMusic.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        musicEnabled = true;
-                        document.getElementById('musicToggle').textContent = '🎵';
-                        showAdminMessage("تم تشغيل الموسيقى", 1500);
-                    }).catch(error => {
-                        console.log("خطأ في تشغيل الموسيقى:", error);
-                        showAdminMessage("اضغط لتشغيل الموسيقى", 1500);
-                    });
+                // تشغيل نغمة بسيطة
+                try {
+                    oscillator = audioContext.createOscillator();
+                    oscillator.connect(gainNode);
+                    oscillator.type = 'sine';
+                    oscillator.frequency.value = 220;
+                    gainNode.gain.value = 0.1;
+                    
+                    oscillator.start();
+                    musicEnabled = true;
+                    document.getElementById('musicToggle').textContent = '🎵';
+                    showAdminMessage("تم تشغيل الموسيقى", 1500);
+                } catch (error) {
+                    console.log("تعذر تشغيل الموسيقى:", error);
+                    showAdminMessage("تعذر تشغيل الموسيقى", 1500);
                 }
             }
         }
@@ -675,7 +722,7 @@
             }
         });
 
-        // زر تشغيل/إوقف الموسيقى
+        // زر تشغيل/إيقاف الموسيقى
         document.getElementById('musicToggle').addEventListener('click', toggleMusic);
 
         // عرض رسالة الإدارة
@@ -866,6 +913,7 @@
                 enemies: [],
                 bullets: [],
                 resources: [],
+                obstacles: [],
                 playerX: 350,
                 playerY: 300,
                 mouseX: 0,
@@ -933,13 +981,31 @@
                     gameState.energy = Math.max(0, gameState.energy - 2);
                 }
                 
-                // تأثير صوتي بسيط
-                if (musicEnabled) {
-                    const shootSound = new Audio();
-                    shootSound.volume = 0.3;
-                    shootSound.src = 'data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQQAAAAAAA==';
-                    shootSound.play().catch(e => console.log("لا يمكن تشغيل صوت إطلاق النار"));
-                }
+                // تأثير صوتي بسيط لإطلاق النار
+                playShootSound();
+            }
+        }
+
+        // تشغيل صوت إطلاق النار
+        function playShootSound() {
+            if (!audioContext) return;
+            
+            try {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'square';
+                oscillator.frequency.value = 100;
+                gainNode.gain.value = 0.1;
+                
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                oscillator.stop(audioContext.currentTime + 0.1);
+            } catch (error) {
+                console.log("تعذر تشغيل صوت إطلاق النار:", error);
             }
         }
 
