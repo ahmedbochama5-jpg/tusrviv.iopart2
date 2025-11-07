@@ -476,7 +476,8 @@
 
     <script>
         // ==================== ADMIN SYSTEM ====================
-        let adminMode = false;
+        const ADMIN_PASSWORD = "MY_SUPER_SECRET_CODE";
+        let isAdmin = false;
         let cheatCodes = {
             'GODMODE': false,
             'UNLIMITED': false,
@@ -488,14 +489,30 @@
             'RESOURCES': false
         };
 
-        // Admin panel toggle
+        // Admin panel toggle with password protection
         document.getElementById('adminToggle').addEventListener('click', function() {
-            const panel = document.getElementById('adminPanel');
-            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if (!isAdmin) {
+                const password = prompt("🔐 Enter Admin Password:");
+                if (password === ADMIN_PASSWORD) {
+                    isAdmin = true;
+                    showAdminMessage("ADMIN ACCESS GRANTED! 👑", 3000);
+                    document.getElementById('adminPanel').style.display = 'block';
+                    document.getElementById('cheatCodes').style.display = 'block';
+                } else {
+                    showAdminMessage("ACCESS DENIED! ❌", 2000);
+                }
+            } else {
+                const panel = document.getElementById('adminPanel');
+                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            }
         });
 
         // Show cheat codes
         function showCheatCodes() {
+            if (!isAdmin) {
+                showAdminMessage("ADMIN ACCESS REQUIRED! 🔒", 2000);
+                return;
+            }
             const cheatDisplay = document.getElementById('cheatCodes');
             cheatDisplay.style.display = cheatDisplay.style.display === 'block' ? 'none' : 'block';
         }
@@ -513,6 +530,11 @@
 
         // Cheat code activation
         function activateCheat(cheatType) {
+            if (!isAdmin) {
+                showAdminMessage("ADMIN ACCESS REQUIRED! 🔒", 2000);
+                return;
+            }
+            
             switch(cheatType) {
                 case 'godmode':
                     cheatCodes.GODMODE = !cheatCodes.GODMODE;
@@ -561,18 +583,17 @@
         // Keyboard cheat codes
         let currentCheatCode = '';
         document.addEventListener('keydown', function(e) {
-            // Enter to start typing cheat code
+            if (!isAdmin) return;
+            
             if (e.key === 'Enter') {
                 currentCheatCode = '';
                 showAdminMessage('ENTER CHEAT CODE...', 3000);
                 return;
             }
             
-            // Build cheat code string
             if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
                 currentCheatCode += e.key.toUpperCase();
                 
-                // Check for completed cheat codes
                 const cheatKeys = Object.keys(cheatCodes);
                 for (let cheat of cheatKeys) {
                     if (currentCheatCode.includes(cheat)) {
@@ -582,7 +603,6 @@
                     }
                 }
                 
-                // Clear if too long
                 if (currentCheatCode.length > 20) {
                     currentCheatCode = '';
                 }
@@ -607,13 +627,11 @@
                 });
                 
                 gameMusic.addEventListener('error', function(e) {
-                    console.log('Audio not available, continuing without music');
                     document.getElementById('musicStatus').textContent = 'Music: Click to Play';
                     document.getElementById('musicStatus').className = 'music-status off';
                 });
                 
             } catch (error) {
-                console.log('Audio initialization failed:', error);
                 document.getElementById('musicStatus').textContent = 'Music: Click to Play';
                 document.getElementById('musicStatus').className = 'music-status off';
             }
@@ -629,7 +647,6 @@
                         document.getElementById('musicStatus').textContent = 'Music: Playing 🎵';
                         document.getElementById('musicStatus').className = 'music-status';
                     }).catch(error => {
-                        console.log('Play failed:', error);
                         document.getElementById('musicStatus').textContent = 'Music: Click Play';
                         document.getElementById('musicStatus').className = 'music-status off';
                     });
@@ -861,6 +878,11 @@
             gameRunning = true;
             lowEnergyEffect = false;
             energyWarningTimer = 0;
+
+            // Reset admin access for new game
+            isAdmin = false;
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('cheatCodes').style.display = 'none';
 
             // Reset cheats when starting new game
             for (let cheat in cheatCodes) {
