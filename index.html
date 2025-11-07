@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - النسخة الأونلاين</title>
+    <title>Alpha Arena - النسخة الأونلاين الحقيقية</title>
     <style>
         * {
             margin: 0;
@@ -19,6 +19,7 @@
             min-height: 100vh;
             padding: 10px;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
 
         .container {
@@ -32,7 +33,7 @@
         }
 
         .game-title {
-            font-size: 4em;
+            font-size: 3em;
             font-weight: bold;
             margin-bottom: 10px;
             background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
@@ -43,7 +44,7 @@
         }
 
         .game-subtitle {
-            font-size: 1.4em;
+            font-size: 1.2em;
             color: #e0e0e0;
             margin-bottom: 15px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
@@ -148,6 +149,8 @@
             width: 100%;
             max-width: 220px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .btn:hover {
@@ -589,6 +592,7 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
             cursor: crosshair;
+            touch-action: none;
         }
 
         .game-area::before {
@@ -656,6 +660,63 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
+        }
+
+        /* تحكم الجوال */
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 90;
+            gap: 10px;
+        }
+
+        .mobile-joystick {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            position: relative;
+            touch-action: none;
+        }
+
+        .joystick-handle {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+            border-radius: 50%;
+            position: absolute;
+            top: 35px;
+            left: 35px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-buttons {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+
+        .mobile-btn {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mobile-btn:active {
+            transform: scale(0.95);
         }
 
         .controls-info {
@@ -735,6 +796,7 @@
             display: none;
         }
 
+        /* تحسينات للجوال */
         @media (max-width: 1200px) {
             .main-content {
                 flex-direction: column;
@@ -751,7 +813,7 @@
 
         @media (max-width: 768px) {
             .game-title {
-                font-size: 2.8em;
+                font-size: 2.5em;
             }
             
             .game-area {
@@ -760,6 +822,51 @@
             
             .btn-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .mobile-controls {
+                display: flex;
+            }
+            
+            .controls-info {
+                display: none;
+            }
+            
+            .panel {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 12px 18px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 2em;
+            }
+            
+            .game-area {
+                height: 300px;
+            }
+            
+            .mobile-joystick {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .joystick-handle {
+                width: 40px;
+                height: 40px;
+                top: 30px;
+                left: 30px;
+            }
+            
+            .mobile-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 1.3em;
             }
         }
     </style>
@@ -771,10 +878,20 @@
 
     <div class="online-notification" id="onlineNotification">🔗 جاري الاتصال...</div>
 
+    <!-- تحكم الجوال -->
+    <div class="mobile-controls" id="mobileControls">
+        <div class="mobile-joystick" id="joystick">
+            <div class="joystick-handle" id="joystickHandle"></div>
+        </div>
+        <div class="mobile-buttons">
+            <div class="mobile-btn" id="shootBtn">🔫</div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">النسخة الأونلاين - العب مع الأصدقاء!</div>
+            <div class="game-subtitle">النسخة الأونلاين الحقيقية - متوافق مع الجوال</div>
         </div>
 
         <div class="main-content">
@@ -843,7 +960,7 @@
                     </div>
                     <div class="players-list" id="playersList">
                         <div style="text-align: center; padding: 20px; color: #888;">
-                            قم بالاتصال بالخادم لرؤية اللاعبين
+                            قم بالاتصال بالخادم لرؤية اللاعبين الحقيقيين
                         </div>
                     </div>
                 </div>
@@ -853,7 +970,7 @@
                     <h2 class="panel-title chat-title">💬 محادثة مباشرة</h2>
                     <div class="chat-messages" id="chatMessages">
                         <div class="chat-message system">
-                            مرحباً بك في Alpha Arena الأونلاين!
+                            مرحباً بك في Alpha Arena الأونلاين الحقيقي!
                         </div>
                     </div>
                     <div class="chat-input-container">
@@ -920,1015 +1037,4 @@
     <div class="admin-message" id="adminMessage"></div>
 
     <script>
-        // ==================== نظام الأونلاين ====================
-        class OnlineGameManager {
-            constructor() {
-                this.socket = null;
-                this.connected = false;
-                this.playerId = null;
-                this.playerName = '';
-                this.roomCode = '';
-                this.players = new Map();
-                this.messages = [];
-            }
-
-            connect(name) {
-                try {
-                    // استخدام خدمة WebSocket مجانية للعرض
-                    this.socket = new WebSocket('wss://echo.websocket.org');
-                    
-                    this.socket.onopen = () => {
-                        this.connected = true;
-                        this.playerName = name;
-                        this.playerId = 'player_' + Math.random().toString(36).substr(2, 9);
-                        this.roomCode = this.generateRoomCode();
-                        
-                        this.updateConnectionStatus(true);
-                        this.showNotification('تم الاتصال بالخادم بنجاح!');
-                        
-                        // تفعيل الشات
-                        document.getElementById('chatInput').disabled = false;
-                        document.querySelector('.send-btn').disabled = false;
-                        
-                        // محاكاة لاعبين آخرين
-                        this.simulateOtherPlayers();
-                    };
-
-                    this.socket.onmessage = (event) => {
-                        const data = JSON.parse(event.data);
-                        this.handleMessage(data);
-                    };
-
-                    this.socket.onclose = () => {
-                        this.connected = false;
-                        this.updateConnectionStatus(false);
-                        this.showNotification('فقد الاتصال بالخادم');
-                    };
-
-                    this.socket.onerror = (error) => {
-                        console.error('WebSocket error:', error);
-                        this.startSimulationMode(name);
-                    };
-
-                } catch (error) {
-                    console.error('Connection error:', error);
-                    this.startSimulationMode(name);
-                }
-            }
-
-            startSimulationMode(name) {
-                this.connected = true;
-                this.playerName = name;
-                this.playerId = 'player_' + Math.random().toString(36).substr(2, 9);
-                this.roomCode = this.generateRoomCode();
-                
-                this.updateConnectionStatus(true);
-                this.showNotification('وضع المحاكاة مفعل - جاهز للعب!');
-                
-                document.getElementById('chatInput').disabled = false;
-                document.querySelector('.send-btn').disabled = false;
-                
-                this.simulateOtherPlayers();
-            }
-
-            generateRoomCode() {
-                return Math.random().toString(36).substring(2, 7).toUpperCase();
-            }
-
-            handleMessage(data) {
-                // معالجة الرسائل الواردة من الخادم
-                switch(data.type) {
-                    case 'player_joined':
-                        this.addPlayer(data.player);
-                        break;
-                    case 'player_left':
-                        this.removePlayer(data.playerId);
-                        break;
-                    case 'player_update':
-                        this.updatePlayer(data.player);
-                        break;
-                    case 'chat_message':
-                        this.addMessage(data.message);
-                        break;
-                }
-            }
-
-            addPlayer(player) {
-                this.players.set(player.id, player);
-                this.updatePlayersDisplay();
-                this.addSystemMessage(`انضم ${player.name} إلى الغرفة`);
-            }
-
-            removePlayer(playerId) {
-                const player = this.players.get(playerId);
-                if (player) {
-                    this.players.delete(playerId);
-                    this.updatePlayersDisplay();
-                    this.addSystemMessage(`غادر ${player.name} الغرفة`);
-                }
-            }
-
-            updatePlayer(player) {
-                this.players.set(player.id, player);
-                this.updatePlayersDisplay();
-            }
-
-            sendChatMessage(message) {
-                const chatMessage = {
-                    type: 'chat',
-                    message: message,
-                    playerName: this.playerName,
-                    timestamp: new Date().toISOString()
-                };
-                
-                if (this.socket && this.connected) {
-                    this.socket.send(JSON.stringify(chatMessage));
-                }
-                
-                this.addMessage(chatMessage);
-            }
-
-            addMessage(message) {
-                this.messages.push(message);
-                this.updateChatDisplay();
-            }
-
-            addSystemMessage(text) {
-                this.messages.push({
-                    type: 'system',
-                    message: text,
-                    timestamp: new Date().toISOString()
-                });
-                this.updateChatDisplay();
-            }
-
-            updatePlayersDisplay() {
-                const playersList = document.getElementById('playersList');
-                const playersCount = document.getElementById('playersCount');
-                
-                if (!playersList) return;
-                
-                playersList.innerHTML = '';
-                playersCount.textContent = this.players.size + 1;
-                
-                // إضافة اللاعب الحالي
-                const currentPlayerElement = document.createElement('div');
-                currentPlayerElement.className = 'player-item current';
-                currentPlayerElement.innerHTML = `
-                    <div class="player-name">${this.playerName} (أنت)</div>
-                    <div class="player-score" id="currentPlayerScore">${gameState.score}</div>
-                    <div class="player-status"></div>
-                `;
-                playersList.appendChild(currentPlayerElement);
-                
-                // إضافة اللاعبين الآخرين
-                this.players.forEach(player => {
-                    const playerElement = document.createElement('div');
-                    playerElement.className = 'player-item';
-                    playerElement.innerHTML = `
-                        <div class="player-name">${player.name}</div>
-                        <div class="player-score">${player.score || 0}</div>
-                        <div class="player-status"></div>
-                    `;
-                    playersList.appendChild(playerElement);
-                });
-            }
-
-            updateChatDisplay() {
-                const chatMessages = document.getElementById('chatMessages');
-                if (!chatMessages) return;
-                
-                chatMessages.innerHTML = '';
-                
-                this.messages.slice(-20).forEach(msg => {
-                    const messageElement = document.createElement('div');
-                    messageElement.className = `chat-message ${msg.type === 'system' ? 'system' : ''}`;
-                    
-                    if (msg.type === 'system') {
-                        messageElement.textContent = msg.message;
-                    } else {
-                        messageElement.innerHTML = `
-                            <div class="message-sender">${msg.playerName}:</div>
-                            <div>${msg.message}</div>
-                        `;
-                    }
-                    
-                    chatMessages.appendChild(messageElement);
-                });
-                
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            updateConnectionStatus(connected) {
-                const indicator = document.getElementById('connectionIndicator');
-                const status = document.getElementById('connectionStatus');
-                const roomCode = document.getElementById('roomCode');
-                
-                if (connected) {
-                    indicator.className = 'status-indicator connected';
-                    status.textContent = 'متصل';
-                    roomCode.textContent = this.roomCode;
-                } else {
-                    indicator.className = 'status-indicator';
-                    status.textContent = 'غير متصل';
-                    roomCode.textContent = '-----';
-                }
-            }
-
-            simulateOtherPlayers() {
-                const botNames = ['أحمد', 'فاطمة', 'محمد', 'سارة', 'خالد'];
-                
-                setTimeout(() => {
-                    botNames.forEach((name, index) => {
-                        setTimeout(() => {
-                            this.addPlayer({
-                                id: 'bot_' + index,
-                                name: name,
-                                score: Math.floor(Math.random() * 1000),
-                                level: Math.floor(Math.random() * 5) + 1
-                            });
-                        }, index * 2000);
-                    });
-                }, 1000);
-
-                setInterval(() => {
-                    this.players.forEach(player => {
-                        if (player.id.startsWith('bot_')) {
-                            const scoreIncrease = Math.floor(Math.random() * 50) + 10;
-                            player.score += scoreIncrease;
-                            
-                            if (Math.random() > 0.9) {
-                                this.addSystemMessage(`🎉 ${player.name} وصل للمستوى ${player.level + 1}!`);
-                                player.level += 1;
-                            }
-                        }
-                    });
-                    this.updatePlayersDisplay();
-                }, 5000);
-            }
-
-            showNotification(message) {
-                const notification = document.getElementById('onlineNotification');
-                if (notification) {
-                    notification.textContent = message;
-                    notification.style.display = 'block';
-                    
-                    setTimeout(() => {
-                        notification.style.display = 'none';
-                    }, 3000);
-                }
-            }
-
-            disconnect() {
-                if (this.socket) {
-                    this.socket.close();
-                }
-                this.connected = false;
-                this.players.clear();
-                this.messages = [];
-                this.updateConnectionStatus(false);
-                this.updatePlayersDisplay();
-                
-                document.getElementById('chatInput').disabled = true;
-                document.querySelector('.send-btn').disabled = true;
-            }
-        }
-
-        // ==================== تهيئة النظام ====================
-        const onlineManager = new OnlineGameManager();
-        let gameState = {
-            score: 0,
-            health: 100,
-            energy: 100,
-            enemies: [],
-            bullets: [],
-            resources: [],
-            playerX: 350,
-            playerY: 300,
-            mouseX: 0,
-            mouseY: 0,
-            onlineMode: false
-        };
-
-        let leaderboard = [];
-        let currentPlayerName = '';
-        let isAdmin = false;
-        let gameRunning = false;
-        let gameInterval;
-        let musicEnabled = false;
-
-        let cheatCodes = {
-            'GODMODE': false,
-            'UNLIMITED': false,
-            'MAXSCORE': false,
-            'KILLALL': false
-        };
-
-        let activeKeys = {
-            'z': false,
-            's': false,
-            'q': false,
-            'd': false
-        };
-
-        // ==================== نظام الأونلاين ====================
-        document.getElementById('onlineToggle').addEventListener('click', function() {
-            if (gameState.onlineMode) {
-                disconnectFromOnline();
-            } else {
-                connectToOnline();
-            }
-        });
-
-        function connectToOnline() {
-            const name = prompt('أدخل اسمك للعب أونلاين:', `اللاعب_${Math.floor(Math.random() * 1000)}`);
-            if (!name) return;
-            
-            gameState.onlineMode = true;
-            onlineManager.connect(name);
-            document.getElementById('onlineToggle').textContent = '🌐✓';
-            document.getElementById('onlineToggle').style.background = 'linear-gradient(45deg, #1dd1a1, #10ac84)';
-        }
-
-        function disconnectFromOnline() {
-            gameState.onlineMode = false;
-            onlineManager.disconnect();
-            document.getElementById('onlineToggle').textContent = '🌐';
-            document.getElementById('onlineToggle').style.background = 'linear-gradient(45deg, #a55eea, #8854d0)';
-        }
-
-        function sendMessage() {
-            const chatInput = document.getElementById('chatInput');
-            if (!chatInput || !gameState.onlineMode) return;
-            
-            const message = chatInput.value.trim();
-            if (message) {
-                onlineManager.sendChatMessage(message);
-                chatInput.value = '';
-            }
-        }
-
-        // ==================== نظام قائمة المتصدرين ====================
-        function loadLeaderboard() {
-            const saved = localStorage.getItem('alphaArenaLeaderboard');
-            if (saved) {
-                leaderboard = JSON.parse(saved);
-            }
-            updateLeaderboardDisplay();
-        }
-
-        function saveLeaderboard() {
-            localStorage.setItem('alphaArenaLeaderboard', JSON.stringify(leaderboard));
-        }
-
-        function savePlayerScore() {
-            const nameInput = document.getElementById('playerNameInput');
-            const playerName = nameInput ? nameInput.value.trim() : '';
-            
-            if (!playerName) {
-                showAdminMessage("الرجاء إدخال اسم اللاعب!", 2000);
-                return;
-            }
-            
-            if (gameState.score === 0) {
-                showAdminMessage("لا توجد نقاط لحفظها!", 2000);
-                return;
-            }
-            
-            currentPlayerName = playerName;
-            
-            leaderboard.push({
-                name: playerName,
-                score: gameState.score,
-                date: new Date().toLocaleDateString('ar-SA'),
-                timestamp: Date.now()
-            });
-            
-            leaderboard.sort((a, b) => b.score - a.score);
-            
-            if (leaderboard.length > 20) {
-                leaderboard = leaderboard.slice(0, 20);
-            }
-            
-            saveLeaderboard();
-            updateLeaderboardDisplay();
-            
-            showAdminMessage(`تم حفظ نتيجة ${playerName}! 🎉`, 3000);
-            
-            if (gameState.onlineMode) {
-                onlineManager.addSystemMessage(`🎊 ${playerName} سجل نتيجة جديدة: ${gameState.score} نقطة!`);
-            }
-            
-            if (nameInput) {
-                nameInput.value = '';
-            }
-        }
-
-        function updateLeaderboardDisplay() {
-            const leaderboardList = document.getElementById('leaderboardList');
-            const totalPlayers = document.getElementById('totalPlayers');
-            const highestScore = document.getElementById('highestScore');
-            
-            if (!leaderboardList) return;
-            
-            leaderboardList.innerHTML = '';
-            
-            if (leaderboard.length === 0) {
-                leaderboardList.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">لا توجد نتائج مسجلة بعد</div>';
-                if (totalPlayers) totalPlayers.textContent = '0';
-                if (highestScore) highestScore.textContent = '0';
-                return;
-            }
-            
-            if (totalPlayers) totalPlayers.textContent = leaderboard.length;
-            if (highestScore) highestScore.textContent = leaderboard[0].score;
-            
-            leaderboard.forEach((player, index) => {
-                const item = document.createElement('div');
-                item.className = 'leaderboard-item';
-                if (player.name === currentPlayerName) {
-                    item.classList.add('current-player');
-                }
-                
-                const medal = getMedalForRank(index + 1);
-                const rankDisplay = getRankDisplay(index + 1);
-                
-                item.innerHTML = `
-                    <div class="leaderboard-rank">${rankDisplay}</div>
-                    <div class="leaderboard-medal">${medal}</div>
-                    <div class="leaderboard-name">${player.name}</div>
-                    <div class="leaderboard-score">${player.score}</div>
-                `;
-                
-                leaderboardList.appendChild(item);
-            });
-        }
-
-        function getMedalForRank(rank) {
-            switch(rank) {
-                case 1: return '🥇';
-                case 2: return '🥈';
-                case 3: return '🥉';
-                default: return '🎯';
-            }
-        }
-
-        function getRankDisplay(rank) {
-            return rank <= 3 ? rank : rank;
-        }
-
-        function showLeaderboard() {
-            updateLeaderboardDisplay();
-            showAdminMessage("تم تحديث قائمة المتصدرين! 📊", 2000);
-        }
-
-        function clearLeaderboard() {
-            if (!confirm("هل أنت متأكد من مسح قائمة المتصدرين؟ لا يمكن التراجع عن هذا الإجراء!")) {
-                return;
-            }
-            
-            leaderboard = [];
-            saveLeaderboard();
-            updateLeaderboardDisplay();
-            showAdminMessage("تم مسح قائمة المتصدرين! 🗑️", 3000);
-        }
-
-        // ==================== نظام اللعبة الأساسي ====================
-        function startGame() {
-            if (gameRunning) return;
-            
-            gameRunning = true;
-            resetGame();
-            
-            loadHighScore();
-            
-            for (let i = 0; i < 8; i++) {
-                spawnEnemy();
-            }
-            
-            spawnResources(5);
-            
-            gameInterval = setInterval(gameLoop, 100);
-            
-            if (gameState.onlineMode) {
-                onlineManager.addSystemMessage(`بدأ ${onlineManager.playerName} لعبة جديدة!`);
-            }
-            
-            showAdminMessage("بدأت اللعبة! اضغط على Z, S, Q, D للتحكم المستمر 🎮", 2000);
-        }
-
-        function resetGame() {
-            gameState = {
-                score: 0,
-                health: 100,
-                energy: 100,
-                enemies: [],
-                bullets: [],
-                resources: [],
-                playerX: 350,
-                playerY: 300,
-                mouseX: 0,
-                mouseY: 0,
-                onlineMode: gameState.onlineMode
-            };
-            
-            clearInterval(gameInterval);
-            
-            for (let key in activeKeys) {
-                activeKeys[key] = false;
-                const keyElement = document.getElementById('key' + key.toUpperCase());
-                if (keyElement) {
-                    keyElement.classList.remove('active');
-                }
-            }
-            
-            updateGameDisplay();
-            renderGame();
-            
-            // تحديث النتيجة في لوحة الأونلاين
-            if (gameState.onlineMode) {
-                document.getElementById('currentPlayerScore').textContent = '0';
-            }
-        }
-
-        // ... [بقية دوال اللعبة الأساسية تبقى كما هي]
-
-        // دوال اللعبة الأساسية (مشابهة للكود الأصلي)
-        function spawnEnemy() {
-            const gameArea = document.getElementById('gameArea');
-            if (!gameArea) return;
-            
-            const x = Math.random() * (gameArea.offsetWidth - 35);
-            const y = Math.random() * (gameArea.offsetHeight - 35);
-            
-            gameState.enemies.push({ x, y });
-        }
-
-        function spawnResources(count) {
-            const gameArea = document.getElementById('gameArea');
-            if (!gameArea) return;
-            
-            for (let i = 0; i < count; i++) {
-                const x = Math.random() * (gameArea.offsetWidth - 18);
-                const y = Math.random() * (gameArea.offsetHeight - 18);
-                
-                gameState.resources.push({ x, y });
-            }
-        }
-
-        function shootAtMouse() {
-            if (!gameRunning) return;
-            
-            const dx = gameState.mouseX - gameState.playerX;
-            const dy = gameState.mouseY - gameState.playerY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance > 0) {
-                const speed = 15;
-                const velocityX = (dx / distance) * speed;
-                const velocityY = (dy / distance) * speed;
-                
-                gameState.bullets.push({
-                    x: gameState.playerX,
-                    y: gameState.playerY,
-                    velocityX: velocityX,
-                    velocityY: velocityY
-                });
-                
-                if (!cheatCodes.UNLIMITED) {
-                    gameState.energy = Math.max(0, gameState.energy - 2);
-                }
-            }
-        }
-
-        function handleContinuousMovement() {
-            if (!gameRunning) return;
-            
-            const speed = gameState.energy > 20 ? 10 : 5;
-            const gameArea = document.getElementById('gameArea');
-            const areaWidth = gameArea ? gameArea.offsetWidth : 800;
-            const areaHeight = gameArea ? gameArea.offsetHeight : 600;
-            
-            let moved = false;
-            
-            if (activeKeys['z']) {
-                gameState.playerY = Math.max(25, gameState.playerY - speed);
-                moved = true;
-            }
-            if (activeKeys['s']) {
-                gameState.playerY = Math.min(areaHeight - 25, gameState.playerY + speed);
-                moved = true;
-            }
-            if (activeKeys['q']) {
-                gameState.playerX = Math.max(25, gameState.playerX - speed);
-                moved = true;
-            }
-            if (activeKeys['d']) {
-                gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
-                moved = true;
-            }
-            
-            if (moved && !cheatCodes.UNLIMITED) {
-                gameState.energy = Math.max(0, gameState.energy - 0.5);
-            }
-        }
-
-        function gameLoop() {
-            if (!gameRunning) return;
-            
-            handleContinuousMovement();
-            updateBullets();
-            
-            if (!cheatCodes.FREEZE) {
-                updateEnemies();
-            }
-            
-            updateResources();
-            checkCollisions();
-            
-            updateGameDisplay();
-            renderGame();
-            
-            // تحديث النتيجة في الأونلاين
-            if (gameState.onlineMode) {
-                document.getElementById('currentPlayerScore').textContent = gameState.score;
-            }
-            
-            if (gameState.health <= 0) {
-                endGame();
-            }
-        }
-
-        function updateBullets() {
-            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-                const bullet = gameState.bullets[i];
-                bullet.x += bullet.velocityX;
-                bullet.y += bullet.velocityY;
-                
-                const gameArea = document.getElementById('gameArea');
-                if (!gameArea) continue;
-                
-                if (bullet.x < 0 || bullet.x > gameArea.offsetWidth || 
-                    bullet.y < 0 || bullet.y > gameArea.offsetHeight) {
-                    gameState.bullets.splice(i, 1);
-                }
-            }
-        }
-
-        function updateEnemies() {
-            for (let i = 0; i < gameState.enemies.length; i++) {
-                const enemy = gameState.enemies[i];
-                
-                const dx = gameState.playerX - enemy.x;
-                const dy = gameState.playerY - enemy.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance > 0) {
-                    const speed = 2;
-                    enemy.x += (dx / distance) * speed;
-                    enemy.y += (dy / distance) * speed;
-                }
-            }
-        }
-
-        function updateResources() {
-            // يمكن إضافة حركة أو تأثيرات للموارد هنا
-        }
-
-        function checkCollisions() {
-            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
-                const bullet = gameState.bullets[i];
-                
-                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
-                    const enemy = gameState.enemies[j];
-                    
-                    const dx = bullet.x - enemy.x;
-                    const dy = bullet.y - enemy.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 25) {
-                        gameState.bullets.splice(i, 1);
-                        gameState.enemies.splice(j, 1);
-                        gameState.score += 100;
-                        spawnEnemy();
-                        break;
-                    }
-                }
-            }
-            
-            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-                const enemy = gameState.enemies[i];
-                
-                const dx = gameState.playerX - enemy.x;
-                const dy = gameState.playerY - enemy.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 40) {
-                    gameState.enemies.splice(i, 1);
-                    
-                    if (!cheatCodes.GODMODE) {
-                        gameState.health -= 10;
-                    }
-                    
-                    spawnEnemy();
-                }
-            }
-            
-            for (let i = gameState.resources.length - 1; i >= 0; i--) {
-                const resource = gameState.resources[i];
-                
-                const dx = gameState.playerX - resource.x;
-                const dy = gameState.playerY - resource.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 35) {
-                    gameState.resources.splice(i, 1);
-                    gameState.energy = Math.min(100, gameState.energy + 20);
-                    gameState.score += 50;
-                }
-            }
-        }
-
-        function endGame() {
-            gameRunning = false;
-            clearInterval(gameInterval);
-            
-            if (gameState.score > gameState.highScore) {
-                gameState.highScore = gameState.score;
-                saveHighScore();
-                
-                if (gameState.onlineMode) {
-                    onlineManager.addSystemMessage(`🎊 ${onlineManager.playerName} حقق أفضل نتيجة جديدة: ${gameState.score} نقطة!`);
-                }
-                
-                showAdminMessage(`🎊 أفضل نتيجة جديدة! ${gameState.score} نقطة`);
-            } else {
-                if (gameState.onlineMode) {
-                    onlineManager.addSystemMessage(`${onlineManager.playerName} أنهى اللعبة بنتيجة: ${gameState.score} نقطة`);
-                }
-                showAdminMessage(`انتهت اللعبة! النقاط: ${gameState.score}`);
-            }
-            
-            updateGameDisplay();
-        }
-
-        function renderGame() {
-            const gameArea = document.getElementById('gameArea');
-            if (!gameArea) return;
-            
-            const player = document.getElementById('player');
-            if (player) {
-                player.style.left = (gameState.playerX - 22.5) + 'px';
-                player.style.top = (gameState.playerY - 22.5) + 'px';
-            }
-            
-            const oldEnemies = document.querySelectorAll('.enemy');
-            oldEnemies.forEach(enemy => enemy.remove());
-            
-            const oldBullets = document.querySelectorAll('.bullet');
-            oldBullets.forEach(bullet => bullet.remove());
-            
-            const oldResources = document.querySelectorAll('.resource');
-            oldResources.forEach(resource => resource.remove());
-            
-            gameState.enemies.forEach((enemy, index) => {
-                const enemyElement = document.createElement('div');
-                enemyElement.className = 'enemy';
-                enemyElement.style.left = enemy.x + 'px';
-                enemyElement.style.top = enemy.y + 'px';
-                gameArea.appendChild(enemyElement);
-            });
-            
-            gameState.bullets.forEach((bullet, index) => {
-                const bulletElement = document.createElement('div');
-                bulletElement.className = 'bullet';
-                bulletElement.style.left = bullet.x + 'px';
-                bulletElement.style.top = bullet.y + 'px';
-                gameArea.appendChild(bulletElement);
-            });
-            
-            gameState.resources.forEach((resource, index) => {
-                const resourceElement = document.createElement('div');
-                resourceElement.className = 'resource';
-                resourceElement.style.left = resource.x + 'px';
-                resourceElement.style.top = resource.y + 'px';
-                gameArea.appendChild(resourceElement);
-            });
-        }
-
-        function updateGameDisplay() {
-            document.getElementById('scoreDisplay').textContent = gameState.score;
-            document.getElementById('healthDisplay').textContent = gameState.health;
-            document.getElementById('energyDisplay').textContent = gameState.energy;
-            document.getElementById('enemiesDisplay').textContent = gameState.enemies.length;
-            document.getElementById('highScoreDisplay').textContent = gameState.highScore;
-        }
-
-        function saveHighScore() {
-            localStorage.setItem('alphaArenaHighScore', gameState.highScore);
-        }
-
-        function loadHighScore() {
-            const saved = localStorage.getItem('alphaArenaHighScore');
-            if (saved) {
-                gameState.highScore = parseInt(saved);
-            }
-        }
-
-        // ... [بقية الدوال تبقى كما هي]
-
-        // التهيئة الأولية
-        loadLeaderboard();
-        loadHighScore();
-        updateGameDisplay();
-        updateLeaderboardDisplay();
-        renderGame();
-
-        // تفعيل إرسال الرسائل بالزر Enter
-        document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        // نظام التحكم والإدارة (يبقى كما هو)
-        document.addEventListener('keydown', function(event) {
-            const key = event.key.toLowerCase();
-            
-            if (['z', 's', 'q', 'd'].includes(key)) {
-                activeKeys[key] = true;
-                const keyElement = document.getElementById('key' + key.toUpperCase());
-                if (keyElement) {
-                    keyElement.classList.add('active');
-                }
-                
-                if (!gameRunning) {
-                    startGame();
-                }
-            }
-        });
-
-        document.addEventListener('keyup', function(event) {
-            const key = event.key.toLowerCase();
-            
-            if (['z', 's', 'q', 'd'].includes(key)) {
-                activeKeys[key] = false;
-                const keyElement = document.getElementById('key' + key.toUpperCase());
-                if (keyElement) {
-                    keyElement.classList.remove('active');
-                }
-            }
-        });
-
-        document.getElementById('gameArea').addEventListener('mousemove', function(event) {
-            const rect = this.getBoundingClientRect();
-            gameState.mouseX = event.clientX - rect.left;
-            gameState.mouseY = event.clientY - rect.top;
-        });
-
-        document.getElementById('gameArea').addEventListener('click', function() {
-            shootAtMouse();
-            
-            if (!gameRunning) {
-                startGame();
-            }
-        });
-
-        // دوال الإدارة والغش (تبقى كما هي)
-        document.getElementById('adminToggle').addEventListener('click', function() {
-            const panel = document.getElementById('adminPanel');
-            if (!isAdmin) {
-                const password = prompt("🔐 أدخل كلمة مرور الإدارة:");
-                if (password === "1234") {
-                    isAdmin = true;
-                    showAdminMessage("تم منح صلاحية الإدارة! 👑", 3000);
-                    panel.style.display = 'block';
-                } else {
-                    showAdminMessage("تم رفض الوصول! ❌", 2000);
-                }
-            } else {
-                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-            }
-        });
-
-        function showAdminMessage(message, duration = 2000) {
-            const messageDiv = document.getElementById('adminMessage');
-            if (messageDiv) {
-                messageDiv.textContent = message;
-                messageDiv.style.display = 'block';
-                
-                setTimeout(() => {
-                    messageDiv.style.display = 'none';
-                }, duration);
-            }
-        }
-
-        function activateCheat(cheatType) {
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            switch(cheatType) {
-                case 'godmode':
-                    cheatCodes.GODMODE = !cheatCodes.GODMODE;
-                    showAdminMessage(cheatCodes.GODMODE ? 'تم تفعيل وضع الإله! ✨' : 'تم إلغاء وضع الإله');
-                    if (cheatCodes.GODMODE) gameState.health = 9999;
-                    updateGameDisplay();
-                    break;
-                    
-                case 'unlimitedenergy':
-                    cheatCodes.UNLIMITED = !cheatCodes.UNLIMITED;
-                    showAdminMessage(cheatCodes.UNLIMITED ? 'طاقة غير محدودة! ⚡' : 'تم إلغاء الطاقة غير المحدودة');
-                    if (cheatCodes.UNLIMITED) gameState.energy = 100;
-                    updateGameDisplay();
-                    break;
-                    
-                case 'maxscore':
-                    gameState.score = 9999;
-                    showAdminMessage('تم الوصول لأقصى نقاط! 🏆');
-                    updateGameDisplay();
-                    break;
-                    
-                case 'killallenemies':
-                    gameState.enemies = [];
-                    showAdminMessage('تم تدمير كل الأعداء! 💀');
-                    updateGameDisplay();
-                    renderGame();
-                    break;
-            }
-        }
-
-        function enterCheatCode() {
-            const cheatInput = document.getElementById('cheatInput');
-            const code = cheatInput ? cheatInput.value.toUpperCase().trim() : '';
-            
-            if (!code) {
-                showAdminMessage("الرجاء إدخال كود الغش!", 2000);
-                return;
-            }
-            
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            const cheatKeys = Object.keys(cheatCodes);
-            let found = false;
-            
-            for (let cheat of cheatKeys) {
-                if (code.includes(cheat)) {
-                    activateCheat(cheat.toLowerCase());
-                    found = true;
-                    break;
-                }
-            }
-            
-            if (!found) {
-                showAdminMessage("كود الغش غير معروف! ❌", 2000);
-            }
-            
-            if (cheatInput) {
-                cheatInput.value = '';
-            }
-        }
-
-        function showCheatCodes() {
-            alert("أكواد الغش المتاحة:\n\n" +
-                  "GODMODE - مناعة كاملة\n" +
-                  "UNLIMITED - طاقة غير محدودة\n" +
-                  "MAXSCORE - 9999 نقطة\n" +
-                  "KILLALL - تدمير كل الأعداء");
-        }
-
-        function resetAllCheats() {
-            if (!isAdmin) {
-                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
-                return;
-            }
-            
-            for (let cheat in cheatCodes) {
-                cheatCodes[cheat] = false;
-            }
-            
-            showAdminMessage("تم إعادة تعيين كل أكواد الغش! 🔄", 2000);
-        }
-
-        function toggleMusic() {
-            musicEnabled = !musicEnabled;
-            showAdminMessage(musicEnabled ? "تشغيل الموسيقى 🎵" : "إيقاف الموسيقى 🔇", 1500);
-        }
-
-        function showInstructions() {
-            alert("تعليمات اللعب:\n\n" +
-                  "- استخدم أزرار Z (لأعلى)، S (لأسفل)، Q (لليسار)، D (لليمين) للتحكم\n" +
-                  "- انقر بالماوس لإطلاق النار\n" +
-                  "- حرك الماوس لتوجيه سلاحك\n" +
-                  "- تجنب الاصطدام بالأعداء للحفاظ على صحتك\n" +
-                  "- اجمع الموارد الخضراء لزيادة طاقتك\n" +
-                  "- اضغط على 🌐 للاتصال بالخادم واللعب مع الآخرين\n" +
-                  "- احفظ نتيجتك في قائمة المتصدرين بعد انتهاء اللعبة");
-        }
-    </script>
-</body>
-</html>
+        // ==================== نظام الأونلاين الحقيقي
