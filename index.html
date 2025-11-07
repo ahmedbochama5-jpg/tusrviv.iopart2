@@ -77,6 +77,61 @@
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
         }
 
+        /* Admin Panel */
+        .admin-panel {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+            display: none;
+        }
+
+        .admin-btn {
+            background: linear-gradient(45deg, #ff00ff, #ffff00);
+            border: none;
+            color: black;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 3px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .admin-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 999;
+            background: linear-gradient(45deg, #ff00ff, #ffff00);
+            border: none;
+            color: black;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Cheat Codes Display */
+        .cheat-codes {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #00ff00;
+            font-size: 0.8em;
+            text-align: left;
+            display: none;
+        }
+
         /* Main Container */
         .container {
             position: relative;
@@ -297,6 +352,23 @@
             pointer-events: none;
             z-index: 15;
         }
+
+        /* Admin Message */
+        .admin-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #ffff00;
+            color: #ffff00;
+            font-size: 1.5em;
+            font-weight: bold;
+            z-index: 100;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -306,6 +378,40 @@
         <button class="audio-btn" id="stopMusic">🔇 Stop Music</button>
         <div class="music-status" id="musicStatus">Music: Ready</div>
     </div>
+
+    <!-- Admin Toggle -->
+    <button class="admin-toggle" id="adminToggle">⚡</button>
+
+    <!-- Admin Panel -->
+    <div class="admin-panel" id="adminPanel">
+        <h3 style="color: #ffff00; margin-bottom: 10px;">ADMIN COMMANDS</h3>
+        <button class="admin-btn" onclick="activateCheat('godmode')">GOD MODE</button>
+        <button class="admin-btn" onclick="activateCheat('unlimitedenergy')">UNLIMITED ENERGY</button>
+        <button class="admin-btn" onclick="activateCheat('maxscore')">MAX SCORE</button>
+        <button class="admin-btn" onclick="activateCheat('killallenemies')">KILL ALL ENEMIES</button>
+        <button class="admin-btn" onclick="activateCheat('oneshotkill')">ONE SHOT KILL</button>
+        <button class="admin-btn" onclick="activateCheat('superbullet')">SUPER BULLET</button>
+        <button class="admin-btn" onclick="activateCheat('freezeenemies')">FREEZE ENEMIES</button>
+        <button class="admin-btn" onclick="activateCheat('spawnresources')">SPAWN RESOURCES</button>
+        <button class="admin-btn" onclick="showCheatCodes()">SHOW CHEAT CODES</button>
+    </div>
+
+    <!-- Cheat Codes Display -->
+    <div class="cheat-codes" id="cheatCodes">
+        <h4 style="color: #00ff00; margin-bottom: 5px;">CHEAT CODES:</h4>
+        <div>GODMODE - Invincibility</div>
+        <div>UNLIMITED - Infinite Energy</div>
+        <div>MAXSCORE - 9999 Points</div>
+        <div>KILLALL - Destroy All Enemies</div>
+        <div>ONESHOOT - One Shot Kill</div>
+        <div>SUPERBULLET - Mega Bullets</div>
+        <div>FREEZE - Stop Enemies</div>
+        <div>RESOURCES - Spawn Energy</div>
+        <div>Press ENTER to type codes</div>
+    </div>
+
+    <!-- Admin Message -->
+    <div class="admin-message" id="adminMessage"></div>
 
     <!-- Low Energy Warning -->
     <div class="energy-warning" id="energyWarning">LOW ENERGY!</div>
@@ -369,6 +475,120 @@
     </div>
 
     <script>
+        // ==================== ADMIN SYSTEM ====================
+        let adminMode = false;
+        let cheatCodes = {
+            'GODMODE': false,
+            'UNLIMITED': false,
+            'MAXSCORE': false,
+            'KILLALL': false,
+            'ONESHOOT': false,
+            'SUPERBULLET': false,
+            'FREEZE': false,
+            'RESOURCES': false
+        };
+
+        // Admin panel toggle
+        document.getElementById('adminToggle').addEventListener('click', function() {
+            const panel = document.getElementById('adminPanel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Show cheat codes
+        function showCheatCodes() {
+            const cheatDisplay = document.getElementById('cheatCodes');
+            cheatDisplay.style.display = cheatDisplay.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Admin message display
+        function showAdminMessage(message, duration = 2000) {
+            const messageDiv = document.getElementById('adminMessage');
+            messageDiv.textContent = message;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, duration);
+        }
+
+        // Cheat code activation
+        function activateCheat(cheatType) {
+            switch(cheatType) {
+                case 'godmode':
+                    cheatCodes.GODMODE = !cheatCodes.GODMODE;
+                    showAdminMessage(cheatCodes.GODMODE ? 'GOD MODE ACTIVATED! ✨' : 'God Mode Deactivated');
+                    if (cheatCodes.GODMODE) health = 9999;
+                    break;
+                    
+                case 'unlimitedenergy':
+                    cheatCodes.UNLIMITED = !cheatCodes.UNLIMITED;
+                    showAdminMessage(cheatCodes.UNLIMITED ? 'UNLIMITED ENERGY! ⚡' : 'Unlimited Energy Deactivated');
+                    if (cheatCodes.UNLIMITED) energy = 100;
+                    break;
+                    
+                case 'maxscore':
+                    score = 9999;
+                    showAdminMessage('MAX SCORE ACHIEVED! 🏆');
+                    break;
+                    
+                case 'killallenemies':
+                    enemies = [];
+                    showAdminMessage('ALL ENEMIES ELIMINATED! 💀');
+                    break;
+                    
+                case 'oneshotkill':
+                    cheatCodes.ONESHOOT = !cheatCodes.ONESHOOT;
+                    showAdminMessage(cheatCodes.ONESHOOT ? 'ONE SHOT KILL! 🔫' : 'One Shot Kill Deactivated');
+                    break;
+                    
+                case 'superbullet':
+                    cheatCodes.SUPERBULLET = !cheatCodes.SUPERBULLET;
+                    showAdminMessage(cheatCodes.SUPERBULLET ? 'SUPER BULLETS! 💥' : 'Super Bullets Deactivated');
+                    break;
+                    
+                case 'freezeenemies':
+                    cheatCodes.FREEZE = !cheatCodes.FREEZE;
+                    showAdminMessage(cheatCodes.FREEZE ? 'ENEMIES FROZEN! ❄️' : 'Enemies Unfrozen');
+                    break;
+                    
+                case 'spawnresources':
+                    for (let i = 0; i < 10; i++) spawnResource();
+                    showAdminMessage('RESOURCES SPAWNED! 💎');
+                    break;
+            }
+        }
+
+        // Keyboard cheat codes
+        let currentCheatCode = '';
+        document.addEventListener('keydown', function(e) {
+            // Enter to start typing cheat code
+            if (e.key === 'Enter') {
+                currentCheatCode = '';
+                showAdminMessage('ENTER CHEAT CODE...', 3000);
+                return;
+            }
+            
+            // Build cheat code string
+            if (e.key.length === 1 && e.key.match(/[a-z]/i)) {
+                currentCheatCode += e.key.toUpperCase();
+                
+                // Check for completed cheat codes
+                const cheatKeys = Object.keys(cheatCodes);
+                for (let cheat of cheatKeys) {
+                    if (currentCheatCode.includes(cheat)) {
+                        activateCheat(cheat.toLowerCase());
+                        currentCheatCode = '';
+                        break;
+                    }
+                }
+                
+                // Clear if too long
+                if (currentCheatCode.length > 20) {
+                    currentCheatCode = '';
+                }
+            }
+        });
+
         // ==================== AUDIO SYSTEM ====================
         let gameMusic;
         let musicEnabled = false;
@@ -379,7 +599,6 @@
                 gameMusic.loop = true;
                 gameMusic.volume = 0.7;
                 
-                // Using a simple audio placeholder
                 gameMusic.src = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAABAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8AAABQTEFNRTMuMTAwBKkAAAAAAAAAADUgJAOBTwAB9AAACHDLG/jmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//sQZAAP8AAAaQAAAAgAAA0gAAABAAABpAAAACAAADSAAAAETEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
                 
                 gameMusic.addEventListener('canplaythrough', function() {
@@ -643,6 +862,11 @@
             lowEnergyEffect = false;
             energyWarningTimer = 0;
 
+            // Reset cheats when starting new game
+            for (let cheat in cheatCodes) {
+                cheatCodes[cheat] = false;
+            }
+
             if (musicEnabled) {
                 playMusic();
             }
@@ -673,29 +897,29 @@
             if (!gameRunning) return;
             
             let bulletConfig = {
-                size: 5,
-                damage: 1,
-                velocityX: 10,
+                size: cheatCodes.SUPERBULLET ? 10 : 5,
+                damage: cheatCodes.ONESHOOT ? 999 : (cheatCodes.SUPERBULLET ? 5 : 1),
+                velocityX: cheatCodes.SUPERBULLET ? 15 : 10,
                 velocityY: 0
             };
 
             switch(selectedPlayerType) {
                 case 'FIGHTER':
                     bulletConfig.color = '#ff4444';
-                    bulletConfig.size = 6;
+                    bulletConfig.size = cheatCodes.SUPERBULLET ? 12 : 6;
                     break;
                 case 'SPEED':
                     bulletConfig.color = '#00ffff';
-                    bulletConfig.velocityX = 12;
+                    bulletConfig.velocityX = cheatCodes.SUPERBULLET ? 18 : 12;
                     break;
                 case 'TANK':
                     bulletConfig.color = '#ffff00';
-                    bulletConfig.size = 7;
-                    bulletConfig.damage = 2;
+                    bulletConfig.size = cheatCodes.SUPERBULLET ? 14 : 7;
+                    bulletConfig.damage = cheatCodes.ONESHOOT ? 999 : (cheatCodes.SUPERBULLET ? 8 : 2);
                     break;
                 case 'STEALTH':
                     bulletConfig.color = '#ff00ff';
-                    bulletConfig.velocityX = 11;
+                    bulletConfig.velocityX = cheatCodes.SUPERBULLET ? 16 : 11;
                     break;
                 default:
                     bulletConfig.color = '#ffff00';
@@ -726,7 +950,7 @@
             enemies.push({
                 x: x, y: y,
                 size: typeConfig.size,
-                speed: typeConfig.speed,
+                speed: cheatCodes.FREEZE ? 0 : typeConfig.speed,
                 color: typeConfig.color,
                 type: randomType,
                 health: typeConfig.health,
@@ -747,28 +971,32 @@
         function update() {
             if (!gameRunning) return;
 
+            // Apply cheat codes
+            if (cheatCodes.GODMODE) {
+                health = 9999;
+            }
+            
+            if (cheatCodes.UNLIMITED) {
+                energy = 100;
+            }
+
             // Calculate speed based on energy level
             let currentSpeedMultiplier = 1;
             
-            if (energy <= 0) {
-                // No energy - very slow
+            if (energy <= 0 && !cheatCodes.UNLIMITED) {
                 currentSpeedMultiplier = 0.3;
                 lowEnergyEffect = true;
-            } else if (energy <= 20) {
-                // Low energy - slow
+            } else if (energy <= 20 && !cheatCodes.UNLIMITED) {
                 currentSpeedMultiplier = 0.5;
                 lowEnergyEffect = true;
-            } else if (energy <= 50) {
-                // Medium energy - normal speed
+            } else if (energy <= 50 && !cheatCodes.UNLIMITED) {
                 currentSpeedMultiplier = 0.8;
                 lowEnergyEffect = false;
             } else {
-                // Full energy - full speed
                 currentSpeedMultiplier = 1;
                 lowEnergyEffect = false;
             }
 
-            // Apply speed multiplier based on ship type and energy
             const speedMultiplier = (selectedPlayerType === 'SPEED' ? 1.2 : 
                                    selectedPlayerType === 'TANK' ? 0.8 : 1) * currentSpeedMultiplier;
             
@@ -777,7 +1005,6 @@
             if (keys['a'] || keys['ArrowLeft']) player.x -= player.baseSpeed * speedMultiplier;
             if (keys['d'] || keys['ArrowRight']) player.x += player.baseSpeed * speedMultiplier;
 
-            // Screen boundaries
             player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
             player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
 
@@ -791,21 +1018,22 @@
                 }
             });
 
-            // Update enemies
-            enemies.forEach((enemy, index) => {
-                const dx = player.x - enemy.x;
-                const dy = player.y - enemy.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                enemy.x += (dx / distance) * enemy.speed;
-                enemy.y += (dy / distance) * enemy.speed;
-                
-                // Collision with player
-                if (distance < player.size + enemy.size) {
-                    health -= selectedPlayerType === 'TANK' ? 3 : 5;
-                    enemies.splice(index, 1);
-                }
-            });
+            // Update enemies (skip if frozen)
+            if (!cheatCodes.FREEZE) {
+                enemies.forEach((enemy, index) => {
+                    const dx = player.x - enemy.x;
+                    const dy = player.y - enemy.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    enemy.x += (dx / distance) * enemy.speed;
+                    enemy.y += (dy / distance) * enemy.speed;
+                    
+                    if (distance < player.size + enemy.size && !cheatCodes.GODMODE) {
+                        health -= selectedPlayerType === 'TANK' ? 3 : 5;
+                        enemies.splice(index, 1);
+                    }
+                });
+            }
 
             // Update resources
             resources.forEach((resource, index) => {
@@ -814,41 +1042,36 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 
                 if (distance < player.size + resource.size) {
-                    energy = Math.min(100, energy + resource.value);
+                    if (!cheatCodes.UNLIMITED) {
+                        energy = Math.min(100, energy + resource.value);
+                    }
                     resources.splice(index, 1);
                     score += 10;
                 }
             });
 
             // Show low energy warning
-            if (energy <= 20) {
+            if (energy <= 20 && !cheatCodes.UNLIMITED) {
                 energyWarningTimer++;
-                if (energyWarningTimer % 60 === 0) { // Approximately every second
+                if (energyWarningTimer % 60 === 0) {
                     showEnergyWarning();
                 }
             } else {
                 energyWarningTimer = 0;
             }
 
-            // Spawn enemies randomly
-            if (Math.random() < 0.02) {
-                spawnEnemy();
-            }
+            if (Math.random() < 0.02) spawnEnemy();
+            if (Math.random() < 0.01 && resources.length < 5) spawnResource();
 
-            // Spawn resources randomly
-            if (Math.random() < 0.01 && resources.length < 5) {
-                spawnResource();
+            // Energy drain
+            if (!cheatCodes.UNLIMITED) {
+                const energyDrain = currentSpeedMultiplier > 0.8 ? 0.15 : 0.1;
+                energy = Math.max(0, energy - energyDrain);
             }
-
-            // Energy drain (faster when moving at higher speeds)
-            const energyDrain = currentSpeedMultiplier > 0.8 ? 0.15 : 0.1;
-            energy = Math.max(0, energy - energyDrain);
             
-            // Score increases over time
             score += 0.1;
             
-            // Game over condition
-            if (health <= 0) {
+            if (health <= 0 && !cheatCodes.GODMODE) {
                 health = 0;
                 gameOver();
             }
@@ -867,8 +1090,13 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Low energy effect - pulsing red background
-            if (lowEnergyEffect && energy <= 20) {
+            // Cheat code visual effects
+            if (cheatCodes.GODMODE) {
+                ctx.fillStyle = 'rgba(255, 255, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            if (lowEnergyEffect && energy <= 20 && !cheatCodes.UNLIMITED) {
                 ctx.fillStyle = energy <= 0 ? 'rgba(255, 0, 0, 0.1)' : 'rgba(255, 100, 0, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
@@ -881,12 +1109,16 @@
                 ctx.fill();
             });
             
-            // Draw player with low energy effect
+            // Draw player with effects
             const playerType = PLAYER_TYPES[player.type];
             ctx.save();
             
-            // Flashing effect when energy is low
-            if (lowEnergyEffect && energy <= 20) {
+            if (cheatCodes.GODMODE) {
+                ctx.shadowColor = '#ffff00';
+                ctx.shadowBlur = 20;
+            }
+            
+            if (lowEnergyEffect && energy <= 20 && !cheatCodes.UNLIMITED) {
                 if (Math.floor(Date.now() / 200) % 2 === 0) {
                     ctx.globalAlpha = 0.7;
                 }
@@ -898,6 +1130,10 @@
             // Draw enemies
             enemies.forEach(enemy => {
                 ctx.fillStyle = enemy.color;
+                if (cheatCodes.FREEZE) {
+                    ctx.globalAlpha = 0.5;
+                }
+                
                 if (enemy.type === 'TRIANGLE') {
                     ctx.beginPath();
                     ctx.moveTo(enemy.x, enemy.y - enemy.size);
@@ -912,14 +1148,21 @@
                     ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
                     ctx.fill();
                 }
+                
+                ctx.globalAlpha = 1;
             });
             
             // Draw bullets
             bullets.forEach(bullet => {
                 ctx.fillStyle = bullet.color;
+                if (cheatCodes.SUPERBULLET) {
+                    ctx.shadowColor = bullet.color;
+                    ctx.shadowBlur = 10;
+                }
                 ctx.beginPath();
                 ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.shadowBlur = 0;
             });
             
             // Draw UI
@@ -930,24 +1173,33 @@
             const maxHealth = selectedPlayerType === 'TANK' ? 150 : 100;
             
             ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
-            ctx.fillRect(10, 10, 280, 100);
+            ctx.fillRect(10, 10, 300, 100);
             ctx.strokeStyle = '#00ffff';
             ctx.lineWidth = 2;
-            ctx.strokeRect(10, 10, 280, 100);
+            ctx.strokeRect(10, 10, 300, 100);
+            
+            // Cheat indicator
+            if (Object.values(cheatCodes).some(v => v)) {
+                ctx.fillStyle = '#ffff00';
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText('CHEATS ACTIVE!', 20, 25);
+            }
             
             ctx.fillStyle = PLAYER_TYPES[selectedPlayerType].color;
             ctx.font = '14px Arial';
-            ctx.fillText(PLAYER_TYPES[selectedPlayerType].name, 20, 30);
+            ctx.fillText(PLAYER_TYPES[selectedPlayerType].name, 20, 45);
             
             ctx.fillStyle = '#00ffff';
             ctx.font = '14px Arial';
-            ctx.fillText('SCORE: ' + Math.floor(score), 20, 50);
+            ctx.fillText('SCORE: ' + Math.floor(score), 20, 65);
             
-            // Display speed status based on energy
             let speedStatus = 'SPEED: NORMAL';
             let speedColor = '#00ff00';
             
-            if (energy <= 0) {
+            if (cheatCodes.UNLIMITED) {
+                speedStatus = 'SPEED: MAX';
+                speedColor = '#ffff00';
+            } else if (energy <= 0) {
                 speedStatus = 'SPEED: VERY SLOW';
                 speedColor = '#ff4444';
             } else if (energy <= 20) {
@@ -959,27 +1211,28 @@
             }
             
             ctx.fillStyle = speedColor;
-            ctx.fillText(speedStatus, 20, 70);
+            ctx.fillText(speedStatus, 20, 85);
             
-            ctx.fillStyle = '#ff4444';
-            ctx.fillText('HEALTH: ' + Math.floor(health), 20, 90);
+            ctx.fillStyle = cheatCodes.GODMODE ? '#ffff00' : '#ff4444';
+            ctx.fillText('HEALTH: ' + (cheatCodes.GODMODE ? 'INFINITE' : Math.floor(health)), 20, 105);
             
             // Health bar
             ctx.fillStyle = '#333333';
-            ctx.fillRect(150, 77, 120, 12);
-            ctx.fillStyle = '#ff4444';
-            ctx.fillRect(150, 77, (health / maxHealth) * 120, 12);
+            ctx.fillRect(150, 92, 120, 12);
+            ctx.fillStyle = cheatCodes.GODMODE ? '#ffff00' : '#ff4444';
+            ctx.fillRect(150, 92, (cheatCodes.GODMODE ? 120 : (health / maxHealth) * 120), 12);
             
-            // Energy bar with color changing based on level
+            // Energy bar
             ctx.fillStyle = '#333333';
-            ctx.fillRect(150, 57, 120, 10);
+            ctx.fillRect(150, 72, 120, 10);
             
             let energyColor = '#00ff00';
-            if (energy <= 20) energyColor = '#ff4444';
+            if (cheatCodes.UNLIMITED) energyColor = '#ffff00';
+            else if (energy <= 20) energyColor = '#ff4444';
             else if (energy <= 50) energyColor = '#ffff00';
             
             ctx.fillStyle = energyColor;
-            ctx.fillRect(150, 57, (energy / 100) * 120, 10);
+            ctx.fillRect(150, 72, (energy / 100) * 120, 10);
         }
 
         function gameLoop() {
@@ -1033,7 +1286,7 @@
         });
 
         document.getElementById('howToPlayBtn').addEventListener('click', function() {
-            alert('HOW TO PLAY:\n\n🎮 CONTROLS:\n• WASD or Arrow Keys - Move\n• Mouse Click - Shoot\n\n🚀 ENERGY SYSTEM:\n• Energy drains over time\n• Below 50%: Normal speed\n• Below 20%: Slow speed\n• 0%: Very slow speed\n• Collect blue energy orbs!\n\n🎯 OBJECTIVE:\n• Survive as long as possible\n• Manage your energy carefully\n• Avoid enemy collisions\n\nGood luck, Commander! 🚀');
+            alert('HOW TO PLAY:\n\n🎮 CONTROLS:\n• WASD or Arrow Keys - Move\n• Mouse Click - Shoot\n\n🚀 ENERGY SYSTEM:\n• Energy drains over time\n• Below 50%: Normal speed\n• Below 20%: Slow speed\n• 0%: Very slow speed\n• Collect blue energy orbs!\n\n🎯 ADMIN COMMANDS:\n• Click ⚡ button for admin panel\n• Or type codes: GODMODE, UNLIMITED, etc.\n• Press ENTER to type cheat codes\n\nGood luck, Commander! 🚀');
         });
 
         document.querySelectorAll('.player-option').forEach(option => {
