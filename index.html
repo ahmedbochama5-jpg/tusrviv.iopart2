@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - Mobile Version</title>
+    <title>Alpha Arena - Enhanced Enemies</title>
     <style>
         * {
             margin: 0;
@@ -184,16 +184,16 @@
 <body>
     <div class="header">
         <h1>Alpha Arena</h1>
-        <div class="subtitle">Mobile Battle Arena</div>
-        <div class="beta-badge">Mobile Beta</div>
+        <div class="subtitle">Enhanced Enemies Edition</div>
+        <div class="beta-badge">New Enemy Designs!</div>
     </div>
     
     <button id="startButton">Start Battle</button>
     
     <div class="instructions">
-        <h3>Mobile Controls:</h3>
-        <p>Left Joystick - Move | Right Button - Shoot</p>
-        <p>Survive as long as possible!</p>
+        <h3>New Enemy Types:</h3>
+        <p>🔴 Red Triangle - Fast | 🔷 Blue Square - Tank | 🟢 Green Hexagon - Shooter</p>
+        <p>🟡 Yellow Star - Boss | 🟣 Purple Diamond - Elite</p>
     </div>
 
     <canvas id="gameCanvas"></canvas>
@@ -235,6 +235,142 @@
             volume: 0.5
         };
 
+        // Enemy Types
+        const ENEMY_TYPES = {
+            TRIANGLE: {
+                name: 'Triangle',
+                color: '#ff4444',
+                size: 18,
+                speed: 3.5,
+                health: 1,
+                points: 10,
+                draw: function(enemy) {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.moveTo(enemy.x, enemy.y - enemy.size);
+                    ctx.lineTo(enemy.x - enemy.size, enemy.y + enemy.size);
+                    ctx.lineTo(enemy.x + enemy.size, enemy.y + enemy.size);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Glowing effect
+                    ctx.strokeStyle = '#ff8888';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            },
+            SQUARE: {
+                name: 'Square',
+                color: '#4444ff',
+                size: 22,
+                speed: 1.8,
+                health: 3,
+                points: 20,
+                draw: function(enemy) {
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(enemy.x - enemy.size, enemy.y - enemy.size, enemy.size * 2, enemy.size * 2);
+                    
+                    // 3D effect
+                    ctx.strokeStyle = '#8888ff';
+                    ctx.lineWidth = 3;
+                    ctx.strokeRect(enemy.x - enemy.size, enemy.y - enemy.size, enemy.size * 2, enemy.size * 2);
+                    
+                    // Health indicator
+                    if (enemy.health < this.health) {
+                        ctx.fillStyle = '#ffffff';
+                        ctx.font = '10px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(enemy.health, enemy.x, enemy.y + 4);
+                    }
+                }
+            },
+            HEXAGON: {
+                name: 'Hexagon',
+                color: '#44ff44',
+                size: 16,
+                speed: 2.2,
+                health: 2,
+                points: 15,
+                draw: function(enemy) {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i * Math.PI / 3);
+                        const x = enemy.x + enemy.size * Math.cos(angle);
+                        const y = enemy.y + enemy.size * Math.sin(angle);
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Pulsing effect
+                    ctx.strokeStyle = '#88ff88';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            },
+            STAR: {
+                name: 'Star',
+                color: '#ffff44',
+                size: 25,
+                speed: 1.5,
+                health: 5,
+                points: 50,
+                draw: function(enemy) {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    const spikes = 5;
+                    const outerRadius = enemy.size;
+                    const innerRadius = enemy.size * 0.4;
+                    
+                    for (let i = 0; i < spikes * 2; i++) {
+                        const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                        const angle = (i * Math.PI / spikes) + enemy.rotation;
+                        const x = enemy.x + radius * Math.cos(angle);
+                        const y = enemy.y + radius * Math.sin(angle);
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Glowing effect
+                    ctx.strokeStyle = '#ffff88';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+            },
+            DIAMOND: {
+                name: 'Diamond',
+                color: '#ff44ff',
+                size: 20,
+                speed: 2.8,
+                health: 2,
+                points: 25,
+                draw: function(enemy) {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.moveTo(enemy.x, enemy.y - enemy.size);
+                    ctx.lineTo(enemy.x + enemy.size, enemy.y);
+                    ctx.lineTo(enemy.x, enemy.y + enemy.size);
+                    ctx.lineTo(enemy.x - enemy.size, enemy.y);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Shiny effect
+                    ctx.strokeStyle = '#ff88ff';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Sparkle
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(enemy.x - 3, enemy.y - 3, 2, 2);
+                    ctx.fillRect(enemy.x + 2, enemy.y + 2, 2, 2);
+                }
+            }
+        };
+
         // Game Variables
         let player = { x: 400, y: 300, size: 20, speed: 5, color: '#00ff00' };
         let keys = {};
@@ -245,6 +381,7 @@
         let bullets = [];
         let resources = [];
         let gameOver = false;
+        let enemySpawnTimer = 0;
         
         // Mobile Control Variables
         let touchId = null;
@@ -303,7 +440,6 @@
                 joystickY = deltaY;
             }
             
-            // Update stick position
             leftStick.style.transform = `translate(${joystickX}px, ${joystickY}px)`;
         }
 
@@ -326,7 +462,7 @@
         shootButton.addEventListener('touchstart', function(e) {
             e.preventDefault();
             shootBullet();
-            autoShootInterval = setInterval(shootBullet, 300); // Shoot every 300ms
+            autoShootInterval = setInterval(shootBullet, 300);
         });
 
         shootButton.addEventListener('touchend', function(e) {
@@ -334,7 +470,7 @@
             clearInterval(autoShootInterval);
         });
 
-        // Keyboard Controls (for desktop)
+        // Keyboard Controls
         document.addEventListener('keydown', (e) => keys[e.key] = true);
         document.addEventListener('keyup', (e) => keys[e.key] = false);
 
@@ -350,12 +486,11 @@
         function shootBullet() {
             if (gameOver) return;
             
-            // Shoot in the direction the player is moving, or forward if not moving
             let angle;
             if (joystickX !== 0 || joystickY !== 0) {
                 angle = Math.atan2(joystickY, joystickX);
             } else {
-                angle = Math.atan2(0, 1); // Shoot right by default
+                angle = Math.atan2(0, 1);
             }
             
             bullets.push({
@@ -365,7 +500,8 @@
                 velocityX: Math.cos(angle) * 10,
                 velocityY: Math.sin(angle) * 10,
                 size: 5,
-                color: '#ffff00'
+                color: '#ffff00',
+                damage: 1
             });
         }
 
@@ -384,10 +520,8 @@
         // Draw Enemies
         function drawEnemies() {
             enemies.forEach(enemy => {
-                ctx.fillStyle = enemy.color;
-                ctx.beginPath();
-                ctx.arc(enemy.x, enemy.y, enemy.size, 0, Math.PI * 2);
-                ctx.fill();
+                const enemyType = ENEMY_TYPES[enemy.type];
+                enemyType.draw(enemy);
             });
         }
 
@@ -398,6 +532,11 @@
                 ctx.beginPath();
                 ctx.arc(bullet.x, bullet.y, bullet.size, 0, Math.PI * 2);
                 ctx.fill();
+                
+                // Trail effect
+                ctx.strokeStyle = '#ffff88';
+                ctx.lineWidth = 1;
+                ctx.stroke();
             });
         }
 
@@ -417,7 +556,6 @@
 
         // Draw UI
         function drawUI() {
-            // Make UI larger for mobile
             const fontSize = window.innerWidth < 768 ? 20 : 16;
             const uiWidth = window.innerWidth < 768 ? 250 : 200;
             const uiHeight = window.innerWidth < 768 ? 130 : 110;
@@ -478,7 +616,7 @@
             ctx.font = '14px Arial';
             ctx.textAlign = 'left';
             ctx.textBaseline = 'bottom';
-            ctx.fillText('Mobile Beta v0.2', 10, canvas.height - 10);
+            ctx.fillText('Enhanced Enemies v1.0', 10, canvas.height - 10);
             
             ctx.restore();
         }
@@ -505,6 +643,44 @@
             music.pause();
         }
 
+        // Get Random Enemy Type based on score
+        function getRandomEnemyType() {
+            const scoreWeight = Math.min(score / 100, 5); // Increase difficulty with score
+            const types = Object.keys(ENEMY_TYPES);
+            let weights = [];
+            
+            // Base weights
+            const baseWeights = {
+                'TRIANGLE': 40,  // Common
+                'SQUARE': 25,    // Uncommon  
+                'HEXAGON': 20,   // Uncommon
+                'DIAMOND': 10,   // Rare
+                'STAR': 5        // Very rare
+            };
+            
+            // Adjust weights based on score
+            weights = types.map(type => {
+                let weight = baseWeights[type];
+                if (score > 200) {
+                    if (type === 'STAR') weight += 10;
+                    if (type === 'DIAMOND') weight += 15;
+                } else if (score > 100) {
+                    if (type === 'DIAMOND') weight += 5;
+                }
+                return weight;
+            });
+            
+            let totalWeight = weights.reduce((a, b) => a + b, 0);
+            let random = Math.random() * totalWeight;
+            
+            for (let i = 0; i < weights.length; i++) {
+                if (random < weights[i]) return types[i];
+                random -= weights[i];
+            }
+            
+            return types[0];
+        }
+
         // Spawn Enemies
         function spawnEnemy() {
             const side = Math.floor(Math.random() * 4);
@@ -517,8 +693,20 @@
                 case 3: x = -20; y = Math.random() * canvas.height; break;
             }
             
+            const enemyType = getRandomEnemyType();
+            const typeConfig = ENEMY_TYPES[enemyType];
+            
             enemies.push({
-                x: x, y: y, size: 15, speed: 2, color: '#ff4444'
+                x: x, 
+                y: y, 
+                size: typeConfig.size,
+                speed: typeConfig.speed,
+                color: typeConfig.color,
+                type: enemyType,
+                health: typeConfig.health,
+                maxHealth: typeConfig.health,
+                points: typeConfig.points,
+                rotation: 0
             });
         }
 
@@ -569,14 +757,36 @@
             player.x = Math.max(player.size, Math.min(canvas.width - player.size, player.x));
             player.y = Math.max(player.size, Math.min(canvas.height - player.size, player.y));
 
-            // Update bullets
-            bullets.forEach((bullet, index) => {
+            // Update bullets and check collisions
+            bullets.forEach((bullet, bulletIndex) => {
                 bullet.x += bullet.velocityX;
                 bullet.y += bullet.velocityY;
                 
+                // Remove bullets out of screen
                 if (bullet.x < 0 || bullet.x > canvas.width || bullet.y < 0 || bullet.y > canvas.height) {
-                    bullets.splice(index, 1);
+                    bullets.splice(bulletIndex, 1);
+                    return;
                 }
+                
+                // Check bullet-enemy collisions
+                enemies.forEach((enemy, enemyIndex) => {
+                    const dx = bullet.x - enemy.x;
+                    const dy = bullet.y - enemy.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < enemy.size + bullet.size) {
+                        enemy.health -= bullet.damage;
+                        
+                        // Remove bullet on hit
+                        bullets.splice(bulletIndex, 1);
+                        
+                        // Remove enemy if health <= 0
+                        if (enemy.health <= 0) {
+                            score += enemy.points;
+                            enemies.splice(enemyIndex, 1);
+                        }
+                    }
+                });
             });
 
             // Update enemies
@@ -588,6 +798,12 @@
                 enemy.x += (dx / distance) * enemy.speed;
                 enemy.y += (dy / distance) * enemy.speed;
                 
+                // Rotation for star enemies
+                if (enemy.type === 'STAR') {
+                    enemy.rotation += 0.05;
+                }
+                
+                // Collision with player
                 if (distance < player.size + enemy.size) {
                     health -= 5;
                     enemies.splice(index, 1);
@@ -607,9 +823,18 @@
                 }
             });
 
-            // Spawn enemies randomly
-            if (Math.random() < 0.02) spawnEnemy();
-            if (Math.random() < 0.01 && resources.length < 5) spawnResource();
+            // Spawn enemies based on timer and difficulty
+            enemySpawnTimer++;
+            const spawnRate = Math.max(60, 120 - Math.floor(score / 10)); // Faster spawning as score increases
+            if (enemySpawnTimer > spawnRate) {
+                spawnEnemy();
+                enemySpawnTimer = 0;
+            }
+
+            // Spawn resources randomly
+            if (Math.random() < 0.01 && resources.length < 5) {
+                spawnResource();
+            }
 
             // Energy drain
             energy = Math.max(0, energy - 0.1);
@@ -646,7 +871,6 @@
             canvas.style.display = 'block';
             music.play();
             
-            // Center player on start
             player.x = canvas.width / 2;
             player.y = canvas.height / 2;
             
