@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Arena - المودات المتعددة</title>
+    <title>Alpha Arena - نظام الإدارة</title>
     <style>
         * {
             margin: 0;
@@ -90,7 +90,7 @@
             border-color: #ffd93d;
         }
 
-        .modes-panel {
+        .broadcast-panel {
             border-color: #a55eea;
         }
 
@@ -109,7 +109,7 @@
             color: #ffd93d;
         }
 
-        .modes-title {
+        .broadcast-title {
             color: #a55eea;
         }
 
@@ -159,29 +159,15 @@
             padding: 18px 30px;
         }
 
-        .mode-btn {
+        .broadcast-btn {
             background: linear-gradient(45deg, #a55eea, #8854d0);
             color: white;
-            font-size: 1.1em;
-            padding: 16px 20px;
-        }
-
-        .mode-btn.active {
-            background: linear-gradient(45deg, #ffd93d, #a55eea);
-            box-shadow: 0 0 20px #ffd93d;
         }
 
         .btn-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
             gap: 12px;
-            margin-top: 15px;
-        }
-
-        .modes-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
             margin-top: 15px;
         }
 
@@ -219,11 +205,6 @@
             color: #ff6b6b;
         }
 
-        .mode-active {
-            color: #a55eea;
-            text-shadow: 0 0 8px #a55eea;
-        }
-
         .admin-message {
             position: fixed;
             top: 50%;
@@ -240,6 +221,35 @@
             display: none;
             box-shadow: 0 0 40px rgba(255, 217, 61, 0.6);
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .broadcast-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #a55eea, #8854d0);
+            padding: 15px 30px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.4em;
+            font-weight: bold;
+            z-index: 999;
+            display: none;
+            box-shadow: 0 5px 20px rgba(165, 94, 234, 0.6);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+            animation: broadcastSlide 0.5s ease-out;
+        }
+
+        @keyframes broadcastSlide {
+            from {
+                top: -100px;
+                opacity: 0;
+            }
+            to {
+                top: 20px;
+                opacity: 1;
+            }
         }
 
         .instructions {
@@ -309,7 +319,7 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
-        .cheat-input {
+        .cheat-input, .broadcast-input {
             width: 100%;
             padding: 12px;
             margin: 12px 0;
@@ -322,16 +332,18 @@
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
+        .broadcast-input {
+            border-color: #a55eea;
+        }
+
         .game-area {
             width: 100%;
             height: 600px;
             background: 
-                /* الأرضية الرئيسية */
                 linear-gradient(45deg, #2c3e50 25%, transparent 25%),
                 linear-gradient(-45deg, #2c3e50 25%, transparent 25%),
                 linear-gradient(45deg, transparent 75%, #2c3e50 75%),
                 linear-gradient(-45deg, transparent 75%, #2c3e50 75%),
-                /* التدرج اللوني */
                 linear-gradient(135deg, #3498db, #2c3e50);
             background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 100% 100%;
             background-position: 0 0, 0 20px, 20px -20px, -20px 0px, 0 0;
@@ -344,7 +356,6 @@
             cursor: crosshair;
         }
 
-        /* عناصر إضافية للخلفية */
         .game-area::before {
             content: '';
             position: absolute;
@@ -371,30 +382,6 @@
             box-shadow: 0 0 20px #e74c3c, 0 0 30px rgba(231, 76, 60, 0.5);
             z-index: 10;
             border: 3px solid #fff;
-            transition: all 0.3s ease;
-        }
-
-        .player.speed-mode {
-            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
-            box-shadow: 0 0 20px #4ecdc4, 0 0 30px rgba(78, 205, 196, 0.5);
-        }
-
-        .player.tank-mode {
-            background: linear-gradient(45deg, #ff9ff3, #fd79a8);
-            box-shadow: 0 0 20px #ff9ff3, 0 0 30px rgba(255, 159, 243, 0.5);
-            width: 60px;
-            height: 60px;
-        }
-
-        .player.stealth-mode {
-            background: linear-gradient(45deg, #2d3436, #636e72);
-            box-shadow: 0 0 10px #2d3436, 0 0 15px rgba(45, 52, 54, 0.5);
-            opacity: 0.7;
-        }
-
-        .player.mage-mode {
-            background: linear-gradient(45deg, #a55eea, #8854d0);
-            box-shadow: 0 0 20px #a55eea, 0 0 30px rgba(165, 94, 234, 0.5);
         }
 
         .enemy {
@@ -418,21 +405,6 @@
             z-index: 8;
         }
 
-        .bullet.super-bullet {
-            width: 15px;
-            height: 15px;
-            background: #ff6b6b;
-            box-shadow: 0 0 15px #ff6b6b;
-        }
-
-        .bullet.mage-bullet {
-            width: 12px;
-            height: 12px;
-            background: #a55eea;
-            box-shadow: 0 0 15px #a55eea;
-            animation: pulse 0.5s infinite;
-        }
-
         .resource {
             position: absolute;
             width: 20px;
@@ -445,40 +417,10 @@
             border: 2px solid #fff;
         }
 
-        .power-up {
-            position: absolute;
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            box-shadow: 0 0 15px currentColor;
-            z-index: 7;
-            animation: float 3s infinite ease-in-out;
-        }
-
-        .power-up.health {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
-            color: #ff6b6b;
-        }
-
-        .power-up.energy {
-            background: linear-gradient(45deg, #4ecdc4, #45b7d1);
-            color: #4ecdc4;
-        }
-
-        .power-up.speed {
-            background: linear-gradient(45deg, #feca57, #ff9ff3);
-            color: #feca57;
-        }
-
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
         }
 
         .controls-info {
@@ -544,16 +486,6 @@
             border: 1px solid #4ecdc4;
         }
 
-        .mode-description {
-            margin-top: 10px;
-            padding: 12px;
-            background: rgba(165, 94, 234, 0.2);
-            border-radius: 8px;
-            font-size: 0.9em;
-            border: 1px solid #a55eea;
-            text-align: right;
-        }
-
         @media (max-width: 1200px) {
             .main-content {
                 flex-direction: column;
@@ -587,10 +519,12 @@
     <button class="toggle-btn" id="adminToggle">⚡</button>
     <button class="music-toggle" id="musicToggle">🎵</button>
 
+    <div class="broadcast-message" id="broadcastMessage"></div>
+
     <div class="container">
         <div class="header">
             <div class="game-title">ALPHA ARENA</div>
-            <div class="game-subtitle">أنظمة المودات المتعددة - اختر مودك وابدأ اللعب!</div>
+            <div class="game-subtitle">انقر على بدء اللعبة أو اضغط على أي زر تحكم للبدء!</div>
         </div>
 
         <div class="main-content">
@@ -618,47 +552,6 @@
             </div>
 
             <div class="panels-section">
-                <div class="panel modes-panel">
-                    <h2 class="panel-title modes-title">أنظمة المودات</h2>
-                    
-                    <div class="modes-grid">
-                        <button class="btn mode-btn" id="normalMode" onclick="setGameMode('normal')">
-                            🎯 الوضع العادي
-                        </button>
-                        <button class="btn mode-btn" id="speedMode" onclick="setGameMode('speed')">
-                            ⚡ وضع السرعة
-                        </button>
-                        <button class="btn mode-btn" id="tankMode" onclick="setGameMode('tank')">
-                            🛡️ وضع الدبابة
-                        </button>
-                        <button class="btn mode-btn" id="stealthMode" onclick="setGameMode('stealth')">
-                            🕵️ وضع التخفي
-                        </button>
-                        <button class="btn mode-btn" id="mageMode" onclick="setGameMode('mage')">
-                            🔮 وضع الساحر
-                        </button>
-                    </div>
-                    
-                    <div class="mode-description" id="modeDescription">
-                        <strong>الوضع العادي:</strong> توازن بين السرعة والقوة. مثالي للمبتدئين.
-                    </div>
-                    
-                    <div class="status">
-                        <div class="status-item">
-                            <span class="status-label">المود النشط:</span>
-                            <span class="status-value mode-active" id="activeModeDisplay">عادي</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">القدرة الخاصة:</span>
-                            <span class="status-value" id="specialAbilityDisplay">غير متاحة</span>
-                        </div>
-                        <div class="status-item">
-                            <span class="status-label">وقت القدرة:</span>
-                            <span class="status-value" id="abilityTimerDisplay">0</span>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="panel game-panel">
                     <h2 class="panel-title">حالة اللعبة</h2>
                     <div class="status">
@@ -684,7 +577,7 @@
                         <button class="btn start-btn" onclick="startGame()">🎮 بدء اللعبة</button>
                         <button class="btn" onclick="resetGame()">🔄 إعادة تعيين</button>
                         <button class="btn music-btn" onclick="toggleMusic()">🎵 تشغيل/إيقاف الموسيقى</button>
-                        <button class="btn" onclick="useSpecialAbility()">✨ استخدام القدرة</button>
+                        <button class="btn" onclick="showInstructions()">❓ تعليمات اللعب</button>
                     </div>
                 </div>
 
@@ -696,7 +589,81 @@
                         <button class="btn admin-btn" onclick="activateCheat('unlimitedenergy')">طاقة غير محدودة ⚡</button>
                         <button class="btn admin-btn" onclick="activateCheat('maxscore')">أقصى نقاط 🏆</button>
                         <button class="btn admin-btn" onclick="activateCheat('killallenemies')">قتل كل الأعداء 💀</button>
-                        <button class="btn admin-btn" onclick="activateCheat('spawnpowerups')">إنشاء قدرات 💎</button>
+                        <button class="btn admin-btn" onclick="activateCheat('oneshotkill')">قتل برصاصة واحدة 🔫</button>
+                        <button class="btn admin-btn" onclick="activateCheat('superbullet')">رصاصات خارقة 💥</button>
+                        <button class="btn admin-btn" onclick="activateCheat('freezeenemies')">تجميد الأعداء ❄️</button>
+                        <button class="btn admin-btn" onclick="activateCheat('spawnresources')">إنشاء موارد 💎</button>
+                    </div>
+                    
+                    <div class="status">
+                        <div class="status-item">
+                            <span class="status-label">وضع الإله:</span>
+                            <span class="status-value" id="godmodeStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">طاقة غير محدودة:</span>
+                            <span class="status-value" id="unlimitedStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">قتل برصاصة:</span>
+                            <span class="status-value" id="oneshotStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">رصاصات خارقة:</span>
+                            <span class="status-value" id="superbulletStatus">غير مفعل</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">الأعداء مجمدون:</span>
+                            <span class="status-value" id="freezeStatus">غير مفعل</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel broadcast-panel">
+                    <h2 class="panel-title broadcast-title">نظام البث</h2>
+                    
+                    <input type="text" class="broadcast-input" id="broadcastInput" placeholder="اكتب رسالة البث هنا...">
+                    
+                    <div class="btn-grid">
+                        <button class="btn broadcast-btn" onclick="sendBroadcast()">📢 بث رسالة</button>
+                        <button class="btn broadcast-btn" onclick="sendAnnouncement()">📣 إعلان مهم</button>
+                        <button class="btn broadcast-btn" onclick="sendWarning()">⚠️ تحذير</button>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h3>تعليمات البث:</h3>
+                        <ul>
+                            <li>أدخل الرسالة ثم اضغط على "بث رسالة"</li>
+                            <li>"إعلان مهم" يظهر لفترة أطول</li>
+                            <li>"تحذير" يظهر بلون مختلف</li>
+                            <li>الرسائل تظهر لكل اللاعبين</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel cheat-panel">
+                    <h2 class="panel-title cheat-title">أكواد الغش</h2>
+                    
+                    <input type="text" class="cheat-input" id="cheatInput" placeholder="اكتب كود الغش هنا...">
+                    
+                    <div class="btn-grid">
+                        <button class="btn cheat-btn" onclick="enterCheatCode()">تفعيل الكود</button>
+                        <button class="btn cheat-btn" onclick="showCheatCodes()">عرض الأكواد</button>
+                        <button class="btn cheat-btn" onclick="resetAllCheats()">إعادة تعيين الكل</button>
+                    </div>
+                    
+                    <div class="instructions">
+                        <h3>تعليمات الأكواد:</h3>
+                        <ul>
+                            <li>GODMODE - مناعة كاملة</li>
+                            <li>UNLIMITED - طاقة غير محدودة</li>
+                            <li>MAXSCORE - 9999 نقطة</li>
+                            <li>KILLALL - تدمير كل الأعداء</li>
+                            <li>ONESHOOT - قتل برصاصة واحدة</li>
+                            <li>SUPERBULLET - رصاصات قوية</li>
+                            <li>FREEZE - تجميد الأعداء</li>
+                            <li>RESOURCES - إنشاء موارد</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -706,149 +673,19 @@
     <div class="admin-message" id="adminMessage"></div>
 
     <script>
-        // ==================== نظام المودات والقدرات ====================
-        let currentGameMode = 'normal';
-        let specialAbilityActive = false;
-        let abilityTimer = 0;
-        let abilityCooldown = 0;
-        
-        const gameModes = {
-            normal: {
-                name: 'عادي',
-                playerSpeed: 8,
-                playerHealth: 100,
-                playerSize: 45,
-                bulletSpeed: 12,
-                bulletDamage: 10,
-                energyConsumption: 2,
-                specialAbility: {
-                    name: 'تركيز مزدوج',
-                    description: 'إطلاق رصاصتين في وقت واحد لمدة 5 ثوانٍ',
-                    duration: 5,
-                    cooldown: 15,
-                    activate: function() {
-                        specialAbilityActive = true;
-                        abilityTimer = this.duration;
-                        showAdminMessage('تم تفعيل التركيز المزدوج! 🔫🔫', 2000);
-                    },
-                    update: function() {
-                        // إطلاق رصاصتين في كل مرة
-                    }
-                }
-            },
-            speed: {
-                name: 'السرعة',
-                playerSpeed: 15,
-                playerHealth: 80,
-                playerSize: 40,
-                bulletSpeed: 15,
-                bulletDamage: 8,
-                energyConsumption: 3,
-                specialAbility: {
-                    name: 'السرعة القصوى',
-                    description: 'زيادة السرعة إلى أقصى حد لمدة 4 ثوانٍ',
-                    duration: 4,
-                    cooldown: 12,
-                    activate: function() {
-                        specialAbilityActive = true;
-                        abilityTimer = this.duration;
-                        gameState.playerSpeed = 25;
-                        showAdminMessage('تم تفعيل السرعة القصوى! ⚡', 2000);
-                    },
-                    deactivate: function() {
-                        gameState.playerSpeed = gameModes.speed.playerSpeed;
-                    }
-                }
-            },
-            tank: {
-                name: 'الدبابة',
-                playerSpeed: 5,
-                playerHealth: 200,
-                playerSize: 60,
-                bulletSpeed: 8,
-                bulletDamage: 20,
-                energyConsumption: 4,
-                specialAbility: {
-                    name: 'درع واقي',
-                    description: 'مناعة كاملة من الأعداء لمدة 6 ثوانٍ',
-                    duration: 6,
-                    cooldown: 20,
-                    activate: function() {
-                        specialAbilityActive = true;
-                        abilityTimer = this.duration;
-                        cheatCodes.GODMODE = true;
-                        showAdminMessage('تم تفعيل الدرع الواقي! 🛡️', 2000);
-                    },
-                    deactivate: function() {
-                        cheatCodes.GODMODE = false;
-                    }
-                }
-            },
-            stealth: {
-                name: 'التخفي',
-                playerSpeed: 10,
-                playerHealth: 70,
-                playerSize: 35,
-                bulletSpeed: 10,
-                bulletDamage: 15,
-                energyConsumption: 1,
-                specialAbility: {
-                    name: 'التخفي الكامل',
-                    description: 'اختفاء تام عن أنظار الأعداء لمدة 8 ثوانٍ',
-                    duration: 8,
-                    cooldown: 25,
-                    activate: function() {
-                        specialAbilityActive = true;
-                        abilityTimer = this.duration;
-                        gameState.isStealthed = true;
-                        showAdminMessage('تم تفعيل التخفي الكامل! 🕵️', 2000);
-                    },
-                    deactivate: function() {
-                        gameState.isStealthed = false;
-                    }
-                }
-            },
-            mage: {
-                name: 'الساحر',
-                playerSpeed: 7,
-                playerHealth: 90,
-                playerSize: 45,
-                bulletSpeed: 10,
-                bulletDamage: 25,
-                energyConsumption: 5,
-                specialAbility: {
-                    name: 'انفجار سحري',
-                    description: 'انفجار دائري يقتل كل الأعداء في النطاق',
-                    duration: 0, // فوري
-                    cooldown: 30,
-                    activate: function() {
-                        // قتل كل الأعداء في نطاق معين
-                        const blastRadius = 150;
-                        for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-                            const enemy = gameState.enemies[i];
-                            const dx = gameState.playerX - enemy.x;
-                            const dy = gameState.playerY - enemy.y;
-                            const distance = Math.sqrt(dx * dx + dy * dy);
-                            
-                            if (distance < blastRadius) {
-                                gameState.enemies.splice(i, 1);
-                                gameState.score += 100;
-                                spawnEnemy();
-                            }
-                        }
-                        showAdminMessage('انفجار سحري! 💥', 2000);
-                    }
-                }
-            }
-        };
-
         // ==================== نظام الإدارة السري ====================
         let isAdmin = false;
         let gameRunning = false;
         let gameInterval;
         let cheatCodes = {
             'GODMODE': false,
-            'UNLIMITED': false
+            'UNLIMITED': false,
+            'MAXSCORE': false,
+            'KILLALL': false,
+            'ONESHOOT': false,
+            'SUPERBULLET': false,
+            'FREEZE': false,
+            'RESOURCES': false
         };
 
         // متغيرات اللعبة
@@ -859,13 +696,10 @@
             enemies: [],
             bullets: [],
             resources: [],
-            powerUps: [],
             playerX: 350,
             playerY: 300,
-            playerSpeed: 8,
             mouseX: 0,
-            mouseY: 0,
-            isStealthed: false
+            mouseY: 0
         };
 
         // نظام التحكم المستمر
@@ -879,296 +713,610 @@
         // نظام الموسيقى المبسط
         let musicEnabled = false;
 
-        // تعيين مود اللعبة
-        function setGameMode(mode) {
-            if (gameRunning) {
-                showAdminMessage("لا يمكن تغيير المود أثناء اللعب!", 2000);
+        // ==================== نظام البث ====================
+        function sendBroadcast() {
+            if (!isAdmin) {
+                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
                 return;
             }
             
-            currentGameMode = mode;
-            const modeData = gameModes[mode];
+            const broadcastInput = document.getElementById('broadcastInput');
+            const message = broadcastInput ? broadcastInput.value.trim() : '';
             
-            // تحديث واجهة المستخدم
-            document.querySelectorAll('.mode-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(mode + 'Mode').classList.add('active');
+            if (!message) {
+                showAdminMessage("الرجاء إدخال رسالة البث!", 2000);
+                return;
+            }
             
-            document.getElementById('activeModeDisplay').textContent = modeData.name;
-            document.getElementById('specialAbilityDisplay').textContent = modeData.specialAbility.name;
-            document.getElementById('modeDescription').innerHTML = `<strong>${modeData.name}:</strong> ${modeData.specialAbility.description}`;
+            showBroadcastMessage(`📢 ${message}`, 5000);
             
-            // تحديث حالة اللاعب
-            gameState.playerSpeed = modeData.playerSpeed;
-            gameState.health = modeData.playerHealth;
-            
-            // تحديث مظهر اللاعب
-            const player = document.getElementById('player');
-            player.className = 'player';
-            player.classList.add(mode + '-mode');
-            player.style.width = modeData.playerSize + 'px';
-            player.style.height = modeData.playerSize + 'px';
-            
-            showAdminMessage(`تم تفعيل وضع ${modeData.name}! 🎮`, 2000);
-            updateGameDisplay();
+            if (broadcastInput) {
+                broadcastInput.value = '';
+            }
         }
 
-        // استخدام القدرة الخاصة
-        function useSpecialAbility() {
-            if (!gameRunning) {
-                showAdminMessage("ابدأ اللعبة أولاً!", 2000);
+        function sendAnnouncement() {
+            if (!isAdmin) {
+                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
                 return;
             }
             
-            if (specialAbilityActive) {
-                showAdminMessage("القدرة لا تزال مفعلة!", 2000);
+            const broadcastInput = document.getElementById('broadcastInput');
+            const message = broadcastInput ? broadcastInput.value.trim() : '';
+            
+            if (!message) {
+                showAdminMessage("الرجاء إدخال رسالة الإعلان!", 2000);
                 return;
             }
             
-            if (abilityCooldown > 0) {
-                showAdminMessage(`القدرة غير جاهزة! ${abilityCooldown} ثانية`, 2000);
-                return;
-            }
+            showBroadcastMessage(`📣 ${message}`, 8000, '#ffd93d');
             
-            if (gameState.energy < 30) {
-                showAdminMessage("طاقة غير كافية!", 2000);
-                return;
+            if (broadcastInput) {
+                broadcastInput.value = '';
             }
-            
-            gameState.energy -= 30;
-            gameModes[currentGameMode].specialAbility.activate();
-            abilityCooldown = gameModes[currentGameMode].specialAbility.cooldown;
         }
 
-        // تحديث القدرات
-        function updateAbilities() {
-            if (specialAbilityActive) {
-                abilityTimer -= 0.1;
-                if (abilityTimer <= 0) {
-                    specialAbilityActive = false;
-                    const mode = gameModes[currentGameMode];
-                    if (mode.specialAbility.deactivate) {
-                        mode.specialAbility.deactivate();
-                    }
-                    showAdminMessage("انتهت القدرة الخاصة!", 1500);
+        function sendWarning() {
+            if (!isAdmin) {
+                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
+                return;
+            }
+            
+            const broadcastInput = document.getElementById('broadcastInput');
+            const message = broadcastInput ? broadcastInput.value.trim() : '';
+            
+            if (!message) {
+                showAdminMessage("الرجاء إدخال رسالة التحذير!", 2000);
+                return;
+            }
+            
+            showBroadcastMessage(`⚠️ ${message}`, 6000, '#ff6b6b');
+            
+            if (broadcastInput) {
+                broadcastInput.value = '';
+            }
+        }
+
+        function showBroadcastMessage(message, duration = 5000, color = '#a55eea') {
+            const broadcastDiv = document.getElementById('broadcastMessage');
+            if (broadcastDiv) {
+                broadcastDiv.textContent = message;
+                broadcastDiv.style.background = `linear-gradient(45deg, ${color}, ${color}99)`;
+                broadcastDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    broadcastDiv.style.display = 'none';
+                }, duration);
+            }
+        }
+
+        // ==================== نظام الموسيقى ====================
+        function toggleMusic() {
+            if (musicEnabled) {
+                musicEnabled = false;
+                document.getElementById('musicToggle').textContent = '🔇';
+                showAdminMessage("تم إيقاف الموسيقى", 1500);
+            } else {
+                musicEnabled = true;
+                document.getElementById('musicToggle').textContent = '🎵';
+                showAdminMessage("تم تشغيل الموسيقى", 1500);
+            }
+        }
+
+        // ==================== نظام الإدارة ====================
+        document.getElementById('adminToggle').addEventListener('click', function() {
+            const panel = document.getElementById('adminPanel');
+            if (!isAdmin) {
+                const password = prompt("🔐 أدخل كلمة مرور الإدارة:");
+                if (password === "1234") {
+                    isAdmin = true;
+                    showAdminMessage("تم منح صلاحية الإدارة! 👑", 3000);
+                    panel.style.display = 'block';
+                } else {
+                    showAdminMessage("تم رفض الوصول! ❌", 2000);
+                }
+            } else {
+                panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            }
+        });
+
+        document.getElementById('musicToggle').addEventListener('click', toggleMusic);
+
+        function showAdminMessage(message, duration = 2000) {
+            const messageDiv = document.getElementById('adminMessage');
+            if (messageDiv) {
+                messageDiv.textContent = message;
+                messageDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, duration);
+            }
+        }
+
+        // ==================== نظام الغش ====================
+        function activateCheat(cheatType) {
+            if (!isAdmin) {
+                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
+                return;
+            }
+            
+            switch(cheatType) {
+                case 'godmode':
+                    cheatCodes.GODMODE = !cheatCodes.GODMODE;
+                    showAdminMessage(cheatCodes.GODMODE ? 'تم تفعيل وضع الإله! ✨' : 'تم إلغاء وضع الإله');
+                    if (cheatCodes.GODMODE) gameState.health = 9999;
+                    updateCheatStatus('godmodeStatus', cheatCodes.GODMODE);
+                    updateGameDisplay();
+                    break;
+                    
+                case 'unlimitedenergy':
+                    cheatCodes.UNLIMITED = !cheatCodes.UNLIMITED;
+                    showAdminMessage(cheatCodes.UNLIMITED ? 'طاقة غير محدودة! ⚡' : 'تم إلغاء الطاقة غير المحدودة');
+                    if (cheatCodes.UNLIMITED) gameState.energy = 100;
+                    updateCheatStatus('unlimitedStatus', cheatCodes.UNLIMITED);
+                    updateGameDisplay();
+                    break;
+                    
+                case 'maxscore':
+                    gameState.score = 9999;
+                    showAdminMessage('تم الوصول لأقصى نقاط! 🏆');
+                    updateGameDisplay();
+                    break;
+                    
+                case 'killallenemies':
+                    gameState.enemies = [];
+                    showAdminMessage('تم تدمير كل الأعداء! 💀');
+                    updateGameDisplay();
+                    renderGame();
+                    break;
+                    
+                case 'oneshotkill':
+                    cheatCodes.ONESHOOT = !cheatCodes.ONESHOOT;
+                    showAdminMessage(cheatCodes.ONESHOOT ? 'قتل برصاصة واحدة! 🔫' : 'تم إلغاء القتل برصاصة واحدة');
+                    updateCheatStatus('oneshotStatus', cheatCodes.ONESHOOT);
+                    break;
+                    
+                case 'superbullet':
+                    cheatCodes.SUPERBULLET = !cheatCodes.SUPERBULLET;
+                    showAdminMessage(cheatCodes.SUPERBULLET ? 'رصاصات خارقة! 💥' : 'تم إلغاء الرصاصات الخارقة');
+                    updateCheatStatus('superbulletStatus', cheatCodes.SUPERBULLET);
+                    break;
+                    
+                case 'freezeenemies':
+                    cheatCodes.FREEZE = !cheatCodes.FREEZE;
+                    showAdminMessage(cheatCodes.FREEZE ? 'تم تجميد الأعداء! ❄️' : 'تم إلغاء تجميد الأعداء');
+                    updateCheatStatus('freezeStatus', cheatCodes.FREEZE);
+                    break;
+                    
+                case 'spawnresources':
+                    spawnResources(5);
+                    showAdminMessage('تم إنشاء الموارد! 💎');
+                    break;
+            }
+        }
+
+        function updateCheatStatus(elementId, isActive) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = isActive ? 'مفعل' : 'غير مفعل';
+                element.className = isActive ? 'status-value cheat-active' : 'status-value cheat-inactive';
+            }
+        }
+
+        function enterCheatCode() {
+            const cheatInput = document.getElementById('cheatInput');
+            const code = cheatInput ? cheatInput.value.toUpperCase().trim() : '';
+            
+            if (!code) {
+                showAdminMessage("الرجاء إدخال كود الغش!", 2000);
+                return;
+            }
+            
+            if (!isAdmin) {
+                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
+                return;
+            }
+            
+            const cheatKeys = Object.keys(cheatCodes);
+            let found = false;
+            
+            for (let cheat of cheatKeys) {
+                if (code.includes(cheat)) {
+                    activateCheat(cheat.toLowerCase());
+                    found = true;
+                    break;
                 }
             }
             
-            if (abilityCooldown > 0) {
-                abilityCooldown -= 0.1;
-                if (abilityCooldown < 0) abilityCooldown = 0;
+            if (!found) {
+                showAdminMessage("كود الغش غير معروف! ❌", 2000);
             }
             
-            // تحديث العرض
-            document.getElementById('abilityTimerDisplay').textContent = abilityTimer.toFixed(1);
+            if (cheatInput) {
+                cheatInput.value = '';
+            }
         }
 
-        // باقي الدوال (toggleMusic, showAdminMessage, activateCheat, إلخ)
-        // ... [الكود السابق يبقى كما هو مع بعض التعديلات الطفيفة]
+        function showCheatCodes() {
+            alert("أكواد الغش المتاحة:\n\n" +
+                  "GODMODE - مناعة كاملة\n" +
+                  "UNLIMITED - طاقة غير محدودة\n" +
+                  "MAXSCORE - 9999 نقطة\n" +
+                  "KILLALL - تدمير كل الأعداء\n" +
+                  "ONESHOOT - قتل برصاصة واحدة\n" +
+                  "SUPERBULLET - رصاصات قوية\n" +
+                  "FREEZE - تجميد الأعداء\n" +
+                  "RESOURCES - إنشاء موارد");
+        }
 
-        // بدء اللعبة مع المود المحدد
+        function resetAllCheats() {
+            if (!isAdmin) {
+                showAdminMessage("مطلوب صلاحية الإدارة! 🔒", 2000);
+                return;
+            }
+            
+            for (let cheat in cheatCodes) {
+                cheatCodes[cheat] = false;
+                updateCheatStatus(cheat.toLowerCase() + 'Status', false);
+            }
+            
+            showAdminMessage("تم إعادة تعيين كل أكواد الغش! 🔄", 2000);
+        }
+
+        // ==================== تحديث العرض ====================
+        function updateGameDisplay() {
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const healthDisplay = document.getElementById('healthDisplay');
+            const energyDisplay = document.getElementById('energyDisplay');
+            const enemiesDisplay = document.getElementById('enemiesDisplay');
+            
+            if (scoreDisplay) scoreDisplay.textContent = gameState.score;
+            if (healthDisplay) healthDisplay.textContent = gameState.health;
+            if (energyDisplay) energyDisplay.textContent = gameState.energy;
+            if (enemiesDisplay) enemiesDisplay.textContent = gameState.enemies.length;
+        }
+
+        // ==================== محرك اللعبة ====================
         function startGame() {
             if (gameRunning) return;
             
             gameRunning = true;
             resetGame();
             
-            // تطبيق إعدادات المود
-            const mode = gameModes[currentGameMode];
-            gameState.health = mode.playerHealth;
-            gameState.playerSpeed = mode.playerSpeed;
-            
-            // إضافة بعض الأعداء والموارد
             for (let i = 0; i < 8; i++) {
                 spawnEnemy();
             }
             
             spawnResources(5);
-            spawnPowerUps(3);
             
-            // بدء دورة اللعبة
             gameInterval = setInterval(gameLoop, 100);
             
-            showAdminMessage(`بدأت اللعبة بوضع ${mode.name}! 🎮`, 2000);
+            showAdminMessage("بدأت اللعبة! اضغط على Z, S, Q, D للتحكم المستمر 🎮", 2000);
         }
 
-        // إنشاء قدرات خاصة
-        function spawnPowerUps(count) {
+        function resetGame() {
+            gameState = {
+                score: 0,
+                health: 100,
+                energy: 100,
+                enemies: [],
+                bullets: [],
+                resources: [],
+                playerX: 350,
+                playerY: 300,
+                mouseX: 0,
+                mouseY: 0
+            };
+            
+            for (let key in activeKeys) {
+                activeKeys[key] = false;
+                const keyElement = document.getElementById('key' + key.toUpperCase());
+                if (keyElement) {
+                    keyElement.classList.remove('active');
+                }
+            }
+            
+            updateGameDisplay();
+            renderGame();
+        }
+
+        function spawnEnemy() {
             const gameArea = document.getElementById('gameArea');
             if (!gameArea) return;
             
-            const powerUpTypes = ['health', 'energy', 'speed'];
+            const x = Math.random() * (gameArea.offsetWidth - 35);
+            const y = Math.random() * (gameArea.offsetHeight - 35);
+            
+            gameState.enemies.push({ x, y });
+        }
+
+        function spawnResources(count) {
+            const gameArea = document.getElementById('gameArea');
+            if (!gameArea) return;
             
             for (let i = 0; i < count; i++) {
-                const x = Math.random() * (gameArea.offsetWidth - 25);
-                const y = Math.random() * (gameArea.offsetHeight - 25);
-                const type = powerUpTypes[Math.floor(Math.random() * powerUpTypes.length)];
+                const x = Math.random() * (gameArea.offsetWidth - 18);
+                const y = Math.random() * (gameArea.offsetHeight - 18);
                 
-                gameState.powerUps.push({ x, y, type });
+                gameState.resources.push({ x, y });
             }
         }
 
-        // تحديث القدرات في دورة اللعبة
-        function updatePowerUps() {
-            for (let i = gameState.powerUps.length - 1; i >= 0; i--) {
-                const powerUp = gameState.powerUps[i];
-                
-                const dx = gameState.playerX - powerUp.x;
-                const dy = gameState.playerY - powerUp.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                
-                if (distance < 40) {
-                    applyPowerUp(powerUp.type);
-                    gameState.powerUps.splice(i, 1);
-                }
-            }
-        }
-
-        // تطبيق تأثير القدرة
-        function applyPowerUp(type) {
-            switch(type) {
-                case 'health':
-                    gameState.health = Math.min(100, gameState.health + 30);
-                    showAdminMessage("+30 صحة! ❤️", 1500);
-                    break;
-                case 'energy':
-                    gameState.energy = Math.min(100, gameState.energy + 40);
-                    showAdminMessage("+40 طاقة! ⚡", 1500);
-                    break;
-                case 'speed':
-                    gameState.playerSpeed += 5;
-                    showAdminMessage("+5 سرعة! 🏃", 1500);
-                    setTimeout(() => {
-                        gameState.playerSpeed = gameModes[currentGameMode].playerSpeed;
-                    }, 10000);
-                    break;
-            }
-            updateGameDisplay();
-        }
-
-        // تعديل دورة اللعبة الرئيسية
-        function gameLoop() {
-            if (!gameRunning) return;
-            
-            // تحديث حركة اللاعب
-            handleContinuousMovement();
-            
-            // تحديث حركة الرصاصات
-            updateBullets();
-            
-            // تحديث حركة الأعداء
-            if (!cheatCodes.FREEZE && !gameState.isStealthed) {
-                updateEnemies();
-            }
-            
-            // تحديث الموارد والقدرات
-            updateResources();
-            updatePowerUps();
-            updateAbilities();
-            
-            // التحقق من التصادمات
-            checkCollisions();
-            
-            // تحديث العرض
-            updateGameDisplay();
-            renderGame();
-            
-            // التحقق من نهاية اللعبة
-            if (gameState.health <= 0) {
-                endGame();
-            }
-        }
-
-        // تعديل إطلاق النار ليتناسب مع المود
         function shootAtMouse() {
             if (!gameRunning) return;
             
-            const mode = gameModes[currentGameMode];
             const dx = gameState.mouseX - gameState.playerX;
             const dy = gameState.mouseY - gameState.playerY;
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             if (distance > 0) {
-                const velocityX = (dx / distance) * mode.bulletSpeed;
-                const velocityY = (dy / distance) * mode.bulletSpeed;
+                const speed = 15;
+                const velocityX = (dx / distance) * speed;
+                const velocityY = (dy / distance) * speed;
                 
-                // إضافة رصاصة
                 gameState.bullets.push({
                     x: gameState.playerX,
                     y: gameState.playerY,
                     velocityX: velocityX,
-                    velocityY: velocityY,
-                    damage: mode.bulletDamage,
-                    type: currentGameMode
+                    velocityY: velocityY
                 });
                 
-                // إطلاق رصاصة إضافية في وضع التركيز المزدوج
-                if (specialAbilityActive && currentGameMode === 'normal') {
-                    gameState.bullets.push({
-                        x: gameState.playerX + 10,
-                        y: gameState.playerY,
-                        velocityX: velocityX,
-                        velocityY: velocityY,
-                        damage: mode.bulletDamage,
-                        type: currentGameMode
-                    });
-                }
-                
-                // استهلاك الطاقة
                 if (!cheatCodes.UNLIMITED) {
-                    gameState.energy = Math.max(0, gameState.energy - mode.energyConsumption);
+                    gameState.energy = Math.max(0, gameState.energy - 2);
                 }
             }
         }
 
-        // تعديل العرض ليشمل القدرات
+        function handleContinuousMovement() {
+            if (!gameRunning) return;
+            
+            const speed = gameState.energy > 20 ? 10 : 5;
+            const gameArea = document.getElementById('gameArea');
+            const areaWidth = gameArea ? gameArea.offsetWidth : 800;
+            const areaHeight = gameArea ? gameArea.offsetHeight : 600;
+            
+            let moved = false;
+            
+            if (activeKeys['z']) {
+                gameState.playerY = Math.max(25, gameState.playerY - speed);
+                moved = true;
+            }
+            if (activeKeys['s']) {
+                gameState.playerY = Math.min(areaHeight - 25, gameState.playerY + speed);
+                moved = true;
+            }
+            if (activeKeys['q']) {
+                gameState.playerX = Math.max(25, gameState.playerX - speed);
+                moved = true;
+            }
+            if (activeKeys['d']) {
+                gameState.playerX = Math.min(areaWidth - 25, gameState.playerX + speed);
+                moved = true;
+            }
+            
+            if (moved && !cheatCodes.UNLIMITED) {
+                gameState.energy = Math.max(0, gameState.energy - 0.5);
+            }
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            handleContinuousMovement();
+            updateBullets();
+            
+            if (!cheatCodes.FREEZE) {
+                updateEnemies();
+            }
+            
+            updateResources();
+            checkCollisions();
+            
+            updateGameDisplay();
+            renderGame();
+            
+            if (gameState.health <= 0) {
+                endGame();
+            }
+        }
+
+        function updateBullets() {
+            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                const bullet = gameState.bullets[i];
+                bullet.x += bullet.velocityX;
+                bullet.y += bullet.velocityY;
+                
+                const gameArea = document.getElementById('gameArea');
+                if (!gameArea) continue;
+                
+                if (bullet.x < 0 || bullet.x > gameArea.offsetWidth || 
+                    bullet.y < 0 || bullet.y > gameArea.offsetHeight) {
+                    gameState.bullets.splice(i, 1);
+                }
+            }
+        }
+
+        function updateEnemies() {
+            for (let i = 0; i < gameState.enemies.length; i++) {
+                const enemy = gameState.enemies[i];
+                
+                const dx = gameState.playerX - enemy.x;
+                const dy = gameState.playerY - enemy.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance > 0) {
+                    const speed = 2;
+                    enemy.x += (dx / distance) * speed;
+                    enemy.y += (dy / distance) * speed;
+                }
+            }
+        }
+
+        function updateResources() {
+            // يمكن إضافة حركة أو تأثيرات للموارد هنا
+        }
+
+        function checkCollisions() {
+            for (let i = gameState.bullets.length - 1; i >= 0; i--) {
+                const bullet = gameState.bullets[i];
+                
+                for (let j = gameState.enemies.length - 1; j >= 0; j--) {
+                    const enemy = gameState.enemies[j];
+                    
+                    const dx = bullet.x - enemy.x;
+                    const dy = bullet.y - enemy.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 25) {
+                        gameState.bullets.splice(i, 1);
+                        gameState.enemies.splice(j, 1);
+                        gameState.score += 100;
+                        spawnEnemy();
+                        break;
+                    }
+                }
+            }
+            
+            for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+                const enemy = gameState.enemies[i];
+                
+                const dx = gameState.playerX - enemy.x;
+                const dy = gameState.playerY - enemy.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 40) {
+                    gameState.enemies.splice(i, 1);
+                    
+                    if (!cheatCodes.GODMODE) {
+                        gameState.health -= 10;
+                    }
+                    
+                    spawnEnemy();
+                }
+            }
+            
+            for (let i = gameState.resources.length - 1; i >= 0; i--) {
+                const resource = gameState.resources[i];
+                
+                const dx = gameState.playerX - resource.x;
+                const dy = gameState.playerY - resource.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 35) {
+                    gameState.resources.splice(i, 1);
+                    gameState.energy = Math.min(100, gameState.energy + 20);
+                    gameState.score += 50;
+                }
+            }
+        }
+
+        function endGame() {
+            gameRunning = false;
+            clearInterval(gameInterval);
+            showAdminMessage("انتهت اللعبة! النقاط النهائية: " + gameState.score, 5000);
+        }
+
         function renderGame() {
             const gameArea = document.getElementById('gameArea');
             if (!gameArea) return;
             
-            // تحديث موقع اللاعب
             const player = document.getElementById('player');
             if (player) {
-                player.style.left = (gameState.playerX - player.offsetWidth/2) + 'px';
-                player.style.top = (gameState.playerY - player.offsetHeight/2) + 'px';
-                
-                // تأثير التخفي
-                player.style.opacity = gameState.isStealthed ? '0.3' : '1';
+                player.style.left = (gameState.playerX - 22.5) + 'px';
+                player.style.top = (gameState.playerY - 22.5) + 'px';
             }
             
-            // إزالة العناصر القديمة وعرض الجديدة
-            // [الكود السابق يبقى كما هو مع إضافة عرض القدرات]
+            const oldEnemies = document.querySelectorAll('.enemy');
+            oldEnemies.forEach(enemy => enemy.remove());
             
-            // عرض القدرات
-            const oldPowerUps = document.querySelectorAll('.power-up');
-            oldPowerUps.forEach(powerUp => powerUp.remove());
+            const oldBullets = document.querySelectorAll('.bullet');
+            oldBullets.forEach(bullet => bullet.remove());
             
-            gameState.powerUps.forEach((powerUp, index) => {
-                const powerUpElement = document.createElement('div');
-                powerUpElement.className = `power-up ${powerUp.type}`;
-                powerUpElement.style.left = powerUp.x + 'px';
-                powerUpElement.style.top = powerUp.y + 'px';
-                powerUpElement.innerHTML = getPowerUpSymbol(powerUp.type);
-                gameArea.appendChild(powerUpElement);
+            const oldResources = document.querySelectorAll('.resource');
+            oldResources.forEach(resource => resource.remove());
+            
+            gameState.enemies.forEach((enemy, index) => {
+                const enemyElement = document.createElement('div');
+                enemyElement.className = 'enemy';
+                enemyElement.style.left = enemy.x + 'px';
+                enemyElement.style.top = enemy.y + 'px';
+                gameArea.appendChild(enemyElement);
+            });
+            
+            gameState.bullets.forEach((bullet, index) => {
+                const bulletElement = document.createElement('div');
+                bulletElement.className = 'bullet';
+                bulletElement.style.left = bullet.x + 'px';
+                bulletElement.style.top = bullet.y + 'px';
+                gameArea.appendChild(bulletElement);
+            });
+            
+            gameState.resources.forEach((resource, index) => {
+                const resourceElement = document.createElement('div');
+                resourceElement.className = 'resource';
+                resourceElement.style.left = resource.x + 'px';
+                resourceElement.style.top = resource.y + 'px';
+                gameArea.appendChild(resourceElement);
             });
         }
 
-        function getPowerUpSymbol(type) {
-            switch(type) {
-                case 'health': return '❤️';
-                case 'energy': return '⚡';
-                case 'speed': return '🏃';
-                default: return '💎';
+        // ==================== نظام التحكم ====================
+        document.addEventListener('keydown', function(event) {
+            const key = event.key.toLowerCase();
+            
+            if (['z', 's', 'q', 'd'].includes(key)) {
+                activeKeys[key] = true;
+                const keyElement = document.getElementById('key' + key.toUpperCase());
+                if (keyElement) {
+                    keyElement.classList.add('active');
+                }
+                
+                if (!gameRunning) {
+                    startGame();
+                }
             }
+        });
+
+        document.addEventListener('keyup', function(event) {
+            const key = event.key.toLowerCase();
+            
+            if (['z', 's', 'q', 'd'].includes(key)) {
+                activeKeys[key] = false;
+                const keyElement = document.getElementById('key' + key.toUpperCase());
+                if (keyElement) {
+                    keyElement.classList.remove('active');
+                }
+            }
+        });
+
+        document.getElementById('gameArea').addEventListener('mousemove', function(event) {
+            const rect = this.getBoundingClientRect();
+            gameState.mouseX = event.clientX - rect.left;
+            gameState.mouseY = event.clientY - rect.top;
+        });
+
+        document.getElementById('gameArea').addEventListener('click', function() {
+            shootAtMouse();
+            
+            if (!gameRunning) {
+                startGame();
+            }
+        });
+
+        function showInstructions() {
+            alert("تعليمات اللعب:\n\n" +
+                  "- استخدم أزرار Z (لأعلى)، S (لأسفل)، Q (لليسار)، D (لليمين) للتحكم\n" +
+                  "- انقر بالماوس لإطلاق النار\n" +
+                  "- حرك الماوس لتوجيه سلاحك\n" +
+                  "- تجنب الاصطدام بالأعداء للحفاظ على صحتك\n" +
+                  "- اجمع الموارد الخضراء لزيادة طاقتك\n" +
+                  "- استخدم أكواد الغش من لوحة الإدارة للحصول على قدرات خاصة");
         }
 
         // التهيئة الأولية
-        setGameMode('normal');
         updateGameDisplay();
         renderGame();
-
-        // ... [باقي الدوال تبقى كما هي مع تعديلات طفيفة]
     </script>
 </body>
 </html>
